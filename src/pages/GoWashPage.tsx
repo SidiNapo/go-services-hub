@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Droplets, ArrowRight, Check, ChevronRight, Leaf, Clock, Shield, Sparkles, MapPin, Phone, Car, Calendar, CheckCircle2, MessageCircle, User } from "lucide-react";
 import Layout from "@/components/Layout";
@@ -142,7 +142,14 @@ const GoWashPage = () => {
   const [hour, setHour] = useState("");
 
   const [showMotoChoice, setShowMotoChoice] = useState(false);
+  const bookingRef = useRef<HTMLDivElement>(null);
   const totalSteps = 4;
+
+  const scrollToBooking = () => {
+    setTimeout(() => {
+      bookingRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 100);
+  };
   const isMoto = selectedVehicle === "moto_petite" || selectedVehicle === "moto_grande";
 
   const handleVehicleSelect = (v: VehicleType) => {
@@ -156,6 +163,7 @@ const GoWashPage = () => {
     setSelectedPack(null);
     setBrand("");
     setStep(2);
+    scrollToBooking();
   };
 
   const handleMotoSelect = (v: VehicleType) => {
@@ -164,15 +172,18 @@ const GoWashPage = () => {
     setSelectedPack(null);
     setBrand("");
     setStep(2);
+    scrollToBooking();
   };
 
   const handlePackSelect = (p: WashPack) => {
     setSelectedPack(p);
     setStep(3);
+    scrollToBooking();
   };
 
   const handlePlaceOrder = () => {
     setStep(4);
+    scrollToBooking();
   };
 
   const handleConfirmWhatsApp = () => {
@@ -207,7 +218,7 @@ const GoWashPage = () => {
 
       {/* Booking Flow */}
       <AnimatedSection className="py-24">
-        <div className="container mx-auto px-4 max-w-4xl">
+        <div ref={bookingRef} className="container mx-auto px-4 max-w-4xl scroll-mt-24">
           {/* Progress bar */}
           <div className="flex items-center justify-center gap-2 mb-12">
             {[1, 2, 3, 4].map((s) => (
