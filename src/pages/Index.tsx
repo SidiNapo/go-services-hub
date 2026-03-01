@@ -3,7 +3,9 @@ import { ArrowRight, Leaf, Clock, MapPin, Star, Zap, Shield, Users } from "lucid
 import Layout from "@/components/Layout";
 import AnimatedSection from "@/components/AnimatedSection";
 import ServiceCard from "@/components/ServiceCard";
-import cityHero from "@/assets/city-hero.jpg";
+import cityCasablanca from "@/assets/city-casablanca.jpg";
+import cityRabat from "@/assets/city-rabat.jpg";
+import cityTanger from "@/assets/city-tanger.jpg";
 import motoHero from "@/assets/moto-flow.jpg";
 import washHero from "@/assets/wash-hero.jpg";
 import cleanHero from "@/assets/clean-hero.jpg";
@@ -158,11 +160,15 @@ const Index = () => (
           <p className="text-muted-foreground text-lg">Casablanca, Rabat et Tanger — et bientôt dans d'autres villes du Royaume.</p>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {["Casablanca", "Rabat", "Tanger"].map((city, i) => (
-            <motion.div key={city} initial={{ opacity: 0, scale: 0.95 }} whileInView={{ opacity: 1, scale: 1 }}
+          {[
+            { name: "Casablanca", img: cityCasablanca },
+            { name: "Rabat", img: cityRabat },
+            { name: "Tanger", img: cityTanger },
+          ].map((city, i) => (
+            <motion.div key={city.name} initial={{ opacity: 0, scale: 0.95 }} whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }} transition={{ delay: i * 0.1 }}
               className="relative rounded-3xl overflow-hidden aspect-[3/2] group">
-              <img src={cityHero} alt={city} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+              <img src={city.img} alt={city.name} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
               <div className="absolute inset-0 bg-go-dark/50" />
               <div className="absolute inset-0 flex items-center justify-center">
                 <div className="text-center">
