@@ -219,32 +219,75 @@ const GoCleanPage = () => {
       </section>
 
       {/* Services */}
-      <AnimatedSection className="py-16 md:py-24">
-        <div className="container mx-auto px-4">
-          <div className="text-center max-w-2xl mx-auto mb-12 md:mb-16">
-            <span className="text-primary font-display font-semibold text-sm uppercase tracking-widest">Nos prestations</span>
-            <h2 className="font-display text-3xl md:text-5xl font-bold mt-3">Un logement impeccable, à chaque fois</h2>
+      <section className="py-20 md:py-32 relative overflow-hidden">
+        {/* Background ambient effects */}
+        <div className="absolute inset-0 bg-gradient-to-b from-background via-accent/20 to-background" />
+        <motion.div className="absolute top-20 left-[10%] w-80 h-80 rounded-full bg-primary/5 blur-[120px]"
+          animate={{ scale: [1, 1.2, 1], opacity: [0.3, 0.5, 0.3] }}
+          transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }} />
+        <motion.div className="absolute bottom-20 right-[10%] w-60 h-60 rounded-full bg-primary/8 blur-[100px]"
+          animate={{ scale: [1.1, 0.9, 1.1] }}
+          transition={{ duration: 6, repeat: Infinity, ease: "easeInOut", delay: 3 }} />
+
+        <div className="container mx-auto px-4 relative z-10">
+          {/* Section header */}
+          <div className="text-center max-w-2xl mx-auto mb-16 md:mb-20">
+            <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-semibold uppercase tracking-widest mb-6">
+              <Sparkles className="h-3.5 w-3.5" /> Nos prestations
+            </motion.div>
+            <motion.h2 initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.1 }}
+              className="font-display text-3xl md:text-5xl lg:text-6xl font-bold leading-tight">
+              Un logement <span className="text-gradient">impeccable</span>,<br className="hidden sm:block" /> à chaque fois
+            </motion.h2>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6 max-w-4xl mx-auto">
+
+          {/* Service cards - staggered bento grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-6 max-w-5xl mx-auto">
             {services.map((s, i) => (
-              <motion.div key={s.title} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }} transition={{ delay: i * 0.1 }} whileHover={{ y: -4 }}
-                className="group glass-card p-6 md:p-8 rounded-3xl hover:border-primary/30 transition-all duration-300 hover:shadow-go relative overflow-hidden cursor-default">
-                <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 bg-gradient-to-r from-transparent via-primary/5 to-transparent" />
-                <div className="flex items-start gap-4">
-                  <div className="flex-shrink-0 p-3 rounded-2xl bg-primary/10 group-hover:bg-primary/20 transition-colors">
-                    <span className="text-2xl">{s.emoji}</span>
+              <motion.div key={s.title}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-50px" }}
+                transition={{ delay: i * 0.12, duration: 0.5 }}
+                whileHover={{ y: -6, scale: 1.01 }}
+                className={cn(
+                  "group relative rounded-3xl p-7 md:p-9 transition-all duration-500 cursor-default overflow-hidden border",
+                  i === 0 ? "bg-gradient-to-br from-primary/10 via-primary/5 to-transparent border-primary/20 hover:border-primary/40 hover:shadow-go" :
+                  "glass-card border-border/50 hover:border-primary/30 hover:shadow-go"
+                )}>
+                {/* Animated gradient background on hover */}
+                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-gradient-to-br from-primary/5 via-transparent to-primary/3" />
+                
+                {/* Shine sweep */}
+                <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 bg-gradient-to-r from-transparent via-primary/8 to-transparent" />
+
+                {/* Corner accent */}
+                <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-bl from-primary/10 to-transparent rounded-bl-[60px] opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+
+                <div className="relative z-10">
+                  {/* Icon with animated ring */}
+                  <div className="relative w-14 h-14 mb-6">
+                    <div className="absolute inset-0 rounded-2xl gradient-go opacity-20 group-hover:opacity-30 transition-opacity group-hover:scale-110 duration-500" />
+                    <div className="relative w-14 h-14 rounded-2xl bg-primary/10 group-hover:bg-primary/15 flex items-center justify-center transition-all duration-300">
+                      <s.icon className="h-6 w-6 text-primary group-hover:scale-110 transition-transform duration-300" />
+                    </div>
                   </div>
-                  <div>
-                    <h3 className="font-display font-bold text-lg md:text-xl mb-2">{s.title}</h3>
-                    <p className="text-muted-foreground text-sm leading-relaxed">{s.desc}</p>
+
+                  <h3 className="font-display font-bold text-xl md:text-2xl mb-3 group-hover:text-primary transition-colors duration-300">{s.title}</h3>
+                  <p className="text-muted-foreground text-sm md:text-base leading-relaxed">{s.desc}</p>
+
+                  {/* Subtle arrow indicator */}
+                  <div className="mt-5 flex items-center gap-2 text-primary/60 group-hover:text-primary transition-colors duration-300">
+                    <span className="text-xs font-semibold uppercase tracking-wider">En savoir plus</span>
+                    <ArrowRight className="h-3.5 w-3.5 group-hover:translate-x-1 transition-transform duration-300" />
                   </div>
                 </div>
               </motion.div>
             ))}
           </div>
         </div>
-      </AnimatedSection>
+      </section>
 
       {/* Why us */}
       <AnimatedSection className="py-16 md:py-24 bg-go-surface">
