@@ -49,6 +49,7 @@ const GoRidePage = () => {
 
   // Step 2: Date & Time
   const [date, setDate] = useState<Date | undefined>(undefined);
+  const [dropoffDate, setDropoffDate] = useState<Date | undefined>(undefined);
   const [hour, setHour] = useState("");
 
   // Step 3: Delivery mode
@@ -91,7 +92,7 @@ const GoRidePage = () => {
   const canNext = () => {
     switch (step) {
       case 1: return !!selectedPlan;
-      case 2: return !!date && !!hour;
+      case 2: return !!date && !!hour && (selectedPlan !== "day" || !!dropoffDate);
       case 3: return deliveryMode === "pickup" ? !!selectedPickup : deliveryMode === "delivery";
       case 4: return deliveryMode === "pickup" || address.trim().length > 0;
       case 5: return name.trim().length > 0 && phone.trim().length > 0;
@@ -130,7 +131,10 @@ const GoRidePage = () => {
     const locationInfo = deliveryMode === "pickup"
       ? `📍 Récupération: ${pickupLocations.find(l => l.id === selectedPickup)?.name}\n📌 ${pickupLocations.find(l => l.id === selectedPickup)?.address}`
       : `🚚 Livraison à domicile\n🏙️ Ville: ${city}\n📍 Adresse: ${address}`;
-    const msg = `Bonjour, je souhaite réserver une moto GoRide Flow :\n\n🏍️ Durée: ${selectedPricing.duration}\n💰 Prix: ${selectedPricing.price} ${selectedPricing.unit}\n📅 Date: ${date ? format(date, "dd/MM/yyyy") : ""}\n🕐 Heure: ${hour}\n\n${locationInfo}\n\n👤 ${name}\n📞 ${phone}${notes ? `\n📝 Notes: ${notes}` : ""}`;
+    const dateInfo = selectedPlan === "day"
+      ? `📅 Récupération: ${date ? format(date, "dd/MM/yyyy") : ""}\n📅 Retour: ${dropoffDate ? format(dropoffDate, "dd/MM/yyyy") : ""}`
+      : `📅 Date: ${date ? format(date, "dd/MM/yyyy") : ""}`;
+    const msg = `Bonjour, je souhaite réserver une moto GoRide Flow :\n\n🏍️ Durée: ${selectedPricing.duration}\n💰 Prix: ${selectedPricing.price} ${selectedPricing.unit}\n${dateInfo}\n🕐 Heure: ${hour}\n\n${locationInfo}\n\n👤 ${name}\n📞 ${phone}${notes ? `\n📝 Notes: ${notes}` : ""}`;
     window.open(`https://wa.me/212660880110?text=${encodeURIComponent(msg)}`, "_blank");
     setOpen(false);
   };
@@ -336,23 +340,67 @@ const GoRidePage = () => {
                   <h3 className="font-display text-xl font-bold mb-1">Date & Heure</h3>
                   <p className="text-sm text-muted-foreground mb-5">Quand voulez-vous votre moto ?</p>
 
-                  <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2 block">Date de début *</label>
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <button className={cn(
-                        "w-full flex items-center gap-3 px-4 py-3 rounded-xl border text-left text-sm transition-all mb-5",
-                        date ? "border-primary bg-primary/5" : "border-input hover:border-primary/30"
-                      )}>
-                        <Calendar className="h-4 w-4 text-primary" />
-                        {date ? format(date, "EEEE d MMMM yyyy", { locale: fr }) : "Sélectionner une date"}
-                      </button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0" align="start">
-                      <CalendarUI mode="single" selected={date} onSelect={setDate}
-                        disabled={(d) => d < new Date()}
-                        className={cn("p-3 pointer-events-auto")} />
-                    </PopoverContent>
-                  </Popover>
+                  {selectedPlan === "day" ? (
+                    <>
+                      {/* Pickup date */}
+                      <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2 block">📅 Date de récupération *</label>
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <button className={cn(
+                            "w-full flex items-center gap-3 px-4 py-3 rounded-xl border text-left text-sm transition-all mb-4",
+                            date ? "border-primary bg-primary/5" : "border-input hover:border-primary/30"
+                          )}>
+                            <Calendar className="h-4 w-4 text-primary" />
+                            {date ? format(date, "EEEE d MMMM yyyy", { locale: fr }) : "Sélectionner la date de récupération"}
+                          </button>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-auto p-0" align="start">
+                          <CalendarUI mode="single" selected={date} onSelect={(d) => { setDate(d); if (dropoffDate && d && dropoffDate <= d) setDropoffDate(undefined); }}
+                            disabled={(d) => d < new Date()}
+                            className={cn("p-3 pointer-events-auto")} />
+                        </PopoverContent>
+                      </Popover>
+
+                      {/* Dropoff date */}
+                      <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2 block">📅 Date de retour *</label>
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <button className={cn(
+                            "w-full flex items-center gap-3 px-4 py-3 rounded-xl border text-left text-sm transition-all mb-5",
+                            dropoffDate ? "border-primary bg-primary/5" : "border-input hover:border-primary/30"
+                          )}>
+                            <Calendar className="h-4 w-4 text-primary" />
+                            {dropoffDate ? format(dropoffDate, "EEEE d MMMM yyyy", { locale: fr }) : "Sélectionner la date de retour"}
+                          </button>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-auto p-0" align="start">
+                          <CalendarUI mode="single" selected={dropoffDate} onSelect={setDropoffDate}
+                            disabled={(d) => d < new Date() || (date ? d <= date : false)}
+                            className={cn("p-3 pointer-events-auto")} />
+                        </PopoverContent>
+                      </Popover>
+                    </>
+                  ) : (
+                    <>
+                      <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2 block">Date de début *</label>
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <button className={cn(
+                            "w-full flex items-center gap-3 px-4 py-3 rounded-xl border text-left text-sm transition-all mb-5",
+                            date ? "border-primary bg-primary/5" : "border-input hover:border-primary/30"
+                          )}>
+                            <Calendar className="h-4 w-4 text-primary" />
+                            {date ? format(date, "EEEE d MMMM yyyy", { locale: fr }) : "Sélectionner une date"}
+                          </button>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-auto p-0" align="start">
+                          <CalendarUI mode="single" selected={date} onSelect={setDate}
+                            disabled={(d) => d < new Date()}
+                            className={cn("p-3 pointer-events-auto")} />
+                        </PopoverContent>
+                      </Popover>
+                    </>
+                  )}
 
                   <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2 block">Heure *</label>
                   <div className="grid grid-cols-4 sm:grid-cols-6 gap-2">
@@ -547,10 +595,23 @@ const GoRidePage = () => {
                           <span className="text-muted-foreground">Moto Flow · {selectedPricing.duration}</span>
                           <span className="font-bold text-primary">{selectedPricing.price} DH</span>
                         </div>
-                        <div className="flex justify-between">
-                          <span className="text-muted-foreground">Date</span>
-                          <span className="font-medium">{date ? format(date, "dd/MM/yyyy") : "-"}</span>
-                        </div>
+                        {selectedPlan === "day" ? (
+                          <>
+                            <div className="flex justify-between">
+                              <span className="text-muted-foreground">Récupération</span>
+                              <span className="font-medium">{date ? format(date, "dd/MM/yyyy") : "-"}</span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="text-muted-foreground">Retour</span>
+                              <span className="font-medium">{dropoffDate ? format(dropoffDate, "dd/MM/yyyy") : "-"}</span>
+                            </div>
+                          </>
+                        ) : (
+                          <div className="flex justify-between">
+                            <span className="text-muted-foreground">Date</span>
+                            <span className="font-medium">{date ? format(date, "dd/MM/yyyy") : "-"}</span>
+                          </div>
+                        )}
                         <div className="flex justify-between">
                           <span className="text-muted-foreground">Heure</span>
                           <span className="font-medium">{hour}</span>
