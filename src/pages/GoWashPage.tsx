@@ -1,6 +1,6 @@
 import React, { useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Droplets, ArrowRight, Check, ChevronRight, Leaf, Clock, Shield, Sparkles, MapPin, Phone, Car, Calendar, CheckCircle2, MessageCircle, User, Zap, Crown, Diamond, Star } from "lucide-react";
+import { Droplets, ArrowRight, Check, ChevronRight, Leaf, Clock, Shield, Sparkles, MapPin, Phone, Car, Calendar, CheckCircle2, MessageCircle, User, Zap, Crown, Diamond, Star, Search, HelpCircle } from "lucide-react";
 import Layout from "@/components/Layout";
 import AnimatedSection from "@/components/AnimatedSection";
 import washHero from "@/assets/wash-hero.jpg";
@@ -135,6 +135,8 @@ const GoWashPage = () => {
   const [selectedVehicle, setSelectedVehicle] = useState<VehicleType | null>(null);
   const [selectedPack, setSelectedPack] = useState<WashPack | null>(null);
   const [brand, setBrand] = useState("");
+  const [customBrand, setCustomBrand] = useState("");
+  const [brandSearch, setBrandSearch] = useState("");
   const [year, setYear] = useState("");
   const [phone, setPhone] = useState("");
   const [address, setAddress] = useState("");
@@ -147,6 +149,10 @@ const GoWashPage = () => {
   const bookingRef = useRef<HTMLDivElement>(null);
   const infoFormRef = useRef<HTMLDivElement>(null);
   const totalSteps = 4;
+
+  const filteredBrands = brandSearch.trim()
+    ? carBrands.filter(b => b.name.toLowerCase().includes(brandSearch.toLowerCase()))
+    : carBrands;
 
   const scrollToBooking = () => {
     setTimeout(() => {
@@ -191,7 +197,8 @@ const GoWashPage = () => {
 
   const handleConfirmWhatsApp = () => {
     const vehicleLabel = selectedVehicle === "moto_petite" ? "Petite Moto" : selectedVehicle === "moto_grande" ? "Grande Moto" : vehicleTypes.find(v => v.id === selectedVehicle)?.label;
-    const brandLine = isMoto ? "" : `\n🏷️ Marque: ${brand} (${year})`;
+    const brandName = brand === "__other__" ? `Autre (${customBrand})` : brand;
+    const brandLine = isMoto ? "" : `\n🏷️ Marque: ${brandName} (${year})`;
     const msg = `Bonjour, je confirme ma commande GoWash :\n\n🚗 Véhicule: ${vehicleLabel}${brandLine}\n✨ Formule: ${selectedPack?.name}\n💰 Prix: ${selectedPack?.price} DH\n\n👤 ${name}\n📞 ${phone}\n🏙️ Ville: ${city}\n📍 ${address}\n📅 Date: ${date}\n🕐 Heure: ${hour}`;
     window.open(`https://wa.me/212660880110?text=${encodeURIComponent(msg)}`, "_blank");
   };
@@ -345,18 +352,50 @@ const GoWashPage = () => {
                             transition={{ type: "spring", damping: 20, stiffness: 300 }}
                             className="mb-4 inline-flex items-center gap-3 px-5 py-3 rounded-2xl border-2 border-primary bg-primary/5 shadow-go"
                           >
-                            <img
-                              src={carBrands.find(b => b.name === brand)?.logo}
-                              alt={brand}
-                              className="w-8 h-8 object-contain"
-                            />
-                            <span className="font-display font-semibold text-sm">{brand}</span>
+                            {brand === "__other__" ? (
+                              <div className="w-8 h-8 rounded-full bg-primary/15 flex items-center justify-center">
+                                <HelpCircle className="w-5 h-5 text-primary" />
+                              </div>
+                            ) : (
+                              <img
+                                src={carBrands.find(b => b.name === brand)?.logo}
+                                alt={brand}
+                                className="w-8 h-8 object-contain"
+                              />
+                            )}
+                            <span className="font-display font-semibold text-sm">
+                              {brand === "__other__" ? `Autre · ${customBrand || "..."}` : brand}
+                            </span>
                             <button
-                              onClick={() => setBrand("")}
+                              onClick={() => { setBrand(""); setCustomBrand(""); setBrandSearch(""); }}
                               className="ml-1 p-1 rounded-full hover:bg-primary/10 transition-colors text-muted-foreground hover:text-foreground text-xs"
                             >
                               ✕
                             </button>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+
+                      {/* Custom brand input (when "Autre" is selected) */}
+                      <AnimatePresence>
+                        {brand === "__other__" && (
+                          <motion.div
+                            initial={{ opacity: 0, height: 0 }}
+                            animate={{ opacity: 1, height: "auto" }}
+                            exit={{ opacity: 0, height: 0 }}
+                            className="overflow-hidden mb-4"
+                          >
+                            <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2 block">
+                              Nom de la marque *
+                            </label>
+                            <input
+                              type="text"
+                              value={customBrand}
+                              onChange={(e) => setCustomBrand(e.target.value)}
+                              placeholder="Saisissez le nom de votre marque..."
+                              className="w-full p-3.5 rounded-xl border-2 border-primary/30 bg-background text-foreground focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all"
+                              autoFocus
+                            />
                           </motion.div>
                         )}
                       </AnimatePresence>
@@ -371,8 +410,20 @@ const GoWashPage = () => {
                             transition={{ duration: 0.4, ease: [0.4, 0, 0.2, 1] }}
                             className="overflow-hidden"
                           >
+                            {/* Search bar */}
+                            <div className="relative mb-4">
+                              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                              <input
+                                type="text"
+                                value={brandSearch}
+                                onChange={(e) => setBrandSearch(e.target.value)}
+                                placeholder="Rechercher une marque..."
+                                className="w-full pl-10 pr-4 py-3 rounded-xl border border-border bg-background text-sm text-foreground focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all"
+                              />
+                            </div>
+
                             <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-3">
-                              {carBrands.map((b, i) => (
+                              {filteredBrands.map((b, i) => (
                                 <motion.button
                                   key={b.name}
                                   initial={{ opacity: 0, y: 10 }}
@@ -380,6 +431,7 @@ const GoWashPage = () => {
                                   transition={{ delay: i * 0.015 }}
                                   onClick={() => {
                                     setBrand(b.name);
+                                    setBrandSearch("");
                                     setTimeout(() => {
                                       infoFormRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
                                     }, 450);
@@ -396,7 +448,34 @@ const GoWashPage = () => {
                                   <span className="text-xs font-medium text-foreground/80 leading-tight text-center truncate w-full">{b.name}</span>
                                 </motion.button>
                               ))}
+
+                              {/* "Autre marque" card */}
+                              <motion.button
+                                initial={{ opacity: 0, y: 10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: filteredBrands.length * 0.015 }}
+                                onClick={() => {
+                                  setBrand("__other__");
+                                  setBrandSearch("");
+                                  setTimeout(() => {
+                                    infoFormRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+                                  }, 450);
+                                }}
+                                className="relative p-4 rounded-2xl flex flex-col items-center justify-center gap-2.5 border-2 border-dashed transition-all duration-200 cursor-pointer group border-primary/40 bg-primary/5 hover:border-primary hover:bg-primary/10 hover:shadow-go"
+                              >
+                                <div className="w-12 h-12 flex items-center justify-center rounded-full bg-primary/15 group-hover:bg-primary/25 transition-colors">
+                                  <HelpCircle className="w-6 h-6 text-primary" />
+                                </div>
+                                <span className="text-xs font-semibold text-primary leading-tight text-center">Autre marque</span>
+                              </motion.button>
                             </div>
+
+                            {/* No results */}
+                            {filteredBrands.length === 0 && brandSearch.trim() && (
+                              <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center text-sm text-muted-foreground mt-4">
+                                Aucune marque trouvée · Sélectionnez "Autre marque"
+                              </motion.p>
+                            )}
                           </motion.div>
                         )}
                       </AnimatePresence>
@@ -469,7 +548,7 @@ const GoWashPage = () => {
                       </div>
                     </div>
 
-                    <button onClick={handlePlaceOrder} disabled={(!isMoto && !brand) || !phone || !address || !name || !city || !date || !hour}
+                    <button onClick={handlePlaceOrder} disabled={(!isMoto && (!brand || (brand === "__other__" && !customBrand.trim()))) || !phone || !address || !name || !city || !date || !hour}
                       className="w-full gradient-go px-8 py-4 rounded-2xl font-display font-semibold text-primary-foreground shadow-go hover:opacity-90 transition-all disabled:opacity-50 disabled:cursor-not-allowed inline-flex items-center justify-center gap-2 mt-2">
                       Passer la commande <ArrowRight className="h-5 w-5" />
                     </button>
