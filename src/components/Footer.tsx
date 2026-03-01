@@ -16,7 +16,7 @@ const Footer = () => (
           className="col-span-2 md:col-span-1">
           <div className="flex items-center gap-3 mb-4">
             <img src={logo} alt="Go 212" className="h-10 w-10 rounded-xl" />
-            <span className="font-display text-xl font-bold">Go 212</span>
+            <span className="font-display text-xl font-bold tracking-tight">Go <span className="text-gradient">212</span></span>
           </div>
           <p className="text-sm opacity-70 leading-relaxed max-w-xs">
             Vos services du quotidien, réinventés. Mobilité électrique, lavage écologique, nettoyage professionnel et réparations à domicile.
