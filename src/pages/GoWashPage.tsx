@@ -475,9 +475,7 @@ const GoWashPage = () => {
                   {/* Vehicle image */}
                   <div className="flex items-center gap-4 pb-4 border-b border-border">
                     <div className="h-16 w-20 flex-shrink-0">
-                      <img src={vehicleMoto} alt="" className={`h-full w-auto object-contain ${!isMoto ? 'hidden' : ''}`} />
-                      {!isMoto && <img src={vehicleTypes.find(v => v.id === selectedVehicle)?.img} alt="" className="h-full w-auto object-contain" />}
-                      {isMoto && <img src={vehicleMoto} alt="" className="h-full w-auto object-contain" />}
+                      <img src={isMoto ? vehicleMoto : vehicleTypes.find(v => v.id === selectedVehicle)?.img} alt="" className="h-full w-auto object-contain" />
                     </div>
                     <div>
                       <p className="font-display font-bold">{selectedVehicle === "moto_petite" ? "Petite Moto" : selectedVehicle === "moto_grande" ? "Grande Moto" : vehicleTypes.find(v => v.id === selectedVehicle)?.label}</p>
