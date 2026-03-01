@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Droplets, ArrowRight, Check, ChevronRight, Leaf, Clock, Shield, Sparkles } from "lucide-react";
+import { Droplets, ArrowRight, Check, ChevronRight, Leaf, Clock, Shield, Sparkles, MapPin, Phone, Car, Calendar, CheckCircle2, MessageCircle, User } from "lucide-react";
 import Layout from "@/components/Layout";
 import AnimatedSection from "@/components/AnimatedSection";
 import washHero from "@/assets/wash-hero.jpg";
@@ -61,8 +61,26 @@ const packsByVehicle: Record<VehicleType, WashPack[]> = {
   ],
 };
 
-const carBrands = [
-  "Audi", "BMW", "Citroën", "Dacia", "Fiat", "Ford", "Honda", "Hyundai", "Kia", "Mercedes", "Nissan", "Opel", "Peugeot", "Renault", "Seat", "Škoda", "Toyota", "Volkswagen", "Volvo",
+const carBrands: { name: string; logo: string }[] = [
+  { name: "Audi", logo: "https://cdn.worldvectorlogo.com/logos/audi-13.svg" },
+  { name: "BMW", logo: "https://cdn.worldvectorlogo.com/logos/bmw-2.svg" },
+  { name: "Citroën", logo: "https://cdn.worldvectorlogo.com/logos/citroen-2.svg" },
+  { name: "Dacia", logo: "https://cdn.worldvectorlogo.com/logos/dacia-2.svg" },
+  { name: "Fiat", logo: "https://cdn.worldvectorlogo.com/logos/fiat-4.svg" },
+  { name: "Ford", logo: "https://cdn.worldvectorlogo.com/logos/ford-6.svg" },
+  { name: "Honda", logo: "https://cdn.worldvectorlogo.com/logos/honda-2.svg" },
+  { name: "Hyundai", logo: "https://cdn.worldvectorlogo.com/logos/hyundai-motor-company-2.svg" },
+  { name: "Kia", logo: "https://cdn.worldvectorlogo.com/logos/kia-2021.svg" },
+  { name: "Mercedes", logo: "https://cdn.worldvectorlogo.com/logos/mercedes-benz-6.svg" },
+  { name: "Nissan", logo: "https://cdn.worldvectorlogo.com/logos/nissan-6.svg" },
+  { name: "Opel", logo: "https://cdn.worldvectorlogo.com/logos/opel-2017.svg" },
+  { name: "Peugeot", logo: "https://cdn.worldvectorlogo.com/logos/peugeot-logo-2.svg" },
+  { name: "Renault", logo: "https://cdn.worldvectorlogo.com/logos/renault-2021.svg" },
+  { name: "Seat", logo: "https://cdn.worldvectorlogo.com/logos/seat-logo-2.svg" },
+  { name: "Škoda", logo: "https://cdn.worldvectorlogo.com/logos/skoda-6.svg" },
+  { name: "Toyota", logo: "https://cdn.worldvectorlogo.com/logos/toyota-2.svg" },
+  { name: "Volkswagen", logo: "https://cdn.worldvectorlogo.com/logos/volkswagen-2019.svg" },
+  { name: "Volvo", logo: "https://cdn.worldvectorlogo.com/logos/volvo-16.svg" },
 ];
 
 const GoWashPage = () => {
@@ -73,6 +91,9 @@ const GoWashPage = () => {
   const [year, setYear] = useState("");
   const [phone, setPhone] = useState("");
   const [address, setAddress] = useState("");
+  const [name, setName] = useState("");
+
+  const totalSteps = 4;
 
   const handleVehicleSelect = (v: VehicleType) => {
     setSelectedVehicle(v);
@@ -85,8 +106,13 @@ const GoWashPage = () => {
     setStep(3);
   };
 
-  const handleSubmit = () => {
-    const msg = `Bonjour, je souhaite réserver un lavage GoWash :\n• Véhicule: ${vehicleTypes.find(v => v.id === selectedVehicle)?.label}\n• Pack: ${selectedPack?.name} (${selectedPack?.price} DH)\n• Marque: ${brand}\n• Année: ${year}\n• Adresse: ${address}`;
+  const handlePlaceOrder = () => {
+    setStep(4);
+  };
+
+  const handleConfirmWhatsApp = () => {
+    const vehicle = vehicleTypes.find(v => v.id === selectedVehicle);
+    const msg = `Bonjour, je confirme ma commande GoWash :\n\n🚗 Véhicule: ${vehicle?.label}\n🏷️ Marque: ${brand} (${year})\n✨ Formule: ${selectedPack?.name}\n💰 Prix: ${selectedPack?.price} DH\n\n👤 ${name}\n📞 ${phone}\n📍 ${address}`;
     window.open(`https://wa.me/212660880110?text=${encodeURIComponent(msg)}`, "_blank");
   };
 
@@ -118,12 +144,14 @@ const GoWashPage = () => {
         <div className="container mx-auto px-4 max-w-4xl">
           {/* Progress bar */}
           <div className="flex items-center justify-center gap-2 mb-12">
-            {[1, 2, 3].map((s) => (
+            {[1, 2, 3, 4].map((s) => (
               <div key={s} className="flex items-center gap-2">
                 <div className={`w-10 h-10 rounded-full flex items-center justify-center font-display font-bold text-sm transition-colors ${
                   step >= s ? "gradient-go text-primary-foreground" : "bg-muted text-muted-foreground"
-                }`}>{s}</div>
-                {s < 3 && <ChevronRight className="h-4 w-4 text-muted-foreground" />}
+                }`}>
+                  {step > s ? <Check className="h-4 w-4" /> : s}
+                </div>
+                {s < 4 && <div className={`w-8 h-0.5 transition-colors ${step > s ? "bg-primary" : "bg-muted"}`} />}
               </div>
             ))}
           </div>
@@ -186,43 +214,166 @@ const GoWashPage = () => {
               </motion.div>
             )}
 
-            {/* Step 3: Info form */}
+            {/* Step 3: Creative info form with brand logos */}
             {step === 3 && selectedPack && (
               <motion.div key="step3" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
                 <button onClick={() => setStep(2)} className="text-sm text-muted-foreground hover:text-foreground mb-4 inline-flex items-center gap-1">
                   ← Changer de formule
                 </button>
-                <h2 className="font-display text-3xl font-bold text-center mb-2">Vos informations</h2>
+                <h2 className="font-display text-3xl font-bold text-center mb-2">Détails de votre véhicule</h2>
                 <p className="text-center text-muted-foreground mb-8">
-                  {vehicleTypes.find(v => v.id === selectedVehicle)?.label} · {selectedPack.name} · {selectedPack.price} DH
+                  {vehicleTypes.find(v => v.id === selectedVehicle)?.label} · {selectedPack.name} · <span className="text-primary font-semibold">{selectedPack.price} DH</span>
                 </p>
-                <div className="max-w-lg mx-auto space-y-4">
-                  <div>
-                    <label className="text-sm font-medium mb-1.5 block">Marque du véhicule</label>
-                    <select value={brand} onChange={(e) => setBrand(e.target.value)}
-                      className="w-full p-3 rounded-xl border bg-card text-foreground">
-                      <option value="">Sélectionnez une marque</option>
-                      {carBrands.map((b) => <option key={b} value={b}>{b}</option>)}
-                    </select>
+
+                <div className="max-w-2xl mx-auto">
+                  {/* Brand selection with logos */}
+                  <div className="mb-6">
+                    <label className="text-sm font-display font-semibold mb-3 flex items-center gap-2">
+                      <Car className="h-4 w-4 text-primary" /> Marque du véhicule
+                    </label>
+                    <div className="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-6 gap-3">
+                      {carBrands.map((b, i) => (
+                        <motion.button
+                          key={b.name}
+                          initial={{ opacity: 0, scale: 0.8 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          transition={{ delay: i * 0.02 }}
+                          onClick={() => setBrand(b.name)}
+                          className={`glass-card p-3 rounded-xl flex flex-col items-center gap-2 hover:border-primary/50 hover:shadow-go transition-all group cursor-pointer ${
+                            brand === b.name ? "border-primary ring-2 ring-primary/20 bg-primary/5" : ""
+                          }`}
+                        >
+                          <img
+                            src={b.logo}
+                            alt={b.name}
+                            className="h-8 w-8 object-contain group-hover:scale-110 transition-transform"
+                            onError={(e) => {
+                              (e.target as HTMLImageElement).style.display = 'none';
+                              (e.target as HTMLImageElement).nextElementSibling?.classList.remove('hidden');
+                            }}
+                          />
+                          <span className="hidden font-display font-bold text-primary text-lg">{b.name.charAt(0)}</span>
+                          <span className="text-[10px] font-medium text-muted-foreground leading-tight text-center">{b.name}</span>
+                        </motion.button>
+                      ))}
+                    </div>
                   </div>
-                  <div>
-                    <label className="text-sm font-medium mb-1.5 block">Année</label>
-                    <input type="number" value={year} onChange={(e) => setYear(e.target.value)} placeholder="2024"
-                      className="w-full p-3 rounded-xl border bg-card text-foreground" />
+
+                  {/* Year + personal info in a sleek card */}
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.3 }}
+                    className="glass-card rounded-2xl p-6 space-y-4"
+                  >
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <label className="text-sm font-medium mb-1.5 flex items-center gap-2">
+                          <Calendar className="h-3.5 w-3.5 text-primary" /> Année du véhicule
+                        </label>
+                        <input type="number" value={year} onChange={(e) => setYear(e.target.value)} placeholder="2024"
+                          className="w-full p-3.5 rounded-xl border border-border bg-background text-foreground focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all" />
+                      </div>
+                      <div>
+                        <label className="text-sm font-medium mb-1.5 flex items-center gap-2">
+                          <User className="h-3.5 w-3.5 text-primary" /> Nom complet
+                        </label>
+                        <input type="text" value={name} onChange={(e) => setName(e.target.value)} placeholder="Votre nom"
+                          className="w-full p-3.5 rounded-xl border border-border bg-background text-foreground focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all" />
+                      </div>
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <label className="text-sm font-medium mb-1.5 flex items-center gap-2">
+                          <Phone className="h-3.5 w-3.5 text-primary" /> Téléphone
+                        </label>
+                        <input type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="+212 6 XX XX XX XX"
+                          className="w-full p-3.5 rounded-xl border border-border bg-background text-foreground focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all" />
+                      </div>
+                      <div>
+                        <label className="text-sm font-medium mb-1.5 flex items-center gap-2">
+                          <MapPin className="h-3.5 w-3.5 text-primary" /> Adresse
+                        </label>
+                        <input type="text" value={address} onChange={(e) => setAddress(e.target.value)} placeholder="Votre adresse complète"
+                          className="w-full p-3.5 rounded-xl border border-border bg-background text-foreground focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all" />
+                      </div>
+                    </div>
+
+                    <button onClick={handlePlaceOrder} disabled={!brand || !year || !phone || !address || !name}
+                      className="w-full gradient-go px-8 py-4 rounded-2xl font-display font-semibold text-primary-foreground shadow-go hover:opacity-90 transition-all disabled:opacity-50 disabled:cursor-not-allowed inline-flex items-center justify-center gap-2 mt-2">
+                      Passer la commande <ArrowRight className="h-5 w-5" />
+                    </button>
+                  </motion.div>
+                </div>
+              </motion.div>
+            )}
+
+            {/* Step 4: Order confirmation */}
+            {step === 4 && selectedPack && (
+              <motion.div key="step4" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }}
+                className="max-w-lg mx-auto">
+                <div className="text-center mb-8">
+                  <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: "spring", delay: 0.2 }}
+                    className="inline-flex p-4 rounded-full bg-primary/10 mb-4">
+                    <CheckCircle2 className="h-12 w-12 text-primary" />
+                  </motion.div>
+                  <h2 className="font-display text-3xl font-bold mb-2">Récapitulatif</h2>
+                  <p className="text-muted-foreground">Vérifiez vos informations avant de confirmer</p>
+                </div>
+
+                <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}
+                  className="glass-card rounded-2xl p-6 space-y-4 mb-6">
+                  {/* Vehicle image */}
+                  <div className="flex items-center gap-4 pb-4 border-b border-border">
+                    <div className="h-16 w-20 flex-shrink-0">
+                      <img src={vehicleTypes.find(v => v.id === selectedVehicle)?.img} alt="" className="h-full w-auto object-contain" />
+                    </div>
+                    <div>
+                      <p className="font-display font-bold">{vehicleTypes.find(v => v.id === selectedVehicle)?.label}</p>
+                      <p className="text-sm text-muted-foreground">{brand} · {year}</p>
+                    </div>
                   </div>
-                  <div>
-                    <label className="text-sm font-medium mb-1.5 block">Téléphone</label>
-                    <input type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="+212 6 XX XX XX XX"
-                      className="w-full p-3 rounded-xl border bg-card text-foreground" />
+
+                  {/* Order details */}
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm text-muted-foreground flex items-center gap-2"><Sparkles className="h-3.5 w-3.5" /> Formule</span>
+                      <span className="font-display font-semibold">{selectedPack.name}</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm text-muted-foreground flex items-center gap-2"><User className="h-3.5 w-3.5" /> Client</span>
+                      <span className="font-medium">{name}</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm text-muted-foreground flex items-center gap-2"><Phone className="h-3.5 w-3.5" /> Téléphone</span>
+                      <span className="font-medium">{phone}</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm text-muted-foreground flex items-center gap-2"><MapPin className="h-3.5 w-3.5" /> Adresse</span>
+                      <span className="font-medium text-right max-w-[200px] truncate">{address}</span>
+                    </div>
                   </div>
-                  <div>
-                    <label className="text-sm font-medium mb-1.5 block">Adresse</label>
-                    <input type="text" value={address} onChange={(e) => setAddress(e.target.value)} placeholder="Votre adresse complète"
-                      className="w-full p-3 rounded-xl border bg-card text-foreground" />
+
+                  {/* Total */}
+                  <div className="pt-4 border-t border-border flex items-center justify-between">
+                    <span className="font-display font-bold text-lg">Total</span>
+                    <span className="font-display font-bold text-2xl text-primary">{selectedPack.price} DH</span>
                   </div>
-                  <button onClick={handleSubmit} disabled={!brand || !year || !phone || !address}
-                    className="w-full gradient-go px-8 py-4 rounded-2xl font-display font-semibold text-primary-foreground shadow-go hover:opacity-90 transition-all disabled:opacity-50 disabled:cursor-not-allowed inline-flex items-center justify-center gap-2 mt-4">
-                    Réserver via WhatsApp <ArrowRight className="h-5 w-5" />
+                </motion.div>
+
+                <div className="space-y-3">
+                  <motion.button
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.5 }}
+                    onClick={handleConfirmWhatsApp}
+                    className="w-full bg-[#25D366] hover:bg-[#1fb855] px-8 py-4 rounded-2xl font-display font-semibold text-white shadow-lg hover:shadow-xl transition-all inline-flex items-center justify-center gap-3"
+                  >
+                    <MessageCircle className="h-5 w-5" /> Confirmer via WhatsApp
+                  </motion.button>
+                  <button onClick={() => setStep(3)}
+                    className="w-full px-8 py-3 rounded-2xl font-medium text-sm text-muted-foreground hover:text-foreground hover:bg-muted transition-all">
+                    ← Modifier mes informations
                   </button>
                 </div>
               </motion.div>
