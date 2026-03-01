@@ -1,4 +1,5 @@
-import { motion } from "framer-motion";
+import { motion, useMotionValue, useTransform, animate } from "framer-motion";
+import { useEffect, useRef } from "react";
 import { ArrowRight, Leaf, Clock, MapPin, Star, Users } from "lucide-react";
 import Layout from "@/components/Layout";
 import AnimatedSection from "@/components/AnimatedSection";
@@ -19,11 +20,31 @@ const services = [
 ];
 
 const stats = [
-  { icon: Users, value: "15 000+", label: "Clients satisfaits" },
-  { icon: Leaf, value: "500K+", label: "Litres d'eau économisés" },
-  { icon: MapPin, value: "3", label: "Villes desservies" },
-  { icon: Star, value: "4.9/5", label: "Note moyenne" },
+  { icon: Users, value: 15000, suffix: "+", label: "Clients satisfaits", color: "from-emerald-400 to-teal-500" },
+  { icon: Leaf, value: 500, suffix: "K+", label: "Litres d'eau économisés", color: "from-green-400 to-emerald-500" },
+  { icon: MapPin, value: 3, suffix: "", label: "Villes desservies", color: "from-teal-400 to-cyan-500" },
+  { icon: Star, value: 4.9, suffix: "/5", label: "Note moyenne", color: "from-lime-400 to-green-500" },
 ];
+
+function CountUp({ target, suffix, decimals = 0 }: { target: number; suffix: string; decimals?: number }) {
+  const ref = useRef<HTMLSpanElement>(null);
+  const motionVal = useMotionValue(0);
+  const rounded = useTransform(motionVal, (v) => decimals ? v.toFixed(decimals) : Math.floor(v).toLocaleString("fr-FR"));
+
+  useEffect(() => {
+    const controls = animate(motionVal, target, { duration: 2, ease: "easeOut" });
+    return controls.stop;
+  }, [target, motionVal]);
+
+  useEffect(() => {
+    const unsubscribe = rounded.on("change", (v) => {
+      if (ref.current) ref.current.textContent = v + suffix;
+    });
+    return unsubscribe;
+  }, [rounded, suffix]);
+
+  return <span ref={ref}>0{suffix}</span>;
+}
 
 
 const Index = () => (
@@ -45,22 +66,53 @@ const Index = () => (
     </section>
 
     {/* Stats */}
-    <AnimatedSection className="py-20 bg-go-surface">
-      <div className="container mx-auto px-4">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+    <section className="py-20 relative overflow-hidden gradient-dark">
+      {/* Animated background blobs */}
+      <motion.div
+        className="absolute -top-32 -left-32 w-96 h-96 rounded-full bg-primary/10 blur-3xl"
+        animate={{ x: [0, 40, 0], y: [0, 30, 0], scale: [1, 1.1, 1] }}
+        transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+      />
+      <motion.div
+        className="absolute -bottom-32 -right-32 w-96 h-96 rounded-full bg-primary/8 blur-3xl"
+        animate={{ x: [0, -30, 0], y: [0, -40, 0], scale: [1, 1.15, 1] }}
+        transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
+      />
+      <div className="container mx-auto px-4 relative z-10">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
           {stats.map((s, i) => (
-            <motion.div key={s.label} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }} transition={{ delay: i * 0.1 }} className="text-center">
-              <div className="inline-flex p-3 rounded-2xl bg-primary/10 mb-4">
-                <s.icon className="h-6 w-6 text-primary" />
+            <motion.div
+              key={s.label}
+              initial={{ opacity: 0, y: 40, scale: 0.9 }}
+              whileInView={{ opacity: 1, y: 0, scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ delay: i * 0.15, type: "spring", stiffness: 100 }}
+              whileHover={{ y: -8, scale: 1.03 }}
+              className="relative group"
+            >
+              <div className="relative p-6 md:p-8 rounded-3xl border border-primary-foreground/10 bg-primary-foreground/5 backdrop-blur-sm overflow-hidden transition-all duration-500 group-hover:border-primary/40 group-hover:bg-primary-foreground/10">
+                {/* Glow effect on hover */}
+                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-gradient-to-br from-primary/10 via-transparent to-primary/5" />
+                
+                <div className="relative z-10">
+                  <motion.div
+                    className={`inline-flex p-3 rounded-2xl bg-gradient-to-br ${s.color} mb-4 shadow-lg`}
+                    whileHover={{ rotate: [0, -10, 10, 0] }}
+                    transition={{ duration: 0.5 }}
+                  >
+                    <s.icon className="h-6 w-6 text-primary-foreground" />
+                  </motion.div>
+                  <div className="font-display text-3xl md:text-4xl font-bold text-primary-foreground mb-1">
+                    <CountUp target={s.value} suffix={s.suffix} decimals={s.label === "Note moyenne" ? 1 : 0} />
+                  </div>
+                  <div className="text-sm text-primary-foreground/50 font-medium">{s.label}</div>
+                </div>
               </div>
-              <div className="font-display text-3xl md:text-4xl font-bold text-foreground">{s.value}</div>
-              <div className="text-sm text-muted-foreground mt-1">{s.label}</div>
             </motion.div>
           ))}
         </div>
       </div>
-    </AnimatedSection>
+    </section>
 
 
     {/* Cities */}
