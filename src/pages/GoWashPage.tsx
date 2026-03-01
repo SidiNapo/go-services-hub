@@ -595,16 +595,6 @@ const GoWashPage = () => {
                 services: ["Lavage carrosserie", "Nettoyage Intérieurs", "Aspiration Habitacle / Coffre", "Nettoyage Vitres", "Nettoyage Jantes", "Cirage Pneus"],
               },
               {
-                name: "Lavage Spécial",
-                price: 80,
-                badge: null as string | null,
-                icon: Zap,
-                accent: "from-amber-400 to-orange-500",
-                accentBg: "bg-amber-500/10",
-                accentText: "text-amber-600",
-                services: ["Lavage / Démoustication Carrosserie"],
-              },
-              {
                 name: "Lavage Extra",
                 price: 200,
                 badge: "Populaire",
