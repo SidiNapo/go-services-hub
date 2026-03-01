@@ -1,6 +1,7 @@
 import React, { useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Droplets, ArrowRight, Check, ChevronRight, Leaf, Clock, Shield, Sparkles, MapPin, Phone, Car, Calendar, CheckCircle2, MessageCircle, User, Zap, Crown, Diamond, Star, Search, HelpCircle, Navigation, Loader2 } from "lucide-react";
+import { Droplets, ArrowRight, Check, ChevronRight, Leaf, Clock, Shield, Sparkles, MapPin, Phone, Car, Calendar, CheckCircle2, MessageCircle, User, Zap, Crown, Diamond, Star, Search, HelpCircle, Navigation, Loader2, X } from "lucide-react";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { locateUser } from "@/lib/geolocation";
 import Layout from "@/components/Layout";
 import AnimatedSection from "@/components/AnimatedSection";
@@ -151,6 +152,60 @@ const GoWashPage = () => {
   const bookingRef = useRef<HTMLDivElement>(null);
   const infoFormRef = useRef<HTMLDivElement>(null);
   const totalSteps = 4;
+
+  // Go 212 pack modal state
+  const [packModalOpen, setPackModalOpen] = useState(false);
+  const [packModalStep, setPackModalStep] = useState(1);
+  const [packModalPack, setPackModalPack] = useState<{ name: string; price: number; accent: string } | null>(null);
+  const [packModalVehicle, setPackModalVehicle] = useState<VehicleType | null>(null);
+  const [packModalName, setPackModalName] = useState("");
+  const [packModalPhone, setPackModalPhone] = useState("");
+  const [packModalAddress, setPackModalAddress] = useState("");
+  const [packModalCity] = useState("Casablanca");
+  const [packModalDate, setPackModalDate] = useState("");
+  const [packModalHour, setPackModalHour] = useState("");
+  const [packModalCoords, setPackModalCoords] = useState<{ lat: number; lng: number } | null>(null);
+  const [packModalLocating, setPackModalLocating] = useState(false);
+
+  const openPackModal = (pack: { name: string; price: number; accent: string }) => {
+    setPackModalPack(pack);
+    setPackModalStep(1);
+    setPackModalVehicle(null);
+    setPackModalName("");
+    setPackModalPhone("");
+    setPackModalAddress("");
+    setPackModalDate("");
+    setPackModalHour("");
+    setPackModalCoords(null);
+    setPackModalOpen(true);
+  };
+
+  const handlePackModalLocate = async () => {
+    setPackModalLocating(true);
+    try {
+      const result = await locateUser();
+      if (result) {
+        setPackModalCoords({ lat: result.lat, lng: result.lng });
+        setPackModalAddress(result.address);
+      }
+    } finally {
+      setPackModalLocating(false);
+    }
+  };
+
+  const handlePackModalConfirm = () => {
+    const vehicleLabel = packModalVehicle === "moto_petite" ? "Petite Moto" : packModalVehicle === "moto_grande" ? "Grande Moto" : vehicleTypes.find(v => v.id === packModalVehicle)?.label || "";
+    const mapsLink = packModalCoords ? `\n📌 Google Maps: https://www.google.com/maps?q=${packModalCoords.lat},${packModalCoords.lng}` : "";
+    const msg = `Bonjour, je confirme ma réservation Go 212 :\n\n✨ Pack: ${packModalPack?.name}\n💰 Prix: ${packModalPack?.price} DH\n🚗 Véhicule: ${vehicleLabel}\n\n👤 ${packModalName}\n📞 ${packModalPhone}\n🏙️ Ville: ${packModalCity}\n📍 ${packModalAddress}${mapsLink}\n📅 Date: ${packModalDate}\n🕐 Heure: ${packModalHour}`;
+    window.open(`https://wa.me/212660880110?text=${encodeURIComponent(msg)}`, "_blank");
+    setPackModalOpen(false);
+  };
+
+  const canPackModalNext = () => {
+    if (packModalStep === 1) return !!packModalVehicle;
+    if (packModalStep === 2) return packModalName.trim() && packModalPhone.trim() && packModalAddress.trim() && packModalDate && packModalHour;
+    return false;
+  };
 
   const filteredBrands = brandSearch.trim()
     ? carBrands.filter(b => b.name.toLowerCase().includes(brandSearch.toLowerCase()))
@@ -801,20 +856,18 @@ const GoWashPage = () => {
                     ))}
                   </ul>
 
-                  <motion.a
+                  <motion.button
                     whileHover={{ scale: 1.04 }}
                     whileTap={{ scale: 0.96 }}
-                    href={`https://wa.me/212660880110?text=${encodeURIComponent(`Bonjour, je souhaite réserver le pack Go 212 "${pack.name}" à ${pack.price} DH.`)}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
+                    onClick={() => openPackModal({ name: pack.name, price: pack.price, accent: pack.accent })}
                     className={`w-full py-3.5 rounded-2xl font-display font-semibold text-sm text-center inline-flex items-center justify-center gap-2 transition-all ${
                       pack.badge
                         ? `bg-gradient-to-r ${pack.accent} text-white shadow-lg hover:shadow-xl`
                         : "bg-primary/10 text-primary hover:bg-primary/20"
                     }`}
                   >
-                    <MessageCircle className="h-4 w-4" /> Réserver
-                  </motion.a>
+                    <MessageCircle className="h-4 w-4" /> Réserver maintenant
+                  </motion.button>
                 </div>
               </motion.div>
               );
@@ -859,6 +912,158 @@ const GoWashPage = () => {
           </div>
         </div>
       </section>
+      {/* Go 212 Pack Booking Modal */}
+      <Dialog open={packModalOpen} onOpenChange={setPackModalOpen}>
+        <DialogContent className="max-w-lg p-0 overflow-hidden rounded-3xl border-border/50 bg-background gap-0 max-h-[90vh] overflow-y-auto">
+          <DialogTitle className="sr-only">Réserver {packModalPack?.name}</DialogTitle>
+          
+          {/* Header with gradient */}
+          <div className={`relative px-6 pt-6 pb-5 bg-gradient-to-r ${packModalPack?.accent || "from-primary to-primary"} overflow-hidden`}>
+            <div className="absolute inset-0 opacity-10" style={{ backgroundImage: "radial-gradient(circle, white 1px, transparent 1px)", backgroundSize: "20px 20px" }} />
+            <div className="relative z-10">
+              <span className="text-white/70 text-xs font-medium uppercase tracking-widest">Go 212</span>
+              <h3 className="font-display text-2xl font-bold text-white mt-1">{packModalPack?.name}</h3>
+              <div className="flex items-baseline gap-1 mt-1">
+                <span className="font-display text-3xl font-extrabold text-white">{packModalPack?.price}</span>
+                <span className="text-white/70 text-sm font-medium">DH</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Step indicator */}
+          <div className="flex items-center justify-center gap-3 py-4 border-b border-border/50">
+            {["Véhicule", "Infos"].map((label, i) => (
+              <div key={label} className="flex items-center gap-2">
+                <div className={`w-8 h-8 rounded-full flex items-center justify-center font-display font-bold text-xs transition-colors ${
+                  packModalStep > i + 1 ? "gradient-go text-primary-foreground" : packModalStep === i + 1 ? "gradient-go text-primary-foreground" : "bg-muted text-muted-foreground"
+                }`}>
+                  {packModalStep > i + 1 ? <Check className="h-3.5 w-3.5" /> : i + 1}
+                </div>
+                <span className={`text-xs font-medium ${packModalStep === i + 1 ? "text-foreground" : "text-muted-foreground"}`}>{label}</span>
+                {i < 1 && <div className={`w-8 h-0.5 ${packModalStep > 1 ? "bg-primary" : "bg-muted"}`} />}
+              </div>
+            ))}
+          </div>
+
+          <div className="p-6">
+            <AnimatePresence mode="wait">
+              {/* Step 1: Vehicle type */}
+              {packModalStep === 1 && (
+                <motion.div key="pm-step1" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
+                  <h4 className="font-display text-lg font-bold mb-4">Quel véhicule ?</h4>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                    {vehicleTypes.map((v) => (
+                      <button
+                        key={v.id}
+                        onClick={() => setPackModalVehicle(v.id)}
+                        className={`p-4 rounded-2xl border-2 text-center transition-all group cursor-pointer ${
+                          packModalVehicle === v.id
+                            ? "border-primary bg-primary/5 shadow-go"
+                            : "border-border hover:border-primary/40 bg-card"
+                        }`}
+                      >
+                        <div className="h-16 flex items-center justify-center mb-2">
+                          <img src={v.img} alt={v.label} className="h-full w-auto object-contain group-hover:scale-105 transition-transform" />
+                        </div>
+                        <span className="font-display font-semibold text-xs">{v.label}</span>
+                      </button>
+                    ))}
+                  </div>
+                </motion.div>
+              )}
+
+              {/* Step 2: Personal info */}
+              {packModalStep === 2 && (
+                <motion.div key="pm-step2" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-4">
+                  <h4 className="font-display text-lg font-bold mb-1">Vos informations</h4>
+                  <p className="text-xs text-muted-foreground mb-4">
+                    {vehicleTypes.find(v => v.id === packModalVehicle)?.label} · {packModalPack?.name} · <span className="text-primary font-semibold">{packModalPack?.price} DH</span>
+                  </p>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                      <label className="text-xs font-medium mb-1 flex items-center gap-1.5">
+                        <User className="h-3 w-3 text-primary" /> Nom complet
+                      </label>
+                      <input type="text" value={packModalName} onChange={(e) => setPackModalName(e.target.value)} placeholder="Votre nom"
+                        className="w-full p-3 rounded-xl border border-border bg-background text-sm text-foreground focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all" />
+                    </div>
+                    <div>
+                      <label className="text-xs font-medium mb-1 flex items-center gap-1.5">
+                        <Phone className="h-3 w-3 text-primary" /> Téléphone
+                      </label>
+                      <input type="tel" value={packModalPhone} onChange={(e) => setPackModalPhone(e.target.value)} placeholder="+212 6 XX XX XX XX"
+                        className="w-full p-3 rounded-xl border border-border bg-background text-sm text-foreground focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all" />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="text-xs font-medium mb-1 flex items-center gap-1.5">
+                      <MapPin className="h-3 w-3 text-primary" /> Adresse
+                    </label>
+                    <div className="flex gap-2">
+                      <input type="text" value={packModalAddress} onChange={(e) => setPackModalAddress(e.target.value)} placeholder="Votre adresse complète"
+                        className="flex-1 p-3 rounded-xl border border-border bg-background text-sm text-foreground focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all" />
+                      <button onClick={handlePackModalLocate} disabled={packModalLocating}
+                        className="px-3 py-3 rounded-xl gradient-go text-primary-foreground text-xs font-semibold hover:opacity-90 transition-all disabled:opacity-50 inline-flex items-center gap-1.5 whitespace-nowrap">
+                        {packModalLocating ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Navigation className="h-3.5 w-3.5" />}
+                        📍
+                      </button>
+                    </div>
+                    {packModalCoords && (
+                      <p className="text-[10px] text-primary mt-1 flex items-center gap-1">
+                        <CheckCircle2 className="h-3 w-3" /> Position GPS capturée
+                      </p>
+                    )}
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <label className="text-xs font-medium mb-1 flex items-center gap-1.5">
+                        <Calendar className="h-3 w-3 text-primary" /> Date
+                      </label>
+                      <input type="date" value={packModalDate} onChange={(e) => setPackModalDate(e.target.value)}
+                        className="w-full p-3 rounded-xl border border-border bg-background text-sm text-foreground focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all" />
+                    </div>
+                    <div>
+                      <label className="text-xs font-medium mb-1 flex items-center gap-1.5">
+                        <Clock className="h-3 w-3 text-primary" /> Heure
+                      </label>
+                      <input type="time" value={packModalHour} onChange={(e) => setPackModalHour(e.target.value)}
+                        className="w-full p-3 rounded-xl border border-border bg-background text-sm text-foreground focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all" />
+                    </div>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+
+          {/* Footer buttons */}
+          <div className="p-6 pt-0 flex items-center justify-between gap-3">
+            {packModalStep > 1 ? (
+              <button onClick={() => setPackModalStep(1)} className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                ← Retour
+              </button>
+            ) : <div />}
+
+            {packModalStep === 1 ? (
+              <button onClick={() => canPackModalNext() && setPackModalStep(2)} disabled={!canPackModalNext()}
+                className={`gradient-go px-6 py-3 rounded-xl font-display font-semibold text-sm text-primary-foreground inline-flex items-center gap-2 transition-all ${
+                  !canPackModalNext() ? "opacity-40 cursor-not-allowed" : ""
+                }`}>
+                Suivant <ArrowRight className="h-4 w-4" />
+              </button>
+            ) : (
+              <button onClick={handlePackModalConfirm} disabled={!canPackModalNext()}
+                className={`bg-[#25D366] hover:bg-[#1fb855] px-6 py-3 rounded-xl font-display font-semibold text-sm text-white shadow-lg inline-flex items-center gap-2 transition-all ${
+                  !canPackModalNext() ? "opacity-40 cursor-not-allowed" : ""
+                }`}>
+                <MessageCircle className="h-4 w-4" /> Confirmer via WhatsApp
+              </button>
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
     </Layout>
   );
 };
