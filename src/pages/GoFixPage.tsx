@@ -71,8 +71,42 @@ const GoFixPage = () => {
 
   const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp", "image/heic", "image/heif"];
   const MAX_SIZE = 10 * 1024 * 1024;
+  const MAX_DIMENSION = 1200;
+  const JPEG_QUALITY = 0.7;
 
-  const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const compressImage = (file: File): Promise<File> => {
+    return new Promise((resolve) => {
+      const img = new Image();
+      img.onload = () => {
+        let { width, height } = img;
+        if (width > MAX_DIMENSION || height > MAX_DIMENSION) {
+          const ratio = Math.min(MAX_DIMENSION / width, MAX_DIMENSION / height);
+          width = Math.round(width * ratio);
+          height = Math.round(height * ratio);
+        }
+        const canvas = document.createElement("canvas");
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext("2d")!;
+        ctx.drawImage(img, 0, 0, width, height);
+        canvas.toBlob(
+          (blob) => {
+            if (blob) {
+              resolve(new File([blob], file.name.replace(/\.[^.]+$/, ".jpg"), { type: "image/jpeg" }));
+            } else {
+              resolve(file);
+            }
+          },
+          "image/jpeg",
+          JPEG_QUALITY
+        );
+      };
+      img.onerror = () => resolve(file);
+      img.src = URL.createObjectURL(file);
+    });
+  };
+
+  const handlePhotoChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
     if (!ALLOWED_TYPES.includes(file.type)) {
@@ -83,10 +117,11 @@ const GoFixPage = () => {
       toast({ title: "Fichier trop volumineux", description: "Maximum 10 MB.", variant: "destructive" });
       return;
     }
-    setPhoto(file);
+    const compressed = await compressImage(file);
+    setPhoto(compressed);
     const reader = new FileReader();
     reader.onload = () => setPhotoPreview(reader.result as string);
-    reader.readAsDataURL(file);
+    reader.readAsDataURL(compressed);
   };
 
   const removePhoto = () => { setPhoto(null); setPhotoPreview(null); };
