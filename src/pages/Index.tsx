@@ -7,6 +7,7 @@ import ServiceCard from "@/components/ServiceCard";
 import cityCasablanca from "@/assets/city-casablanca.jpg";
 import cityRabat from "@/assets/city-rabat.jpg";
 import cityTanger from "@/assets/city-tanger.jpg";
+import cityMarrakech from "@/assets/city-marrakech.jpg";
 import motoHero from "@/assets/moto-flow.jpg";
 import washHero from "@/assets/wash-hero.jpg";
 import cleanHero from "@/assets/clean-hero.jpg";
@@ -113,7 +114,7 @@ const Index = () => (
           {[
             { name: "Casablanca", img: cityCasablanca, comingSoon: false },
             { name: "Rabat", img: cityRabat, comingSoon: true },
-            { name: "Marrakech", img: cityTanger, comingSoon: true },
+            { name: "Marrakech", img: cityMarrakech, comingSoon: true },
           ].map((city, i) => (
             <motion.div key={city.name} initial={{ opacity: 0, scale: 0.95 }} whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }} transition={{ delay: i * 0.1 }}
