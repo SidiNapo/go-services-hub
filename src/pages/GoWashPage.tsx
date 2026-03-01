@@ -141,11 +141,28 @@ const GoWashPage = () => {
   const [date, setDate] = useState("");
   const [hour, setHour] = useState("");
 
+  const [showMotoChoice, setShowMotoChoice] = useState(false);
   const totalSteps = 4;
+  const isMoto = selectedVehicle === "moto_petite" || selectedVehicle === "moto_grande";
 
   const handleVehicleSelect = (v: VehicleType) => {
+    if (v === "moto_petite") {
+      // "moto_petite" is the generic moto card id – show sub-choice
+      setShowMotoChoice(true);
+      return;
+    }
+    setShowMotoChoice(false);
     setSelectedVehicle(v);
     setSelectedPack(null);
+    setBrand("");
+    setStep(2);
+  };
+
+  const handleMotoSelect = (v: VehicleType) => {
+    setShowMotoChoice(false);
+    setSelectedVehicle(v);
+    setSelectedPack(null);
+    setBrand("");
     setStep(2);
   };
 
@@ -159,8 +176,9 @@ const GoWashPage = () => {
   };
 
   const handleConfirmWhatsApp = () => {
-    const vehicle = vehicleTypes.find(v => v.id === selectedVehicle);
-    const msg = `Bonjour, je confirme ma commande GoWash :\n\n🚗 Véhicule: ${vehicle?.label}\n🏷️ Marque: ${brand} (${year})\n✨ Formule: ${selectedPack?.name}\n💰 Prix: ${selectedPack?.price} DH\n\n👤 ${name}\n📞 ${phone}\n🏙️ Ville: ${city}\n📍 ${address}\n📅 Date: ${date}\n🕐 Heure: ${hour}`;
+    const vehicleLabel = selectedVehicle === "moto_petite" ? "Petite Moto" : selectedVehicle === "moto_grande" ? "Grande Moto" : vehicleTypes.find(v => v.id === selectedVehicle)?.label;
+    const brandLine = isMoto ? "" : `\n🏷️ Marque: ${brand} (${year})`;
+    const msg = `Bonjour, je confirme ma commande GoWash :\n\n🚗 Véhicule: ${vehicleLabel}${brandLine}\n✨ Formule: ${selectedPack?.name}\n💰 Prix: ${selectedPack?.price} DH\n\n👤 ${name}\n📞 ${phone}\n🏙️ Ville: ${city}\n📍 ${address}\n📅 Date: ${date}\n🕐 Heure: ${hour}`;
     window.open(`https://wa.me/212660880110?text=${encodeURIComponent(msg)}`, "_blank");
   };
 
@@ -223,13 +241,54 @@ const GoWashPage = () => {
                     </motion.button>
                   ))}
                 </div>
+
+                {/* Moto sub-choice overlay */}
+                <AnimatePresence>
+                  {showMotoChoice && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: 20 }}
+                      className="mt-8"
+                    >
+                      <h3 className="font-display text-xl font-bold text-center mb-4">Quel type de moto ?</h3>
+                      <div className="grid grid-cols-2 gap-4 max-w-md mx-auto">
+                        <motion.button
+                          initial={{ opacity: 0, x: -10 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          onClick={() => handleMotoSelect("moto_petite")}
+                          className="glass-card p-5 rounded-2xl text-center hover:border-primary/50 hover:shadow-go transition-all group cursor-pointer"
+                        >
+                          <div className="h-24 flex items-center justify-center mb-3">
+                            <img src={vehicleMoto} alt="Petite Moto" className="h-full w-auto object-contain group-hover:scale-110 transition-transform duration-300 opacity-80" />
+                          </div>
+                          <span className="font-display font-semibold text-sm">Petite Moto</span>
+                        </motion.button>
+                        <motion.button
+                          initial={{ opacity: 0, x: 10 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          onClick={() => handleMotoSelect("moto_grande")}
+                          className="glass-card p-5 rounded-2xl text-center hover:border-primary/50 hover:shadow-go transition-all group cursor-pointer"
+                        >
+                          <div className="h-24 flex items-center justify-center mb-3">
+                            <img src={vehicleMoto} alt="Grande Moto" className="h-full w-auto object-contain group-hover:scale-110 transition-transform duration-300" />
+                          </div>
+                          <span className="font-display font-semibold text-sm">Grande Moto</span>
+                        </motion.button>
+                      </div>
+                      <button onClick={() => setShowMotoChoice(false)} className="block mx-auto mt-4 text-sm text-muted-foreground hover:text-foreground">
+                        ← Annuler
+                      </button>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </motion.div>
             )}
 
             {/* Step 2: Pack selection */}
             {step === 2 && selectedVehicle && (
               <motion.div key="step2" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
-                <button onClick={() => setStep(1)} className="text-sm text-muted-foreground hover:text-foreground mb-4 inline-flex items-center gap-1">
+                <button onClick={() => { setStep(1); setShowMotoChoice(false); }} className="text-sm text-muted-foreground hover:text-foreground mb-4 inline-flex items-center gap-1">
                   ← Changer de véhicule
                 </button>
                 <h2 className="font-display text-3xl font-bold text-center mb-8">Choisissez votre formule</h2>
@@ -274,46 +333,48 @@ const GoWashPage = () => {
                 </p>
 
                 <div className="max-w-2xl mx-auto">
-                  {/* Brand selection with logos */}
-                  <div className="mb-8">
-                    <label className="text-sm font-display font-semibold mb-4 flex items-center gap-2">
-                      <Car className="h-4 w-4 text-primary" /> Sélectionnez la marque
-                    </label>
-                    <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-3">
-                      {carBrands.map((b, i) => (
-                        <motion.button
-                          key={b.name}
-                          initial={{ opacity: 0, y: 10 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          transition={{ delay: i * 0.015 }}
-                          onClick={() => setBrand(b.name)}
-                          className={`relative p-4 rounded-2xl flex flex-col items-center justify-center gap-2.5 border-2 transition-all duration-200 cursor-pointer group ${
-                            brand === b.name
-                              ? "border-primary bg-primary/5 shadow-go scale-[1.02]"
-                              : "border-border/60 bg-card hover:border-primary/40 hover:bg-accent/30 hover:shadow-md"
-                          }`}
-                        >
-                          {brand === b.name && (
-                            <motion.div
-                              initial={{ scale: 0 }}
-                              animate={{ scale: 1 }}
-                              className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full gradient-go flex items-center justify-center"
-                            >
-                              <Check className="h-3 w-3 text-primary-foreground" />
-                            </motion.div>
-                          )}
-                          <div className="w-12 h-12 flex items-center justify-center">
-                            <img
-                              src={b.logo}
-                              alt={b.name}
-                              className="max-w-full max-h-full object-contain group-hover:scale-110 transition-transform duration-200"
-                            />
-                          </div>
-                          <span className="text-xs font-medium text-foreground/80 leading-tight text-center truncate w-full">{b.name}</span>
-                        </motion.button>
-                      ))}
+                  {/* Brand selection with logos - only for cars */}
+                  {!isMoto && (
+                    <div className="mb-8">
+                      <label className="text-sm font-display font-semibold mb-4 flex items-center gap-2">
+                        <Car className="h-4 w-4 text-primary" /> Sélectionnez la marque
+                      </label>
+                      <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-3">
+                        {carBrands.map((b, i) => (
+                          <motion.button
+                            key={b.name}
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: i * 0.015 }}
+                            onClick={() => setBrand(b.name)}
+                            className={`relative p-4 rounded-2xl flex flex-col items-center justify-center gap-2.5 border-2 transition-all duration-200 cursor-pointer group ${
+                              brand === b.name
+                                ? "border-primary bg-primary/5 shadow-go scale-[1.02]"
+                                : "border-border/60 bg-card hover:border-primary/40 hover:bg-accent/30 hover:shadow-md"
+                            }`}
+                          >
+                            {brand === b.name && (
+                              <motion.div
+                                initial={{ scale: 0 }}
+                                animate={{ scale: 1 }}
+                                className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full gradient-go flex items-center justify-center"
+                              >
+                                <Check className="h-3 w-3 text-primary-foreground" />
+                              </motion.div>
+                            )}
+                            <div className="w-12 h-12 flex items-center justify-center">
+                              <img
+                                src={b.logo}
+                                alt={b.name}
+                                className="max-w-full max-h-full object-contain group-hover:scale-110 transition-transform duration-200"
+                              />
+                            </div>
+                            <span className="text-xs font-medium text-foreground/80 leading-tight text-center truncate w-full">{b.name}</span>
+                          </motion.button>
+                        ))}
+                      </div>
                     </div>
-                  </div>
+                  )}
 
                   {/* Year + personal info in a sleek card */}
                   <motion.div
@@ -376,7 +437,7 @@ const GoWashPage = () => {
                       </div>
                     </div>
 
-                    <button onClick={handlePlaceOrder} disabled={!brand || !phone || !address || !name || !city || !date || !hour}
+                    <button onClick={handlePlaceOrder} disabled={(!isMoto && !brand) || !phone || !address || !name || !city || !date || !hour}
                       className="w-full gradient-go px-8 py-4 rounded-2xl font-display font-semibold text-primary-foreground shadow-go hover:opacity-90 transition-all disabled:opacity-50 disabled:cursor-not-allowed inline-flex items-center justify-center gap-2 mt-2">
                       Passer la commande <ArrowRight className="h-5 w-5" />
                     </button>
@@ -403,11 +464,13 @@ const GoWashPage = () => {
                   {/* Vehicle image */}
                   <div className="flex items-center gap-4 pb-4 border-b border-border">
                     <div className="h-16 w-20 flex-shrink-0">
-                      <img src={vehicleTypes.find(v => v.id === selectedVehicle)?.img} alt="" className="h-full w-auto object-contain" />
+                      <img src={vehicleMoto} alt="" className={`h-full w-auto object-contain ${!isMoto ? 'hidden' : ''}`} />
+                      {!isMoto && <img src={vehicleTypes.find(v => v.id === selectedVehicle)?.img} alt="" className="h-full w-auto object-contain" />}
+                      {isMoto && <img src={vehicleMoto} alt="" className="h-full w-auto object-contain" />}
                     </div>
                     <div>
-                      <p className="font-display font-bold">{vehicleTypes.find(v => v.id === selectedVehicle)?.label}</p>
-                      <p className="text-sm text-muted-foreground">{brand} · {year}</p>
+                      <p className="font-display font-bold">{selectedVehicle === "moto_petite" ? "Petite Moto" : selectedVehicle === "moto_grande" ? "Grande Moto" : vehicleTypes.find(v => v.id === selectedVehicle)?.label}</p>
+                      {!isMoto && <p className="text-sm text-muted-foreground">{brand} · {year}</p>}
                     </div>
                   </div>
 
@@ -417,10 +480,12 @@ const GoWashPage = () => {
                       <span className="text-sm text-muted-foreground flex items-center gap-2"><Check className="h-3.5 w-3.5" /> Formule</span>
                       <span className="font-display font-semibold">{selectedPack.name}</span>
                     </div>
+                    {!isMoto && (
                     <div className="flex items-center justify-between">
                       <span className="text-sm text-muted-foreground flex items-center gap-2"><Car className="h-3.5 w-3.5" /> Marque</span>
                       <span className="font-medium">{brand}</span>
                     </div>
+                    )}
                     <div className="flex items-center justify-between">
                       <span className="text-sm text-muted-foreground flex items-center gap-2"><User className="h-3.5 w-3.5" /> Client</span>
                       <span className="font-medium">{name}</span>
