@@ -1,6 +1,6 @@
 import React, { useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Droplets, ArrowRight, Check, ChevronRight, Leaf, Clock, Shield, Sparkles, MapPin, Phone, Car, Calendar, CheckCircle2, MessageCircle, User, Zap, Crown, Diamond, Star, Search, HelpCircle } from "lucide-react";
+import { Droplets, ArrowRight, Check, ChevronRight, Leaf, Clock, Shield, Sparkles, MapPin, Phone, Car, Calendar, CheckCircle2, MessageCircle, User, Zap, Crown, Diamond, Star, Search, HelpCircle, Navigation, Loader2 } from "lucide-react";
 import Layout from "@/components/Layout";
 import AnimatedSection from "@/components/AnimatedSection";
 import washHero from "@/assets/wash-hero.jpg";
@@ -144,7 +144,8 @@ const GoWashPage = () => {
   const [city, setCity] = useState("Casablanca");
   const [date, setDate] = useState("");
   const [hour, setHour] = useState("");
-
+  const [locationCoords, setLocationCoords] = useState<{ lat: number; lng: number } | null>(null);
+  const [locating, setLocating] = useState(false);
   const [showMotoChoice, setShowMotoChoice] = useState(false);
   const bookingRef = useRef<HTMLDivElement>(null);
   const infoFormRef = useRef<HTMLDivElement>(null);
@@ -195,11 +196,34 @@ const GoWashPage = () => {
     scrollToBooking();
   };
 
+  const handleLocateMe = () => {
+    if (!navigator.geolocation) return;
+    setLocating(true);
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        const { latitude, longitude } = pos.coords;
+        setLocationCoords({ lat: latitude, lng: longitude });
+        fetch(`https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json`)
+          .then(r => r.json())
+          .then(data => {
+            if (data.display_name) setAddress(data.display_name);
+          })
+          .catch(() => {
+            setAddress(`${latitude.toFixed(6)}, ${longitude.toFixed(6)}`);
+          })
+          .finally(() => setLocating(false));
+      },
+      () => setLocating(false),
+      { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
+    );
+  };
+
   const handleConfirmWhatsApp = () => {
     const vehicleLabel = selectedVehicle === "moto_petite" ? "Petite Moto" : selectedVehicle === "moto_grande" ? "Grande Moto" : vehicleTypes.find(v => v.id === selectedVehicle)?.label;
     const brandName = brand === "__other__" ? `Autre (${customBrand})` : brand;
     const brandLine = isMoto ? "" : `\n🏷️ Marque: ${brandName} (${year})`;
-    const msg = `Bonjour, je confirme ma commande GoWash :\n\n🚗 Véhicule: ${vehicleLabel}${brandLine}\n✨ Formule: ${selectedPack?.name}\n💰 Prix: ${selectedPack?.price} DH\n\n👤 ${name}\n📞 ${phone}\n🏙️ Ville: ${city}\n📍 ${address}\n📅 Date: ${date}\n🕐 Heure: ${hour}`;
+    const mapsLink = locationCoords ? `\n📌 Google Maps: https://www.google.com/maps?q=${locationCoords.lat},${locationCoords.lng}` : "";
+    const msg = `Bonjour, je confirme ma commande GoWash :\n\n🚗 Véhicule: ${vehicleLabel}${brandLine}\n✨ Formule: ${selectedPack?.name}\n💰 Prix: ${selectedPack?.price} DH\n\n👤 ${name}\n📞 ${phone}\n🏙️ Ville: ${city}\n📍 ${address}${mapsLink}\n📅 Date: ${date}\n🕐 Heure: ${hour}`;
     window.open(`https://wa.me/212660880110?text=${encodeURIComponent(msg)}`, "_blank");
   };
 
@@ -527,8 +551,24 @@ const GoWashPage = () => {
                         <label className="text-sm font-medium mb-1.5 flex items-center gap-2">
                           <MapPin className="h-3.5 w-3.5 text-primary" /> Adresse complète
                         </label>
-                        <input type="text" value={address} onChange={(e) => setAddress(e.target.value)} placeholder="Votre adresse complète"
-                          className="w-full p-3.5 rounded-xl border border-border bg-background text-foreground focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all" />
+                        <div className="flex gap-2">
+                          <input type="text" value={address} onChange={(e) => setAddress(e.target.value)} placeholder="Votre adresse complète"
+                            className="flex-1 p-3.5 rounded-xl border border-border bg-background text-foreground focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all" />
+                          <button
+                            type="button"
+                            onClick={handleLocateMe}
+                            disabled={locating}
+                            className="px-4 py-3.5 rounded-xl gradient-go text-primary-foreground font-semibold text-sm hover:opacity-90 transition-all disabled:opacity-50 inline-flex items-center gap-2 whitespace-nowrap shadow-go"
+                          >
+                            {locating ? <Loader2 className="h-4 w-4 animate-spin" /> : <Navigation className="h-4 w-4" />}
+                            {locating ? "..." : "Me localiser"}
+                          </button>
+                        </div>
+                        {locationCoords && (
+                          <p className="text-xs text-primary mt-1.5 flex items-center gap-1">
+                            <CheckCircle2 className="h-3 w-3" /> Position GPS capturée · lien Maps inclus
+                          </p>
+                        )}
                       </div>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
