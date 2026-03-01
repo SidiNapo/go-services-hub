@@ -195,13 +195,23 @@ const GoWashPage = () => {
 
   return (
     <Layout>
-      {/* Header */}
-      <section className="pt-28 pb-12">
-        <div className="container mx-auto px-4">
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center">
-            <span className="text-primary font-display font-semibold text-sm uppercase tracking-widest">GoWash</span>
-            <h1 className="font-display text-4xl md:text-5xl font-bold mt-2 mb-3">Lavage auto écologique</h1>
-            <p className="text-muted-foreground text-lg max-w-xl mx-auto">Service de lavage sans eau à domicile. Économisez 150 litres d'eau par lavage.</p>
+      {/* Hero */}
+      <section className="relative min-h-[60vh] flex items-center overflow-hidden">
+        <div className="absolute inset-0">
+          <img src={washHero} alt="GoWash" className="w-full h-full object-cover" />
+          <div className="hero-overlay absolute inset-0" />
+        </div>
+        <div className="container mx-auto px-4 relative z-10 pt-24">
+          <motion.div initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }} className="max-w-2xl">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/20 backdrop-blur-md text-primary-foreground text-sm font-medium mb-6">
+              <Droplets className="h-4 w-4" /> GoWash
+            </div>
+            <h1 className="font-display text-5xl md:text-7xl font-bold text-primary-foreground leading-[0.9] mb-6">
+              Lavage auto <span className="text-gradient">écologique</span>
+            </h1>
+            <p className="text-lg text-primary-foreground/80 max-w-xl">
+              Service de lavage sans eau à domicile. Économisez 150 litres d'eau par lavage. Disponible 7j/7 de 9h à 22h.
+            </p>
           </motion.div>
         </div>
       </section>
