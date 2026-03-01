@@ -4,6 +4,7 @@ import Layout from "@/components/Layout";
 import { SEO } from "@/components/SEO";
 import AnimatedSection from "@/components/AnimatedSection";
 import ServiceCard from "@/components/ServiceCard";
+import { BackgroundPaths } from "@/components/ui/background-paths";
 import cityCasablanca from "@/assets/city-casablanca.jpg";
 import cityRabat from "@/assets/city-rabat.jpg";
 import cityMarrakech from "@/assets/city-marrakech.jpg";
@@ -47,27 +48,63 @@ const Index = () => (
     />
     
     {/* Hero Section */}
-    <section className="pt-32 pb-20 overflow-hidden relative">
-      <div className="absolute inset-0 bg-go-surface -z-10" />
-      <div className="container mx-auto px-4 relative">
-        <div className="max-w-4xl mx-auto text-center">
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }} className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-accent/50 text-accent-foreground text-sm font-medium mb-8">
-            <span className="relative flex h-2 w-2"><span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span><span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span></span>
-            La Super App 100% Marocaine
-          </motion.div>
-          <motion.h1 initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.1 }} className="font-display text-5xl md:text-7xl font-bold tracking-tight mb-6">
-            Simplifiez votre vie <br /> <span className="text-gradient">avec GO212</span>
-          </motion.h1>
-          <motion.p initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.2 }} className="text-lg md:text-xl text-muted-foreground mb-10 max-w-2xl mx-auto leading-relaxed">
-            De GoBike, GoEat et GoMart à nos nouveaux services à domicile GoRide, GoWash, GoClean et GoFix, GO212 vous accompagne chaque jour. L'innovation locale au service de votre confort.
-          </motion.p>
-          <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.5, delay: 0.4 }} className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <a href="#services" className="gradient-go px-8 py-4 rounded-xl font-display font-semibold text-primary-foreground shadow-go hover:shadow-lg transition-shadow inline-flex items-center gap-2 w-full sm:w-auto justify-center">
-              Découvrir nos services <ArrowRight className="h-5 w-5" />
-            </a>
-          </motion.div>
+    <section className="relative pt-32 pb-24 overflow-hidden bg-background">
+      <BackgroundPaths>
+        <div className="container mx-auto px-4 relative">
+          <div className="max-w-4xl mx-auto text-center">
+            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }} className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-accent/50 text-accent-foreground text-sm font-medium mb-8">
+              <span className="relative flex h-2 w-2"><span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span><span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span></span>
+              La Super App 100% Marocaine
+            </motion.div>
+
+            <motion.h1 initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.8, delay: 0.1 }} className="font-display text-5xl md:text-7xl lg:text-8xl font-bold tracking-tighter mb-6">
+              {["Simplifiez", "votre", "vie"].map((word, wi) => (
+                <span key={wi} className="inline-block mr-[0.3em]">
+                  {word.split("").map((letter, li) => (
+                    <motion.span
+                      key={li}
+                      initial={{ y: 40, opacity: 0 }}
+                      animate={{ y: 0, opacity: 1 }}
+                      transition={{ delay: 0.15 + wi * 0.1 + li * 0.03, type: "spring", stiffness: 150, damping: 20 }}
+                      className="inline-block text-foreground"
+                    >
+                      {letter}
+                    </motion.span>
+                  ))}
+                </span>
+              ))}
+              <br />
+              <span className="inline-block">
+                {["avec", "GO212"].map((word, wi) => (
+                  <span key={wi} className="inline-block mr-[0.3em]">
+                    {word.split("").map((letter, li) => (
+                      <motion.span
+                        key={li}
+                        initial={{ y: 40, opacity: 0 }}
+                        animate={{ y: 0, opacity: 1 }}
+                        transition={{ delay: 0.5 + wi * 0.12 + li * 0.03, type: "spring", stiffness: 150, damping: 20 }}
+                        className={`inline-block ${wi === 1 ? "text-gradient" : "text-foreground"}`}
+                      >
+                        {letter}
+                      </motion.span>
+                    ))}
+                  </span>
+                ))}
+              </span>
+            </motion.h1>
+
+            <motion.p initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.6 }} className="text-lg md:text-xl text-muted-foreground mb-10 max-w-2xl mx-auto leading-relaxed">
+              De GoBike, GoEat et GoMart à nos nouveaux services à domicile GoRide, GoWash, GoClean et GoFix, GO212 vous accompagne chaque jour.
+            </motion.p>
+
+            <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.5, delay: 0.8 }} className="flex flex-col sm:flex-row items-center justify-center gap-4">
+              <a href="#services" className="group gradient-go px-8 py-4 rounded-xl font-display font-semibold text-primary-foreground shadow-go hover:shadow-lg transition-all inline-flex items-center gap-2 w-full sm:w-auto justify-center">
+                Découvrir nos services <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
+              </a>
+            </motion.div>
+          </div>
         </div>
-      </div>
+      </BackgroundPaths>
     </section>
 
     {/* Services */}
