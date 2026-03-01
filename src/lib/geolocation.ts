@@ -1,25 +1,26 @@
 import { toast } from "sonner";
 
-interface GeoResult {
+export interface GeoResult {
   lat: number;
   lng: number;
   address: string;
 }
 
-const isIOS = (): boolean => {
-  return /iPad|iPhone|iPod/.test(navigator.userAgent) || 
-    (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+// ── Environment detection ─────────────────────────────────────
+
+const isIOS = (): boolean =>
+  /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+  (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+
+const isInAppBrowser = (): boolean => {
+  const ua = navigator.userAgent;
+  return /FBAN|FBAV|Instagram|Line\/|Twitter|MicroMessenger|LinkedIn/i.test(ua);
 };
 
-function getPosition(highAccuracy: boolean, timeout: number): Promise<GeolocationPosition> {
-  return new Promise((resolve, reject) => {
-    navigator.geolocation.getCurrentPosition(resolve, reject, {
-      enableHighAccuracy: highAccuracy,
-      timeout,
-      maximumAge: 0,
-    });
-  });
-}
+const isSecureContext = (): boolean =>
+  window.isSecureContext ?? location.protocol === "https:";
+
+// ── Reverse geocoding (Google Maps) ───────────────────────────
 
 const GOOGLE_MAPS_API_KEY = "AIzaSyAKvruUC1LBR5c_AVRXTsasLDRo5PxviFY";
 
@@ -38,80 +39,77 @@ async function reverseGeocode(lat: number, lng: number): Promise<string> {
   }
 }
 
-async function checkPermissionState(): Promise<"granted" | "denied" | "prompt" | "unknown"> {
-  try {
-    if (navigator.permissions && navigator.permissions.query) {
-      const result = await navigator.permissions.query({ name: "geolocation" as PermissionName });
-      return result.state as "granted" | "denied" | "prompt";
-    }
-  } catch {
-    // Safari doesn't support permissions.query for geolocation
-  }
-  return "unknown";
+// ── Core geolocation request (no async gating before call) ────
+
+function requestPosition(highAccuracy: boolean, timeout: number): Promise<GeolocationPosition> {
+  return new Promise((resolve, reject) => {
+    navigator.geolocation.getCurrentPosition(resolve, reject, {
+      enableHighAccuracy: highAccuracy,
+      timeout,
+      maximumAge: 0,
+    });
+  });
 }
 
-function showIOSDeniedInstructions() {
-  toast.error(
-    "📍 Localisation bloquée sur votre iPhone. Pour l'activer :\n\n1. Ouvrez Réglages → Confidentialité → Service de localisation → Activé\n2. Descendez jusqu'à Safari → sélectionnez « Lors de l'utilisation »\n3. Revenez ici et réessayez",
-    { duration: 12000 }
-  );
-}
-
-function showGenericDeniedInstructions() {
-  toast.error(
-    "📍 Localisation refusée. Veuillez autoriser l'accès à votre position dans les paramètres de votre navigateur, puis réessayez.",
-    { duration: 8000 }
-  );
-}
+// ── Public API ────────────────────────────────────────────────
 
 export async function locateUser(): Promise<GeoResult | null> {
+  // 1. Feature check
   if (!navigator.geolocation) {
     toast.error("Géolocalisation non supportée par votre navigateur.");
     return null;
   }
 
-  // Pre-check: if already denied, show instructions immediately
-  const permState = await checkPermissionState();
-  if (permState === "denied") {
+  // 2. Non-secure context (HTTP)
+  if (!isSecureContext()) {
+    toast.error("📍 La géolocalisation nécessite une connexion sécurisée (HTTPS).");
+    return null;
+  }
+
+  // 3. In-app browser (Facebook, Instagram, etc.) — prompt to open in Safari/Chrome
+  if (isInAppBrowser()) {
     if (isIOS()) {
-      showIOSDeniedInstructions();
+      toast.error(
+        "📍 Ce navigateur intégré bloque la localisation. Appuyez sur ⋯ puis « Ouvrir dans Safari ».",
+        { duration: 8000 }
+      );
     } else {
-      showGenericDeniedInstructions();
+      toast.error(
+        "📍 Ce navigateur intégré bloque la localisation. Ouvrez ce lien dans Chrome ou votre navigateur par défaut.",
+        { duration: 8000 }
+      );
     }
     return null;
   }
 
-  // On iOS first prompt: show a helpful toast so user knows to tap "Allow"
-  if (isIOS() && permState !== "granted") {
-    toast.info("📍 Autorisez l'accès à votre position dans la fenêtre qui va apparaître.", {
-      duration: 5000,
-    });
-    // Small delay to let the toast render before the browser prompt covers it
-    await new Promise((r) => setTimeout(r, 600));
-  }
-
-  // Try high accuracy first (GPS)
+  // 4. Attempt GPS — IMMEDIATELY from user gesture, no pre-checks or delays
   try {
-    const pos = await getPosition(true, 20000);
+    const pos = await requestPosition(true, 20_000);
     const { latitude, longitude } = pos.coords;
     const address = await reverseGeocode(latitude, longitude);
     toast.success("📍 Position trouvée !", { duration: 2000 });
     return { lat: latitude, lng: longitude, address };
   } catch (err: any) {
+    // PERMISSION_DENIED
     if (err?.code === 1) {
-      // PERMISSION_DENIED
       if (isIOS()) {
-        showIOSDeniedInstructions();
+        toast.error(
+          "📍 Localisation refusée. Pour l'activer :\n1. Réglages → Confidentialité → Service de localisation\n2. Safari → « Lors de l'utilisation »\n3. Revenez ici et réessayez",
+          { duration: 10000 }
+        );
       } else {
-        showGenericDeniedInstructions();
+        toast.error(
+          "📍 Localisation refusée. Autorisez l'accès dans les paramètres de votre navigateur, puis réessayez.",
+          { duration: 8000 }
+        );
       }
       return null;
     }
 
-    // TIMEOUT or POSITION_UNAVAILABLE → retry with low accuracy (Wi-Fi/cell)
-    toast.info("Recherche GPS en cours… tentative réseau.", { duration: 3000 });
+    // TIMEOUT or POSITION_UNAVAILABLE — fallback to network/cell
     try {
-      const pos = await getPosition(false, 15000);
+      toast.info("📍 GPS lent… tentative réseau.", { duration: 3000 });
+      const pos = await requestPosition(false, 15_000);
       const { latitude, longitude } = pos.coords;
       const address = await reverseGeocode(latitude, longitude);
       toast.success("📍 Position trouvée !", { duration: 2000 });
@@ -119,14 +117,20 @@ export async function locateUser(): Promise<GeoResult | null> {
     } catch (retryErr: any) {
       if (retryErr?.code === 1) {
         if (isIOS()) {
-          showIOSDeniedInstructions();
+          toast.error(
+            "📍 Localisation refusée. Réglages → Confidentialité → Service de localisation → Safari → « Lors de l'utilisation ».",
+            { duration: 10000 }
+          );
         } else {
-          showGenericDeniedInstructions();
+          toast.error(
+            "📍 Localisation refusée. Autorisez dans les paramètres du navigateur.",
+            { duration: 8000 }
+          );
         }
       } else if (retryErr?.code === 2) {
-        toast.error("Position indisponible. Veuillez saisir votre adresse manuellement.");
+        toast.error("📍 Position indisponible. Saisissez votre adresse manuellement.");
       } else {
-        toast.error("Délai dépassé. Vérifiez que le GPS est activé, puis réessayez.");
+        toast.error("📍 Délai dépassé. Vérifiez que le GPS est activé, puis réessayez.");
       }
       return null;
     }
