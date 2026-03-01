@@ -708,34 +708,37 @@ const GoWashPage = () => {
         </div>
       </section>
 
-      {/* Features */}
-      <section className="py-16 md:py-24 relative overflow-hidden">
-        <div className="absolute inset-0 gradient-go" />
-        <motion.div className="absolute top-10 left-[10%] w-40 h-40 rounded-full bg-white/10 blur-2xl"
-          animate={{ y: [0, -20, 0] }} transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }} />
-        <motion.div className="absolute bottom-5 right-[15%] w-56 h-56 rounded-full bg-white/5 blur-2xl"
-          animate={{ y: [0, 15, 0] }} transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }} />
+      {/* Pourquoi GoWash */}
+      <section className="py-14 md:py-20">
+        <div className="container mx-auto px-4 max-w-4xl">
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-10"
+          >
+            <h2 className="font-display text-2xl md:text-3xl font-bold">
+              Pourquoi <span className="text-primary">GoWash</span> ?
+            </h2>
+          </motion.div>
 
-        <div className="container mx-auto px-4 relative z-10">
-          <div className="text-center mb-10 md:mb-16">
-            <h2 className="font-display text-3xl md:text-5xl font-bold text-primary-foreground">Pourquoi GoWash ?</h2>
-          </div>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-6">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-px bg-border rounded-2xl overflow-hidden border border-border">
             {[
-              { emoji: "🌱", title: "Écologique", desc: "150 litres d'eau économisés par lavage grâce à notre technologie sans eau." },
-              { emoji: "⚡", title: "Rapide", desc: "Service en 30-60 minutes directement chez vous." },
-              { emoji: "🛡️", title: "Sûr", desc: "Produits certifiés, adaptés à tous les véhicules y compris électriques." },
-              { emoji: "✨", title: "Impeccable", desc: "Résultats professionnels garantis à chaque lavage." },
-            ].map((f, i) => (
-              <motion.div key={f.title} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }} transition={{ delay: i * 0.1 }}
-                whileHover={{ y: -6 }}
-                className="group rounded-2xl md:rounded-3xl bg-white/15 backdrop-blur-md border border-white/20 p-4 md:p-8 text-center transition-all duration-300 hover:bg-white/25 hover:border-white/35 cursor-default relative overflow-hidden"
+              { num: "150L", label: "d'eau économisés par lavage" },
+              { num: "30min", label: "de service rapide à domicile" },
+              { num: "100%", label: "produits certifiés et sûrs" },
+              { num: "5★", label: "résultats garantis" },
+            ].map((item, i) => (
+              <motion.div
+                key={item.num}
+                initial={{ opacity: 0 }}
+                whileInView={{ opacity: 1 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.08 }}
+                className="bg-card p-5 md:p-8 text-center"
               >
-                <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 bg-gradient-to-r from-transparent via-white/15 to-transparent" />
-                <motion.span className="text-2xl md:text-3xl block mb-2 md:mb-4" whileHover={{ scale: 1.2, rotate: [0, -10, 10, 0] }}>{f.emoji}</motion.span>
-                <h3 className="font-display font-bold text-sm md:text-lg mb-1 md:mb-2 text-primary-foreground">{f.title}</h3>
-                <p className="text-[10px] md:text-sm text-primary-foreground/70">{f.desc}</p>
+                <span className="font-display text-2xl md:text-3xl font-extrabold text-primary block mb-1">{item.num}</span>
+                <span className="text-xs md:text-sm text-muted-foreground leading-tight">{item.label}</span>
               </motion.div>
             ))}
           </div>
