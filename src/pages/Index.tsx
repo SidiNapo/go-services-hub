@@ -86,19 +86,19 @@ const Index = () => (
             <motion.div key={s.label} initial={{ opacity: 0, y: 50 }} whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }} transition={{ delay: i * 0.12, type: "spring", stiffness: 80, damping: 15 }}
               whileHover={{ y: -6 }} className="group cursor-default">
-              <div className="relative rounded-2xl md:rounded-3xl bg-white/10 backdrop-blur-xl border border-white/15 p-5 md:p-8 text-center overflow-hidden transition-all duration-500 group-hover:bg-white/20 group-hover:border-white/30 group-hover:shadow-[0_16px_60px_-12px_rgba(255,255,255,0.15)]">
+              <div className="relative rounded-2xl md:rounded-3xl bg-white/10 backdrop-blur-xl border border-white/15 p-4 py-5 md:p-8 text-center transition-all duration-500 group-hover:bg-white/20 group-hover:border-white/30 group-hover:shadow-[0_16px_60px_-12px_rgba(255,255,255,0.15)]">
                 <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 bg-gradient-to-r from-transparent via-white/10 to-transparent" />
                 <motion.div
-                  className="w-12 h-12 md:w-14 md:h-14 mx-auto mb-3 md:mb-4 rounded-2xl bg-white/15 backdrop-blur-sm border border-white/20 flex items-center justify-center"
+                  className="w-10 h-10 md:w-14 md:h-14 mx-auto mb-2 md:mb-4 rounded-xl md:rounded-2xl bg-white/15 backdrop-blur-sm border border-white/20 flex items-center justify-center"
                   whileHover={{ scale: 1.1, rotate: [0, -5, 5, 0] }}
                   transition={{ duration: 0.4 }}
                 >
-                  <s.icon className="h-5 w-5 md:h-6 md:w-6 text-primary-foreground" />
+                  <s.icon className="h-4 w-4 md:h-6 md:w-6 text-primary-foreground" />
                 </motion.div>
-                <div className="font-display text-2xl md:text-5xl font-bold text-primary-foreground mb-1 tracking-tight">
+                <div className="font-display text-xl sm:text-2xl md:text-5xl font-bold text-primary-foreground mb-1 tracking-tight whitespace-nowrap">
                   <CountUp target={s.value} suffix={s.suffix} decimals={0} />
                 </div>
-                <div className="text-[10px] md:text-sm text-primary-foreground/60 font-medium tracking-wide uppercase">{s.label}</div>
+                <div className="text-[9px] sm:text-[10px] md:text-sm text-primary-foreground/60 font-medium tracking-wide uppercase leading-tight">{s.label}</div>
               </div>
             </motion.div>
           ))}
