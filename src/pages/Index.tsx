@@ -1,6 +1,6 @@
 import { motion, useMotionValue, useTransform, animate } from "framer-motion";
 import { useEffect, useRef } from "react";
-import { ArrowRight, MapPin, Droplets, TrendingUp, Users } from "lucide-react";
+import { ArrowRight, MapPin, Droplets, TrendingUp, Users, Clock } from "lucide-react";
 import Layout from "@/components/Layout";
 import AnimatedSection from "@/components/AnimatedSection";
 import ServiceCard from "@/components/ServiceCard";
@@ -21,10 +21,10 @@ const services = [
 ];
 
 const stats = [
-  { value: 15000, suffix: "+", label: "Clients satisfaits", emoji: "🙌" },
-  { value: 500, suffix: "K+", label: "Litres d'eau économisés", emoji: "💧" },
-  { value: 3, suffix: "", label: "Villes desservies", emoji: "📍" },
-  { value: 4.9, suffix: "/5", label: "Note moyenne", emoji: "⭐" },
+  { value: 15000, suffix: "+", label: "Clients satisfaits", icon: Users },
+  { value: 500, suffix: "K+", label: "Litres d'eau économisés", icon: Droplets },
+  { value: 98, suffix: "%", label: "Taux de satisfaction", icon: TrendingUp },
+  { value: 24, suffix: "/7", label: "Support disponible", icon: Clock },
 ];
 
 function CountUp({ target, suffix, decimals = 0 }: { target: number; suffix: string; decimals?: number }) {
@@ -86,15 +86,19 @@ const Index = () => (
             <motion.div key={s.label} initial={{ opacity: 0, y: 50 }} whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }} transition={{ delay: i * 0.12, type: "spring", stiffness: 80, damping: 15 }}
               whileHover={{ y: -6 }} className="group cursor-default">
-              <div className="relative rounded-2xl md:rounded-3xl bg-white/15 backdrop-blur-md border border-white/20 p-4 md:p-8 text-center overflow-hidden transition-all duration-300 group-hover:bg-white/25 group-hover:border-white/35 group-hover:shadow-[0_8px_40px_-8px_rgba(255,255,255,0.2)]">
-                <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 bg-gradient-to-r from-transparent via-white/15 to-transparent" />
-                <motion.span className="text-2xl md:text-4xl block mb-2 md:mb-3" whileHover={{ scale: 1.3, rotate: [0, -15, 15, 0] }} transition={{ duration: 0.4 }}>
-                  {s.emoji}
-                </motion.span>
+              <div className="relative rounded-2xl md:rounded-3xl bg-white/10 backdrop-blur-xl border border-white/15 p-5 md:p-8 text-center overflow-hidden transition-all duration-500 group-hover:bg-white/20 group-hover:border-white/30 group-hover:shadow-[0_16px_60px_-12px_rgba(255,255,255,0.15)]">
+                <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 bg-gradient-to-r from-transparent via-white/10 to-transparent" />
+                <motion.div
+                  className="w-12 h-12 md:w-14 md:h-14 mx-auto mb-3 md:mb-4 rounded-2xl bg-white/15 backdrop-blur-sm border border-white/20 flex items-center justify-center"
+                  whileHover={{ scale: 1.1, rotate: [0, -5, 5, 0] }}
+                  transition={{ duration: 0.4 }}
+                >
+                  <s.icon className="h-5 w-5 md:h-6 md:w-6 text-primary-foreground" />
+                </motion.div>
                 <div className="font-display text-2xl md:text-5xl font-bold text-primary-foreground mb-1 tracking-tight">
-                  <CountUp target={s.value} suffix={s.suffix} decimals={s.label === "Note moyenne" ? 1 : 0} />
+                  <CountUp target={s.value} suffix={s.suffix} decimals={0} />
                 </div>
-                <div className="text-[10px] md:text-sm text-primary-foreground/70 font-medium tracking-wide">{s.label}</div>
+                <div className="text-[10px] md:text-sm text-primary-foreground/60 font-medium tracking-wide uppercase">{s.label}</div>
               </div>
             </motion.div>
           ))}
