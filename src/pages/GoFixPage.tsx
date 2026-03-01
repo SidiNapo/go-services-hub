@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Wrench, ArrowRight, Check, Zap, Droplets, Paintbrush, Settings, Phone, Shield, Clock, MapPin, User, Calendar, ChevronLeft, Navigation, Camera, ImagePlus, X, Loader2 } from "lucide-react";
 import { locateUser } from "@/lib/geolocation";
 import Layout from "@/components/Layout";
+import { SEO } from "@/components/SEO";
 import AnimatedSection from "@/components/AnimatedSection";
 import fixHero from "@/assets/fix-hero.jpg";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
@@ -183,59 +184,70 @@ const GoFixPage = () => {
     try {
       let photoUrl: string | null = null;
 
-      // Upload photo to cloud if present
-      if (photo) {
-        const formData = new FormData();
-        formData.append("repair_type", problemType || "");
-        formData.append("description", description);
-        formData.append("city", city);
-        formData.append("address", address);
-        formData.append("preferred_date", date ? format(date, "dd/MM/yyyy") : "");
-        formData.append("preferred_time", hour);
-        formData.append("client_name", name);
-        formData.append("client_phone", phone);
-        formData.append("photo", photo);
+      try {
+        // Upload photo to cloud if present
+        if (photo) {
+          const formData = new FormData();
+          formData.append("repair_type", problemType || "");
+          formData.append("description", description);
+          formData.append("city", city);
+          formData.append("address", address);
+          formData.append("preferred_date", date ? format(date, "dd/MM/yyyy") : "");
+          formData.append("preferred_time", hour);
+          formData.append("client_name", name);
+          formData.append("client_phone", phone);
+          formData.append("photo", photo);
 
-        const { data, error } = await supabase.functions.invoke("send-gofix-request", {
-          body: formData,
-        });
+          const { data, error } = await supabase.functions.invoke("send-gofix-request", {
+            body: formData,
+          });
 
-        if (error) throw error;
-        photoUrl = data?.photo_url;
-      } else {
-        // No photo — still save to DB via edge function
-        const formData = new FormData();
-        formData.append("repair_type", problemType || "");
-        formData.append("description", description);
-        formData.append("city", city);
-        formData.append("address", address);
-        formData.append("preferred_date", date ? format(date, "dd/MM/yyyy") : "");
-        formData.append("preferred_time", hour);
-        formData.append("client_name", name);
-        formData.append("client_phone", phone);
+          if (error) throw error;
+          photoUrl = data?.photo_url;
+        } else {
+          // No photo — still save to DB via edge function
+          const formData = new FormData();
+          formData.append("repair_type", problemType || "");
+          formData.append("description", description);
+          formData.append("city", city);
+          formData.append("address", address);
+          formData.append("preferred_date", date ? format(date, "dd/MM/yyyy") : "");
+          formData.append("preferred_time", hour);
+          formData.append("client_name", name);
+          formData.append("client_phone", phone);
 
-        await supabase.functions.invoke("send-gofix-request", { body: formData });
+          await supabase.functions.invoke("send-gofix-request", { body: formData });
+        }
+      } catch (uploadError) {
+        console.error("Supabase upload failed, proceeding to WhatsApp anyway:", uploadError);
       }
 
       // Build WhatsApp message with photo URL included
       let msg = buildMessage();
       if (photoUrl) {
         msg += `\n\n📸 Photo du problème:\n${photoUrl}`;
+      } else if (photo) {
+        msg += `\n\n📸 (Une photo a été sélectionnée, veuillez l'envoyer manuellement ici)`;
       }
 
       const waUrl = `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(msg)}`;
-      window.open(waUrl, "_blank");
+      const openedWindow = window.open(waUrl, "_blank");
+      
+      // Fallback for pop-up blockers: if window.open returns null, redirect the current tab
+      if (!openedWindow) {
+        window.location.href = waUrl;
+      }
 
       toast({
-        title: "Demande envoyée ✓",
-        description: "Votre demande a été enregistrée. WhatsApp s'ouvre avec les détails.",
+        title: "Redirection en cours ✓",
+        description: "WhatsApp va s'ouvrir avec les détails de votre demande.",
       });
 
       setOpen(false);
     } catch (err: any) {
       console.error("GoFix submit error:", err);
       toast({
-        title: "Erreur d'envoi",
+        title: "Erreur inattendue",
         description: "Impossible d'envoyer la demande. Réessayez.",
         variant: "destructive",
       });
@@ -248,6 +260,20 @@ const GoFixPage = () => {
 
   return (
     <Layout>
+      <SEO 
+        title="GoFix - Réparation, Plomberie & Électricité à Domicile Casablanca"
+        description="Besoin d'une réparation rapide à Casablanca ? GoFix intervient chez vous : plomberie, électricité, maintenance. Techniciens qualifiés et de confiance."
+        canonical="https://go212.ma/gofix"
+        schema={{
+          "@context": "https://schema.org",
+          "@type": "Service",
+          "name": "Installation et réparation à domicile GoFix",
+          "provider": {
+            "@type": "Organization",
+            "name": "GO212"
+          }
+        }}
+      />
       {/* Hero */}
       <section className="relative min-h-[85vh] md:min-h-[90vh] flex items-center overflow-hidden">
         <motion.div className="absolute inset-0" initial={{ scale: 1.1 }} animate={{ scale: 1 }} transition={{ duration: 1.5, ease: "easeOut" }}>

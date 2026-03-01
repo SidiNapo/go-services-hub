@@ -1,4 +1,14 @@
 {
+  "redirects": [
+    { "source": "/about-us", "destination": "/about", "permanent": true },
+    { "source": "/politique-de-confidentialite", "destination": "/privacy", "permanent": true },
+    { "source": "/news", "destination": "/blog", "permanent": true },
+    { "source": "/go212", "destination": "/blog/go212", "permanent": true },
+    { "source": "/govelo", "destination": "/goride", "permanent": true },
+    { "source": "/gomart", "destination": "/", "permanent": true },
+    { "source": "/gofood", "destination": "/", "permanent": true },
+    { "source": "/gopay", "destination": "/", "permanent": true }
+  ],
   "rewrites": [
     { "source": "/(.*)", "destination": "/index.html" }
   ]

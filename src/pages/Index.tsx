@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { ArrowRight, MapPin, Droplets, TrendingUp, Users, Clock } from "lucide-react";
 import Layout from "@/components/Layout";
+import { SEO } from "@/components/SEO";
 import AnimatedSection from "@/components/AnimatedSection";
 import ServiceCard from "@/components/ServiceCard";
 import cityCasablanca from "@/assets/city-casablanca.jpg";
@@ -27,6 +28,48 @@ const stats = [
 
 const Index = () => (
   <Layout>
+    <SEO 
+      title="GO212 - La Super App 100% Marocaine | Transport, Livraison & Services"
+      description="Découvrez GO212, la super-app 100% marocaine. Simplifiez votre quotidien avec nos services de transport, livraison, food, shopping et services à domicile (GoRide, GoWash...)."
+      canonical="https://go212.ma/"
+      schema={{
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "GO212",
+        "url": "https://go212.ma",
+        "description": "La Super App 100% marocaine pour tous vos services quotidiens.",
+        "publisher": {
+          "@type": "Organization",
+          "name": "GO212",
+          "logo": "https://go212.ma/logogo212.png"
+        }
+      }}
+    />
+    
+    {/* Hero Section */}
+    <section className="pt-32 pb-20 overflow-hidden relative">
+      <div className="absolute inset-0 bg-go-surface -z-10" />
+      <div className="container mx-auto px-4 relative">
+        <div className="max-w-4xl mx-auto text-center">
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }} className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-accent/50 text-accent-foreground text-sm font-medium mb-8">
+            <span className="relative flex h-2 w-2"><span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span><span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span></span>
+            La Super App 100% Marocaine
+          </motion.div>
+          <motion.h1 initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.1 }} className="font-display text-5xl md:text-7xl font-bold tracking-tight mb-6">
+            Simplifiez votre vie <br /> <span className="text-gradient">avec GO212</span>
+          </motion.h1>
+          <motion.p initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.2 }} className="text-lg md:text-xl text-muted-foreground mb-10 max-w-2xl mx-auto leading-relaxed">
+            De GoBike, GoEat et GoMart à nos nouveaux services à domicile GoRide, GoWash, GoClean et GoFix, GO212 vous accompagne chaque jour. L'innovation locale au service de votre confort.
+          </motion.p>
+          <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.5, delay: 0.4 }} className="flex flex-col sm:flex-row items-center justify-center gap-4">
+            <a href="#services" className="gradient-go px-8 py-4 rounded-xl font-display font-semibold text-primary-foreground shadow-go hover:shadow-lg transition-shadow inline-flex items-center gap-2 w-full sm:w-auto justify-center">
+              Découvrir nos services <ArrowRight className="h-5 w-5" />
+            </a>
+          </motion.div>
+        </div>
+      </div>
+    </section>
+
     {/* Services */}
     <section className="pt-28 pb-16 md:pb-24">
       <div className="container mx-auto px-4">

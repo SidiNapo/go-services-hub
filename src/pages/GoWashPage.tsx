@@ -4,6 +4,7 @@ import { Droplets, ArrowRight, Check, ChevronRight, Leaf, Clock, Shield, Sparkle
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { locateUser } from "@/lib/geolocation";
 import Layout from "@/components/Layout";
+import { SEO } from "@/components/SEO";
 import AnimatedSection from "@/components/AnimatedSection";
 import washHero from "@/assets/wash-hero.jpg";
 import vehicleCitadine from "@/assets/vehicle-citadine.png";
@@ -276,6 +277,20 @@ const GoWashPage = () => {
 
   return (
     <Layout>
+      <SEO 
+        title="GoWash - Lavage Auto Écologique à Domicile | Nettoyage GO212"
+        description="Lavage de voiture sans eau à domicile. Avec GoWash, économisez du temps et de l'eau. Réservez votre nettoyage automobile professionnel dès aujourd'hui."
+        canonical="https://go212.ma/gowash"
+        schema={{
+          "@context": "https://schema.org",
+          "@type": "Service",
+          "name": "Lavage Auto écologique GoWash",
+          "provider": {
+            "@type": "Organization",
+            "name": "GO212"
+          }
+        }}
+      />
       <div className="pt-24" />
 
       {/* Booking Flow */}

@@ -3,13 +3,14 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Zap, Battery, Clock, Shield, Leaf, ArrowRight, User, Phone, MapPin, ChevronLeft, Navigation, Calendar, Truck, Building2, CheckCircle2, Loader2 } from "lucide-react";
 import { locateUser } from "@/lib/geolocation";
 import Layout from "@/components/Layout";
+import { SEO } from "@/components/SEO";
 import AnimatedSection from "@/components/AnimatedSection";
 import motoFlow from "@/assets/moto-flow.jpg";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Calendar as CalendarUI } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
-import { format } from "date-fns";
+import { format, differenceInDays } from "date-fns";
 import { fr } from "date-fns/locale";
 
 type DurationType = "hour" | "day" | "week" | "month";
@@ -85,6 +86,20 @@ const GoRidePage = () => {
 
   const selectedPricing = pricing.find(p => p.id === selectedPlan)!;
 
+  const getCalculatedDays = () => {
+    if (selectedPlan === "day" && date && dropoffDate) {
+      const days = differenceInDays(dropoffDate, date);
+      return days > 0 ? days : 1;
+    }
+    return 1;
+  };
+
+  const calculatedDays = getCalculatedDays();
+  const basePrice = parseInt(selectedPricing.price.replace(/\s/g, ""));
+  const totalPrice = selectedPlan === "day" ? basePrice * calculatedDays : basePrice;
+  const displayDuration = selectedPlan === "day" && calculatedDays > 1 ? `${calculatedDays} Jours` : selectedPricing.duration;
+  const formattedTotalPrice = totalPrice.toLocaleString("fr-FR");
+
   const canNext = () => {
     switch (step) {
       case 1: return !!selectedPlan;
@@ -131,7 +146,7 @@ const GoRidePage = () => {
     const dateInfo = selectedPlan === "day"
       ? `📅 Récupération: ${date ? format(date, "dd/MM/yyyy") : ""}\n📅 Retour: ${dropoffDate ? format(dropoffDate, "dd/MM/yyyy") : ""}`
       : `📅 Date: ${date ? format(date, "dd/MM/yyyy") : ""}`;
-    const msg = `Bonjour, je souhaite réserver une moto GoRide Flow :\n\n🏍️ Durée: ${selectedPricing.duration}\n💰 Prix: ${selectedPricing.price} ${selectedPricing.unit}\n${dateInfo}\n🕐 Heure: ${hour}\n\n${locationInfo}\n\n👤 ${name}\n📞 ${phone}${notes ? `\n📝 Notes: ${notes}` : ""}`;
+    const msg = `Bonjour, je souhaite réserver une moto GoRide Flow :\n\n🏍️ Durée: ${displayDuration}\n💰 Prix total: ${formattedTotalPrice} ${selectedPricing.unit}\n${dateInfo}\n🕐 Heure: ${hour}\n\n${locationInfo}\n\n👤 ${name}\n📞 ${phone}${notes ? `\n📝 Notes: ${notes}` : ""}`;
     window.open(`https://wa.me/212660880110?text=${encodeURIComponent(msg)}`, "_blank");
     setOpen(false);
   };
@@ -145,6 +160,21 @@ const GoRidePage = () => {
 
   return (
     <Layout>
+      <SEO 
+        title="GoRide - Location de motos électriques à Casablanca | Transport Maroc"
+        description="Réservez votre moto électrique avec GoRide ! Autonomie illimitée, assurance incluse et swap de batterie instantané, la solution idéale de transport à Casablanca."
+        canonical="https://go212.ma/goride"
+        schema={{
+          "@context": "https://schema.org",
+          "@type": "Product",
+          "name": "Location de moto électrique GoRide",
+          "description": "Location de motos électriques à Casablanca avec autonomie illimitée et swap batterie.",
+          "brand": {
+            "@type": "Brand",
+            "name": "GO212"
+          }
+        }}
+      />
       {/* Hero - immersive moto showcase */}
       <section className="relative min-h-[85vh] md:min-h-[90vh] flex items-center overflow-hidden">
         <motion.div className="absolute inset-0" initial={{ scale: 1.1 }} animate={{ scale: 1 }} transition={{ duration: 1.5, ease: "easeOut" }}>
@@ -269,7 +299,7 @@ const GoRidePage = () => {
                 <Zap className="h-5 w-5 text-primary" />
                 <span className="font-display font-bold text-lg">GoRide · Flow</span>
               </div>
-              <span className="text-sm font-semibold text-primary">{selectedPricing.price} DH</span>
+              <span className="text-sm font-semibold text-primary">{formattedTotalPrice} DH</span>
             </div>
             <div className="flex items-center gap-1">
               {visibleSteps.map((vs, i) => (
@@ -579,8 +609,8 @@ const GoRidePage = () => {
                       <h4 className="font-display font-semibold text-sm mb-3">Récapitulatif</h4>
                       <div className="space-y-2 text-sm">
                         <div className="flex justify-between">
-                          <span className="text-muted-foreground">Moto Flow · {selectedPricing.duration}</span>
-                          <span className="font-bold text-primary">{selectedPricing.price} DH</span>
+                          <span className="text-muted-foreground">Moto Flow · {displayDuration}</span>
+                          <span className="font-bold text-primary">{formattedTotalPrice} DH</span>
                         </div>
                         {selectedPlan === "day" ? (
                           <>

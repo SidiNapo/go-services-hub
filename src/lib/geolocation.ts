@@ -92,17 +92,10 @@ export async function locateUser(): Promise<GeoResult | null> {
   } catch (err: any) {
     // PERMISSION_DENIED
     if (err?.code === 1) {
-      if (isIOS()) {
-        toast.error(
-          "📍 Localisation refusée. Pour l'activer :\n1. Réglages → Confidentialité → Service de localisation\n2. Safari → « Lors de l'utilisation »\n3. Revenez ici et réessayez",
-          { duration: 10000 }
-        );
-      } else {
-        toast.error(
-          "📍 Localisation refusée. Autorisez l'accès dans les paramètres de votre navigateur, puis réessayez.",
-          { duration: 8000 }
-        );
-      }
+      toast.error(
+        "📍 L'accès à la localisation a été refusé. Veuillez l'autoriser et réessayer.",
+        { duration: 8000 }
+      );
       return null;
     }
 
@@ -116,17 +109,10 @@ export async function locateUser(): Promise<GeoResult | null> {
       return { lat: latitude, lng: longitude, address };
     } catch (retryErr: any) {
       if (retryErr?.code === 1) {
-        if (isIOS()) {
-          toast.error(
-            "📍 Localisation refusée. Réglages → Confidentialité → Service de localisation → Safari → « Lors de l'utilisation ».",
-            { duration: 10000 }
-          );
-        } else {
-          toast.error(
-            "📍 Localisation refusée. Autorisez dans les paramètres du navigateur.",
-            { duration: 8000 }
-          );
-        }
+        toast.error(
+          "📍 L'accès à la localisation a été refusé. Veuillez l'autoriser et réessayer.",
+          { duration: 8000 }
+        );
       } else if (retryErr?.code === 2) {
         toast.error("📍 Position indisponible. Saisissez votre adresse manuellement.");
       } else {

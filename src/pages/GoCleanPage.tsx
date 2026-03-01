@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { SprayCan, ArrowRight, Check, Star, Clock, Shield, Sparkles, Home, MapPin, Phone, User, Calendar, ChevronLeft, Navigation, Camera, Bed, Coffee, X, Loader2 } from "lucide-react";
 import { locateUser } from "@/lib/geolocation";
 import Layout from "@/components/Layout";
+import { SEO } from "@/components/SEO";
 import AnimatedSection from "@/components/AnimatedSection";
 import cleanHero from "@/assets/clean-hero.jpg";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
@@ -126,6 +127,20 @@ const GoCleanPage = () => {
 
   return (
     <Layout>
+      <SEO 
+        title="GoClean - Nettoyage Professionnel & Ménage à Domicile Casablanca"
+        description="Faites briller votre intérieur avec GoClean. Service de nettoyage professionnel pour particuliers et conciergeries Airbnb. Réservez vite !"
+        canonical="https://go212.ma/goclean"
+        schema={{
+          "@context": "https://schema.org",
+          "@type": "Service",
+          "name": "Service de nettoyage professionnel GoClean",
+          "provider": {
+            "@type": "Organization",
+            "name": "GO212"
+          }
+        }}
+      />
       {/* Hero */}
       <section className="relative min-h-[85vh] md:min-h-[90vh] flex items-center overflow-hidden">
         {/* Background image with parallax-like scale */}
