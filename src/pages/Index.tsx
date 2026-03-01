@@ -173,7 +173,7 @@ const Index = () => (
               <div className="absolute inset-0 flex items-center justify-center">
                 <div className="text-center">
                   <MapPin className="h-8 w-8 text-primary mx-auto mb-3" />
-                  <h3 className="font-display text-3xl font-bold text-primary-foreground">{city}</h3>
+                  <h3 className="font-display text-3xl font-bold text-primary-foreground">{city.name}</h3>
                 </div>
               </div>
             </motion.div>
