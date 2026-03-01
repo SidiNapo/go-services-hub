@@ -1,126 +1,242 @@
-import { motion } from "framer-motion";
-import { Zap, Battery, Clock, Shield, Leaf, ArrowRight } from "lucide-react";
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Zap, Battery, Clock, Shield, Leaf, ArrowRight, X, User, Phone, MapPin, Calendar } from "lucide-react";
 import Layout from "@/components/Layout";
 import AnimatedSection from "@/components/AnimatedSection";
-import motoHero from "@/assets/moto-hero.jpg";
 import motoFlow from "@/assets/moto-flow.jpg";
 
 const pricing = [
-  { duration: "1 Heure", price: "30", unit: "DH", popular: false },
-  { duration: "1 Jour", price: "160", unit: "DH", popular: true },
-  { duration: "1 Semaine", price: "800", unit: "DH", popular: false },
-  { duration: "1 Mois", price: "2 300", unit: "DH", popular: false },
+  { id: "hour", duration: "1 Heure", price: "30", unit: "DH", popular: false },
+  { id: "day", duration: "1 Jour", price: "160", unit: "DH", popular: true },
+  { id: "week", duration: "1 Semaine", price: "800", unit: "DH", popular: false },
+  { id: "month", duration: "1 Mois", price: "2 300", unit: "DH", popular: false },
 ];
 
 const features = [
-  { icon: Zap, title: "100% Électrique", desc: "Zéro émission, zéro bruit. Roulez propre dans toute la ville." },
-  { icon: Battery, title: "Autonomie illimitée", desc: "Système de swap batterie instantané. Jamais en panne." },
-  { icon: Clock, title: "Disponible 24h/24", desc: "Réservez et déverrouillez votre moto à tout moment." },
-  { icon: Shield, title: "Assurance incluse", desc: "Roulez l'esprit tranquille, vous êtes couvert." },
-  { icon: Leaf, title: "Écologique", desc: "Réduisez votre empreinte carbone au quotidien." },
+  { icon: Zap, title: "100% Électrique", desc: "Zéro émission, zéro bruit." },
+  { icon: Battery, title: "Autonomie illimitée", desc: "Swap batterie instantané." },
+  { icon: Clock, title: "Disponible 24h/24", desc: "Réservez à tout moment." },
+  { icon: Shield, title: "Assurance incluse", desc: "Roulez l'esprit tranquille." },
+  { icon: Leaf, title: "Écologique", desc: "Zéro empreinte carbone." },
 ];
 
-const GoRidePage = () => (
-  <Layout>
-    {/* Hero */}
-    <section className="relative min-h-[80vh] flex items-center overflow-hidden">
-      <div className="absolute inset-0">
-        <img src={motoHero} alt="GoRide" className="w-full h-full object-cover" />
-        <div className="hero-overlay absolute inset-0" />
-      </div>
-      <div className="container mx-auto px-4 relative z-10 pt-24">
-        <motion.div initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }} className="max-w-2xl">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/20 backdrop-blur-md text-primary-foreground text-sm font-medium mb-6">
-            <Zap className="h-4 w-4" /> GoRide
-          </div>
-          <h1 className="font-display text-5xl md:text-7xl font-bold text-primary-foreground leading-[0.9] mb-6">
-            La mobilité <span className="text-gradient">électrique</span>
-          </h1>
-          <p className="text-lg text-primary-foreground/80 max-w-xl mb-8">
-            Louez une moto électrique à autonomie illimitée grâce à notre système de swap batterie. Solution économique et écologique.
-          </p>
-          <a href="https://wa.me/212600000000" className="gradient-go px-8 py-4 rounded-2xl font-display font-semibold text-primary-foreground shadow-go hover:opacity-90 transition-all inline-flex items-center gap-2">
-            Réserver maintenant <ArrowRight className="h-5 w-5" />
-          </a>
-        </motion.div>
-      </div>
-    </section>
+const GoRidePage = () => {
+  const [modalOpen, setModalOpen] = useState(false);
+  const [step, setStep] = useState<1 | 2>(1);
+  const [selectedPlan, setSelectedPlan] = useState("day");
+  const [name, setName] = useState("");
+  const [phone, setPhone] = useState("");
+  const [address, setAddress] = useState("");
 
-    {/* Moto Card */}
-    <AnimatedSection className="py-24">
-      <div className="container mx-auto px-4">
-        <div className="max-w-5xl mx-auto glass-card rounded-[2rem] overflow-hidden shadow-elevated">
-          <div className="grid grid-cols-1 lg:grid-cols-2">
-            <div className="relative aspect-square lg:aspect-auto">
-              <img src={motoFlow} alt="Flow 2026" className="w-full h-full object-cover" />
-              <div className="absolute top-6 left-6 px-4 py-2 rounded-full gradient-go text-primary-foreground text-sm font-semibold">
-                100% Électrique
+  const handleSubmit = () => {
+    const plan = pricing.find((p) => p.id === selectedPlan);
+    const msg = `Bonjour, je souhaite réserver une moto Flow :\n• Durée: ${plan?.duration}\n• Prix: ${plan?.price} ${plan?.unit}\n• Nom: ${name}\n• Tél: ${phone}\n• Adresse: ${address}`;
+    window.open(`https://wa.me/212600000000?text=${encodeURIComponent(msg)}`, "_blank");
+    setModalOpen(false);
+  };
+
+  return (
+    <Layout>
+      {/* Compact moto card - directly visible */}
+      <section className="pt-28 pb-16">
+        <div className="container mx-auto px-4">
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center mb-10">
+            <span className="text-primary font-display font-semibold text-sm uppercase tracking-widest">GoRide</span>
+            <h1 className="font-display text-4xl md:text-5xl font-bold mt-2">Mobilité électrique</h1>
+          </motion.div>
+
+          {/* Compact modern card */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+            className="max-w-sm mx-auto"
+          >
+            <div
+              onClick={() => { setModalOpen(true); setStep(1); }}
+              className="group cursor-pointer glass-card rounded-3xl overflow-hidden shadow-elevated hover:shadow-go transition-all duration-500"
+            >
+              <div className="relative aspect-[4/3] overflow-hidden">
+                <img src={motoFlow} alt="Flow 2026" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+                <div className="absolute top-4 left-4 px-3 py-1.5 rounded-full gradient-go text-primary-foreground text-xs font-semibold flex items-center gap-1.5">
+                  <Zap className="h-3 w-3" /> 100% Électrique
+                </div>
+                <div className="absolute bottom-4 right-4 px-3 py-1.5 rounded-full bg-card/80 backdrop-blur-sm text-xs font-semibold">
+                  2026
+                </div>
+              </div>
+              <div className="p-6">
+                <h2 className="font-display text-2xl font-bold mb-1">Flow</h2>
+                <p className="text-sm text-muted-foreground mb-4">2 places · Swap batterie · Autonomie illimitée</p>
+                <div className="flex items-baseline gap-1 mb-5">
+                  <span className="font-display text-3xl font-bold text-primary">30</span>
+                  <span className="text-sm text-muted-foreground">DH / heure</span>
+                </div>
+                <div className="gradient-go w-full py-3.5 rounded-2xl text-center font-display font-semibold text-primary-foreground text-sm group-hover:opacity-90 transition-opacity flex items-center justify-center gap-2">
+                  Réserver <ArrowRight className="h-4 w-4" />
+                </div>
               </div>
             </div>
-            <div className="p-8 lg:p-12 flex flex-col justify-center">
-              <span className="text-primary font-display font-semibold text-sm uppercase tracking-widest">Notre Moto</span>
-              <h2 className="font-display text-4xl md:text-5xl font-bold mt-2 mb-2">Flow</h2>
-              <p className="text-muted-foreground mb-1">Modèle 2026 · 2 places</p>
-              <p className="text-muted-foreground text-sm mb-8">Batterie swappable · Autonomie illimitée · Design futuriste</p>
+          </motion.div>
+        </div>
+      </section>
 
-              <div className="space-y-3">
-                {pricing.map((p) => (
-                  <div key={p.duration} className={`flex items-center justify-between p-4 rounded-2xl border transition-colors ${p.popular ? "border-primary bg-accent" : "border-border hover:border-primary/30"}`}>
-                    <div className="flex items-center gap-3">
-                      {p.popular && <span className="px-2 py-0.5 rounded-full gradient-go text-primary-foreground text-xs font-semibold">Populaire</span>}
-                      <span className="font-display font-semibold">{p.duration}</span>
+      {/* Features */}
+      <AnimatedSection className="py-20 bg-go-surface">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-12">
+            <h2 className="font-display text-3xl md:text-4xl font-bold">Pourquoi GoRide ?</h2>
+          </div>
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-4 max-w-4xl mx-auto">
+            {features.map((f, i) => (
+              <motion.div key={f.title} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }} transition={{ delay: i * 0.08 }}
+                className="glass-card p-5 rounded-2xl text-center">
+                <div className="inline-flex p-2.5 rounded-xl bg-primary/10 mb-3">
+                  <f.icon className="h-5 w-5 text-primary" />
+                </div>
+                <h3 className="font-display font-semibold text-sm mb-1">{f.title}</h3>
+                <p className="text-xs text-muted-foreground">{f.desc}</p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </AnimatedSection>
+
+      {/* CTA */}
+      <section className="py-20 gradient-go">
+        <div className="container mx-auto px-4 text-center">
+          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
+            <h2 className="font-display text-3xl md:text-4xl font-bold text-primary-foreground mb-4">Roulez électrique dès aujourd'hui</h2>
+            <p className="text-primary-foreground/80 max-w-md mx-auto mb-8">
+              À partir de 30 DH/heure. Réservez et recevez votre moto en moins de 15 minutes.
+            </p>
+            <button onClick={() => { setModalOpen(true); setStep(1); }}
+              className="px-8 py-4 rounded-2xl font-display font-semibold bg-primary-foreground text-primary hover:opacity-90 transition-opacity inline-flex items-center gap-2">
+              Réserver maintenant <ArrowRight className="h-5 w-5" />
+            </button>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Reservation Modal */}
+      <AnimatePresence>
+        {modalOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center p-4"
+            onClick={() => setModalOpen(false)}
+          >
+            <div className="absolute inset-0 bg-go-dark/60 backdrop-blur-sm" />
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              transition={{ type: "spring", damping: 25, stiffness: 300 }}
+              onClick={(e) => e.stopPropagation()}
+              className="relative bg-card rounded-3xl shadow-elevated w-full max-w-md overflow-hidden"
+            >
+              {/* Modal header */}
+              <div className="flex items-center justify-between p-6 pb-0">
+                <div>
+                  <h3 className="font-display text-xl font-bold">Réserver le Flow</h3>
+                  <p className="text-sm text-muted-foreground">Étape {step}/2</p>
+                </div>
+                <button onClick={() => setModalOpen(false)} className="p-2 rounded-xl hover:bg-muted transition-colors">
+                  <X className="h-5 w-5" />
+                </button>
+              </div>
+
+              {/* Progress */}
+              <div className="px-6 pt-4">
+                <div className="h-1 rounded-full bg-muted overflow-hidden">
+                  <motion.div className="h-full gradient-go rounded-full" animate={{ width: step === 1 ? "50%" : "100%" }} />
+                </div>
+              </div>
+
+              <AnimatePresence mode="wait">
+                {step === 1 && (
+                  <motion.div key="s1" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="p-6">
+                    <p className="font-display font-semibold mb-4">Choisissez votre durée</p>
+                    <div className="space-y-2.5">
+                      {pricing.map((p) => (
+                        <button key={p.id} onClick={() => setSelectedPlan(p.id)}
+                          className={`w-full flex items-center justify-between p-4 rounded-2xl border transition-all ${
+                            selectedPlan === p.id ? "border-primary bg-accent shadow-go" : "border-border hover:border-primary/30"
+                          }`}>
+                          <div className="flex items-center gap-3">
+                            <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center transition-colors ${
+                              selectedPlan === p.id ? "border-primary" : "border-muted-foreground/30"
+                            }`}>
+                              {selectedPlan === p.id && <div className="w-2 h-2 rounded-full gradient-go" />}
+                            </div>
+                            <span className="font-display font-semibold text-sm">{p.duration}</span>
+                            {p.popular && <span className="px-2 py-0.5 rounded-full gradient-go text-primary-foreground text-[10px] font-semibold">Populaire</span>}
+                          </div>
+                          <span className="font-display font-bold">{p.price} <span className="text-xs font-normal text-muted-foreground">{p.unit}</span></span>
+                        </button>
+                      ))}
                     </div>
-                    <div className="font-display text-2xl font-bold">{p.price} <span className="text-sm font-normal text-muted-foreground">{p.unit}</span></div>
-                  </div>
-                ))}
-              </div>
+                    <button onClick={() => setStep(2)}
+                      className="w-full mt-6 gradient-go py-3.5 rounded-2xl font-display font-semibold text-primary-foreground shadow-go hover:opacity-90 transition-opacity flex items-center justify-center gap-2">
+                      Continuer <ArrowRight className="h-4 w-4" />
+                    </button>
+                  </motion.div>
+                )}
 
-              <a href="https://wa.me/212600000000" className="mt-8 gradient-go px-8 py-4 rounded-2xl font-display font-semibold text-primary-foreground shadow-go hover:opacity-90 transition-all text-center">
-                Réserver le Flow
-              </a>
-            </div>
-          </div>
-        </div>
-      </div>
-    </AnimatedSection>
+                {step === 2 && (
+                  <motion.div key="s2" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="p-6">
+                    <button onClick={() => setStep(1)} className="text-xs text-muted-foreground hover:text-foreground mb-4 inline-flex items-center gap-1">← Modifier la durée</button>
+                    <div className="space-y-3">
+                      <div>
+                        <label className="text-xs font-medium mb-1 block text-muted-foreground">Nom complet</label>
+                        <div className="relative">
+                          <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                          <input value={name} onChange={(e) => setName(e.target.value)} placeholder="Votre nom"
+                            className="w-full pl-10 pr-4 py-3 rounded-xl border bg-card text-foreground text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all" />
+                        </div>
+                      </div>
+                      <div>
+                        <label className="text-xs font-medium mb-1 block text-muted-foreground">Téléphone</label>
+                        <div className="relative">
+                          <Phone className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                          <input value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="+212 6 XX XX XX XX" type="tel"
+                            className="w-full pl-10 pr-4 py-3 rounded-xl border bg-card text-foreground text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all" />
+                        </div>
+                      </div>
+                      <div>
+                        <label className="text-xs font-medium mb-1 block text-muted-foreground">Adresse de livraison</label>
+                        <div className="relative">
+                          <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                          <input value={address} onChange={(e) => setAddress(e.target.value)} placeholder="Votre adresse"
+                            className="w-full pl-10 pr-4 py-3 rounded-xl border bg-card text-foreground text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all" />
+                        </div>
+                      </div>
+                    </div>
 
-    {/* Features */}
-    <AnimatedSection className="py-24 bg-go-surface">
-      <div className="container mx-auto px-4">
-        <div className="text-center max-w-2xl mx-auto mb-16">
-          <h2 className="font-display text-4xl md:text-5xl font-bold">Pourquoi choisir GoRide ?</h2>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-6">
-          {features.map((f, i) => (
-            <motion.div key={f.title} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }} transition={{ delay: i * 0.1 }}
-              className="glass-card p-6 rounded-2xl text-center">
-              <div className="inline-flex p-3 rounded-xl bg-primary/10 mb-4">
-                <f.icon className="h-5 w-5 text-primary" />
-              </div>
-              <h3 className="font-display font-semibold mb-2">{f.title}</h3>
-              <p className="text-sm text-muted-foreground">{f.desc}</p>
+                    {/* Summary */}
+                    <div className="mt-5 p-4 rounded-2xl bg-accent/50 border border-border">
+                      <div className="flex items-center justify-between text-sm">
+                        <span className="text-muted-foreground">Flow · {pricing.find(p => p.id === selectedPlan)?.duration}</span>
+                        <span className="font-display font-bold">{pricing.find(p => p.id === selectedPlan)?.price} DH</span>
+                      </div>
+                    </div>
+
+                    <button onClick={handleSubmit} disabled={!name || !phone || !address}
+                      className="w-full mt-5 gradient-go py-3.5 rounded-2xl font-display font-semibold text-primary-foreground shadow-go hover:opacity-90 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2">
+                      Confirmer via WhatsApp <ArrowRight className="h-4 w-4" />
+                    </button>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </motion.div>
-          ))}
-        </div>
-      </div>
-    </AnimatedSection>
-
-    {/* CTA */}
-    <section className="py-24 gradient-go">
-      <div className="container mx-auto px-4 text-center">
-        <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
-          <h2 className="font-display text-4xl md:text-5xl font-bold text-primary-foreground mb-6">Roulez électrique dès aujourd'hui</h2>
-          <p className="text-primary-foreground/80 text-lg max-w-xl mx-auto mb-8">
-            À partir de 30 DH/heure. Réservez via WhatsApp et recevez votre moto en moins de 15 minutes.
-          </p>
-          <a href="https://wa.me/212600000000" className="px-8 py-4 rounded-2xl font-display font-semibold bg-primary-foreground text-primary hover:opacity-90 transition-opacity inline-flex items-center gap-2">
-            Réserver via WhatsApp <ArrowRight className="h-5 w-5" />
-          </a>
-        </motion.div>
-      </div>
-    </section>
-  </Layout>
-);
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </Layout>
+  );
+};
 
 export default GoRidePage;
