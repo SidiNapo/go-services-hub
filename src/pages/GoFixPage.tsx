@@ -1,6 +1,6 @@
 import React, { useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Wrench, ArrowRight, Check, Zap, Droplets, Paintbrush, Settings, Phone, Shield, Clock, MapPin, User, Calendar, ChevronLeft, Navigation, Camera, ImagePlus, X, Loader2 } from "lucide-react";
+import { Wrench, ArrowRight, Check, Zap, Droplets, Paintbrush, Settings, Phone, Shield, Clock, MapPin, User, Calendar, ChevronLeft, Navigation, Camera, ImagePlus, X, Loader2, Share2 } from "lucide-react";
 import { locateUser } from "@/lib/geolocation";
 import Layout from "@/components/Layout";
 import AnimatedSection from "@/components/AnimatedSection";
@@ -11,6 +11,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
+import { useToast } from "@/hooks/use-toast";
 
 const servicesData = [
   { icon: Droplets, title: "Plomberie", emoji: "🔧", items: ["Réparation fuites", "Débouchage canalisations", "Installation sanitaire", "Chauffe-eau"] },
@@ -36,6 +37,7 @@ const timeSlots = [
 ];
 
 const GoFixPage = () => {
+  const { toast } = useToast();
   const [open, setOpen] = useState(false);
   const [step, setStep] = useState(1);
   const totalSteps = 4;
@@ -62,13 +64,24 @@ const GoFixPage = () => {
   const [phone, setPhone] = useState("");
   const [notes, setNotes] = useState("");
   const [locationCoords, setLocationCoords] = useState<{ lat: number; lng: number } | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const openModal = () => { setStep(1); setOpen(true); };
+
+  const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp", "image/heic", "image/heif"];
+  const MAX_SIZE = 10 * 1024 * 1024;
 
   const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    if (file.size > 10 * 1024 * 1024) return; // max 10MB
+    if (!ALLOWED_TYPES.includes(file.type)) {
+      toast({ title: "Format non supporté", description: "Utilisez JPG, PNG ou WebP.", variant: "destructive" });
+      return;
+    }
+    if (file.size > MAX_SIZE) {
+      toast({ title: "Fichier trop volumineux", description: "Maximum 10 MB.", variant: "destructive" });
+      return;
+    }
     setPhoto(file);
     const reader = new FileReader();
     reader.onload = () => setPhotoPreview(reader.result as string);
@@ -100,47 +113,94 @@ const GoFixPage = () => {
     }
   };
 
-  const handleConfirm = () => {
+  const buildMessage = () => {
     const typeLabel = problemTypes.find(p => p.id === problemType)?.label ?? "";
-    const photoNote = photo ? "\n📷 *Photo jointe — téléchargement automatique*" : "";
-    const mapsLink = locationCoords ? `\n📌 Google Maps: https://www.google.com/maps?q=${locationCoords.lat},${locationCoords.lng}` : "";
-    const msg = `Bonjour, je souhaite une intervention GoFix :\n\n🔧 Type: ${typeLabel}\n📝 Problème: ${description}${photoNote}\n\n🏙️ Ville: ${city}\n📍 Adresse: ${address}${mapsLink}${accessInstructions ? `\n🔑 Accès: ${accessInstructions}` : ""}\n📅 Date: ${date ? format(date, "dd/MM/yyyy") : ""}\n🕐 Heure: ${hour}\n\n👤 ${name}\n📞 ${phone}${notes ? `\n📝 Notes: ${notes}` : ""}`;
+    const mapsLink = locationCoords
+      ? `\nLocalisation: https://www.google.com/maps?q=${locationCoords.lat},${locationCoords.lng}`
+      : "";
+    const lines = [
+      "Demande d'intervention GoFix",
+      "",
+      `Type: ${typeLabel}`,
+      `Probleme: ${description}`,
+      photo ? "Photo: jointe" : "",
+      "",
+      `Ville: ${city}`,
+      `Adresse: ${address}${mapsLink}`,
+      accessInstructions ? `Acces: ${accessInstructions}` : "",
+      "",
+      `Date: ${date ? format(date, "dd/MM/yyyy") : ""}`,
+      `Heure: ${hour}`,
+      "",
+      `Nom: ${name}`,
+      `Telephone: ${phone}`,
+      notes ? `Notes: ${notes}` : "",
+    ].filter(Boolean);
+    return lines.join("\n");
+  };
 
-    // Download the photo FIRST (before modal closes and state is lost)
-    if (photoPreview && photo) {
-      try {
-        // Convert base64 data URL to a real Blob for reliable download
-        const [meta, base64Data] = photoPreview.split(",");
-        const mimeMatch = meta.match(/^data:(.*?);/);
-        const mimeType = mimeMatch?.[1] || "image/jpeg";
-        const binaryString = atob(base64Data);
-        const bytes = new Uint8Array(binaryString.length);
-        for (let i = 0; i < binaryString.length; i++) {
-          bytes[i] = binaryString.charCodeAt(i);
+  const handleConfirm = async () => {
+    if (isSubmitting) return;
+    setIsSubmitting(true);
+
+    const msg = buildMessage();
+    const waUrl = `https://wa.me/212660880110?text=${encodeURIComponent(msg)}`;
+
+    try {
+      // If there's a photo, try Web Share API first (works on iPhone Safari)
+      if (photo) {
+        const shareFile = new File([photo], photo.name || "photo-probleme.jpg", { type: photo.type });
+        const canShareFiles = typeof navigator.canShare === "function" && navigator.canShare({ files: [shareFile] });
+
+        if (canShareFiles) {
+          try {
+            await navigator.share({
+              text: msg,
+              files: [shareFile],
+            });
+            toast({ title: "Demande envoyee", description: "Votre photo et message ont ete partages avec succes." });
+            setOpen(false);
+            return;
+          } catch (err: any) {
+            // User cancelled the share sheet — not an error
+            if (err?.name === "AbortError") {
+              return;
+            }
+            // Share failed, fall through to WhatsApp text fallback
+          }
         }
-        const blob = new Blob([bytes], { type: mimeType });
-        const blobUrl = URL.createObjectURL(blob);
-        const link = document.createElement("a");
-        link.href = blobUrl;
-        link.download = photo.name || "photo-probleme.jpg";
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        // Revoke after a short delay to ensure download starts
-        setTimeout(() => URL.revokeObjectURL(blobUrl), 3000);
-      } catch {
-        // Fallback: open the image in a new tab
-        window.open(photoPreview, "_blank");
+
+        // Fallback: download the photo so user can attach manually in WhatsApp
+        try {
+          const blobUrl = URL.createObjectURL(photo);
+          const link = document.createElement("a");
+          link.href = blobUrl;
+          link.download = photo.name || "photo-probleme.jpg";
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+          setTimeout(() => URL.revokeObjectURL(blobUrl), 5000);
+
+          toast({
+            title: "Photo telechargee",
+            description: "Joignez-la dans WhatsApp en appuyant sur le trombone.",
+          });
+        } catch {
+          // Ignore download errors
+        }
+
+        // Small delay to let download start, then open WhatsApp
+        await new Promise(r => setTimeout(r, 600));
+        window.open(waUrl, "_blank");
+      } else {
+        // No photo — just open WhatsApp directly
+        window.open(waUrl, "_blank");
       }
+
+      setOpen(false);
+    } finally {
+      setIsSubmitting(false);
     }
-
-    // Open WhatsApp with a small delay so download completes first
-    setTimeout(() => {
-      const waUrl = `https://wa.me/212660880110?text=${encodeURIComponent(msg)}`;
-      window.open(waUrl, "_blank");
-    }, 500);
-
-    setOpen(false);
   };
 
   const stepLabels = ["Problème", "Adresse", "Date", "Infos"];
@@ -628,12 +688,18 @@ const GoFixPage = () => {
                 Suivant <ArrowRight className="h-4 w-4" />
               </button>
             ) : (
-              <button onClick={handleConfirm} disabled={!canNext()}
+              <button onClick={handleConfirm} disabled={!canNext() || isSubmitting}
                 className={cn(
                   "gradient-go px-6 py-3 rounded-xl font-display font-semibold text-sm text-primary-foreground inline-flex items-center gap-2 transition-all",
-                  !canNext() && "opacity-40 cursor-not-allowed"
+                  (!canNext() || isSubmitting) && "opacity-40 cursor-not-allowed"
                 )}>
-                {photo ? "Confirmer + Envoyer photo" : "Confirmer sur WhatsApp"} <ArrowRight className="h-4 w-4" />
+                {isSubmitting ? (
+                  <><Loader2 className="h-4 w-4 animate-spin" /> Envoi...</>
+                ) : photo ? (
+                  <><Share2 className="h-4 w-4" /> Envoyer avec photo</>
+                ) : (
+                  <>Confirmer sur WhatsApp <ArrowRight className="h-4 w-4" /></>
+                )}
               </button>
             )}
           </div>
