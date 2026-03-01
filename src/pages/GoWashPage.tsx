@@ -551,17 +551,17 @@ const GoWashPage = () => {
                         <label className="text-sm font-medium mb-1.5 flex items-center gap-2">
                           <MapPin className="h-3.5 w-3.5 text-primary" /> Adresse complète
                         </label>
-                        <div className="flex gap-2">
+                        <div className="flex flex-col sm:flex-row gap-2">
                           <input type="text" value={address} onChange={(e) => setAddress(e.target.value)} placeholder="Votre adresse complète"
-                            className="flex-1 p-3.5 rounded-xl border border-border bg-background text-foreground focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all" />
+                            className="flex-1 p-3.5 rounded-xl border border-border bg-background text-foreground focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all min-w-0" />
                           <button
                             type="button"
                             onClick={handleLocateMe}
                             disabled={locating}
-                            className="px-4 py-3.5 rounded-xl gradient-go text-primary-foreground font-semibold text-sm hover:opacity-90 transition-all disabled:opacity-50 inline-flex items-center gap-2 whitespace-nowrap shadow-go"
+                            className="px-4 py-3.5 rounded-xl gradient-go text-primary-foreground font-semibold text-sm hover:opacity-90 transition-all disabled:opacity-50 inline-flex items-center justify-center gap-2 whitespace-nowrap shadow-go"
                           >
                             {locating ? <Loader2 className="h-4 w-4 animate-spin" /> : <Navigation className="h-4 w-4" />}
-                            {locating ? "..." : "Me localiser"}
+                            {locating ? "Localisation..." : "📍 Me localiser"}
                           </button>
                         </div>
                         {locationCoords && (
