@@ -1,6 +1,7 @@
 import React, { useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Droplets, ArrowRight, Check, ChevronRight, Leaf, Clock, Shield, Sparkles, MapPin, Phone, Car, Calendar, CheckCircle2, MessageCircle, User, Zap, Crown, Diamond, Star, Search, HelpCircle, Navigation, Loader2 } from "lucide-react";
+import { locateUser } from "@/lib/geolocation";
 import Layout from "@/components/Layout";
 import AnimatedSection from "@/components/AnimatedSection";
 import washHero from "@/assets/wash-hero.jpg";
@@ -196,26 +197,14 @@ const GoWashPage = () => {
     scrollToBooking();
   };
 
-  const handleLocateMe = () => {
-    if (!navigator.geolocation) return;
+  const handleLocateMe = async () => {
     setLocating(true);
-    navigator.geolocation.getCurrentPosition(
-      (pos) => {
-        const { latitude, longitude } = pos.coords;
-        setLocationCoords({ lat: latitude, lng: longitude });
-        fetch(`https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json`)
-          .then(r => r.json())
-          .then(data => {
-            if (data.display_name) setAddress(data.display_name);
-          })
-          .catch(() => {
-            setAddress(`${latitude.toFixed(6)}, ${longitude.toFixed(6)}`);
-          })
-          .finally(() => setLocating(false));
-      },
-      () => setLocating(false),
-      { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
-    );
+    const result = await locateUser();
+    if (result) {
+      setLocationCoords({ lat: result.lat, lng: result.lng });
+      setAddress(result.address);
+    }
+    setLocating(false);
   };
 
   const handleConfirmWhatsApp = () => {
