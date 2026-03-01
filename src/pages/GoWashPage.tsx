@@ -65,28 +65,30 @@ const vehicleTypes = [
 
 const packsByVehicle: Record<string, WashPack[]> = {
   citadine: [
-    { name: "Essentiel", price: 70, services: ["Lavage extérieur sans eau", "Nettoyage jantes", "Vitres intérieures/extérieures"] },
-    { name: "Extra", price: 130, services: ["Lavage extérieur sans eau", "Aspiration complète", "Nettoyage jantes & pneus", "Vitres", "Plastiques intérieurs", "Parfum"], popular: true },
+    { name: "Essentiel", price: 60, services: ["Lavage extérieur sans eau", "Nettoyage jantes", "Vitres intérieures/extérieures"] },
+    { name: "Extra", price: 110, services: ["Lavage extérieur sans eau", "Aspiration complète", "Nettoyage jantes & pneus", "Vitres", "Plastiques intérieurs", "Parfum"], popular: true },
+    { name: "Premium", price: 150, services: ["Lavage extérieur sans eau", "Aspiration complète", "Nettoyage jantes & pneus", "Vitres", "Plastiques intérieurs", "Parfum", "Cire de protection", "Nettoyage moteur"] },
   ],
   berline: [
-    { name: "Essentiel", price: 80, services: ["Lavage extérieur sans eau", "Nettoyage jantes", "Vitres intérieures/extérieures"] },
-    { name: "Extra", price: 150, services: ["Lavage extérieur sans eau", "Aspiration complète", "Nettoyage jantes & pneus", "Vitres", "Plastiques intérieurs", "Parfum"], popular: true },
+    { name: "Essentiel", price: 60, services: ["Lavage extérieur sans eau", "Nettoyage jantes", "Vitres intérieures/extérieures"] },
+    { name: "Extra", price: 110, services: ["Lavage extérieur sans eau", "Aspiration complète", "Nettoyage jantes & pneus", "Vitres", "Plastiques intérieurs", "Parfum"], popular: true },
+    { name: "Premium", price: 150, services: ["Lavage extérieur sans eau", "Aspiration complète", "Nettoyage jantes & pneus", "Vitres", "Plastiques intérieurs", "Parfum", "Cire de protection", "Nettoyage moteur"] },
   ],
   suv_moyen: [
-    { name: "Essentiel", price: 90, services: ["Lavage extérieur sans eau", "Nettoyage jantes", "Vitres intérieures/extérieures"] },
-    { name: "Extra", price: 170, services: ["Lavage extérieur sans eau", "Aspiration complète", "Nettoyage jantes & pneus", "Vitres", "Plastiques intérieurs", "Parfum"], popular: true },
+    { name: "Essentiel", price: 70, services: ["Lavage extérieur sans eau", "Nettoyage jantes", "Vitres intérieures/extérieures"] },
+    { name: "Extra", price: 120, services: ["Lavage extérieur sans eau", "Aspiration complète", "Nettoyage jantes & pneus", "Vitres", "Plastiques intérieurs", "Parfum"], popular: true },
+    { name: "Premium", price: 160, services: ["Lavage extérieur sans eau", "Aspiration complète", "Nettoyage jantes & pneus", "Vitres", "Plastiques intérieurs", "Parfum", "Cire de protection", "Nettoyage moteur"] },
   ],
   suv_grand: [
-    { name: "Essentiel", price: 100, services: ["Lavage extérieur sans eau", "Nettoyage jantes", "Vitres intérieures/extérieures"] },
-    { name: "Extra", price: 190, services: ["Lavage extérieur sans eau", "Aspiration complète", "Nettoyage jantes & pneus", "Vitres", "Plastiques intérieurs", "Parfum"], popular: true },
+    { name: "Essentiel", price: 80, services: ["Lavage extérieur sans eau", "Nettoyage jantes", "Vitres intérieures/extérieures"] },
+    { name: "Extra", price: 130, services: ["Lavage extérieur sans eau", "Aspiration complète", "Nettoyage jantes & pneus", "Vitres", "Plastiques intérieurs", "Parfum"], popular: true },
+    { name: "Premium", price: 170, services: ["Lavage extérieur sans eau", "Aspiration complète", "Nettoyage jantes & pneus", "Vitres", "Plastiques intérieurs", "Parfum", "Cire de protection", "Nettoyage moteur"] },
   ],
   moto_petite: [
-    { name: "Essentiel", price: 50, services: ["Lavage complet sans eau", "Nettoyage jantes"] },
-    { name: "Extra", price: 90, services: ["Lavage complet sans eau", "Nettoyage jantes", "Polish carrosserie", "Protection cire"], popular: true },
+    { name: "Lavage Complet", price: 35, services: ["Lavage complet sans eau", "Nettoyage jantes", "Polish carrosserie"], popular: true },
   ],
   moto_grande: [
-    { name: "Essentiel", price: 60, services: ["Lavage complet sans eau", "Nettoyage jantes"] },
-    { name: "Extra", price: 100, services: ["Lavage complet sans eau", "Nettoyage jantes", "Polish carrosserie", "Protection cire"], popular: true },
+    { name: "Lavage Complet", price: 45, services: ["Lavage complet sans eau", "Nettoyage jantes", "Polish carrosserie", "Protection cire"], popular: true },
   ],
 };
 
