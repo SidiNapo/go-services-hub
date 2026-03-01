@@ -139,7 +139,7 @@ const GoWashPage = () => {
   const [phone, setPhone] = useState("");
   const [address, setAddress] = useState("");
   const [name, setName] = useState("");
-  const [city, setCity] = useState("");
+  const [city, setCity] = useState("Casablanca");
   const [date, setDate] = useState("");
   const [hour, setHour] = useState("");
 
@@ -432,13 +432,17 @@ const GoWashPage = () => {
                         <label className="text-sm font-medium mb-1.5 flex items-center gap-2">
                           <MapPin className="h-3.5 w-3.5 text-primary" /> Ville
                         </label>
-                        <select value={city} onChange={(e) => setCity(e.target.value)}
-                          className="w-full p-3.5 rounded-xl border border-border bg-background text-foreground focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all">
-                          <option value="">-- Ville --</option>
-                          <option value="Casablanca">Casablanca</option>
-                          <option value="Rabat">Rabat</option>
-                          <option value="Tanger">Tanger</option>
-                        </select>
+                        <div className="flex gap-2">
+                          <button type="button" className="flex-1 p-3.5 rounded-xl border-2 border-primary bg-primary/5 text-foreground font-semibold text-sm">
+                            Casablanca
+                          </button>
+                          <button type="button" disabled className="flex-1 p-3.5 rounded-xl border border-border bg-muted/50 text-muted-foreground text-sm opacity-60 cursor-not-allowed relative">
+                            Rabat <span className="block text-[10px] text-primary/60 font-medium">Bientôt</span>
+                          </button>
+                          <button type="button" disabled className="flex-1 p-3.5 rounded-xl border border-border bg-muted/50 text-muted-foreground text-sm opacity-60 cursor-not-allowed relative">
+                            Marrakech <span className="block text-[10px] text-primary/60 font-medium">Bientôt</span>
+                          </button>
+                        </div>
                       </div>
                       <div>
                         <label className="text-sm font-medium mb-1.5 flex items-center gap-2">
