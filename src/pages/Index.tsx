@@ -107,19 +107,19 @@ const Index = () => (
         <div className="text-center max-w-2xl mx-auto mb-10 md:mb-16">
           <span className="text-primary font-display font-semibold text-sm uppercase tracking-widest">Nos villes</span>
           <h2 className="font-display text-3xl md:text-5xl font-bold mt-3 mb-4">Disponible dans les grandes villes du Maroc</h2>
-          <p className="text-muted-foreground text-base md:text-lg">Casablanca, Rabat et Tanger — et bientôt dans d'autres villes du Royaume.</p>
+          <p className="text-muted-foreground text-base md:text-lg">Présents à Casablanca — Rabat et Marrakech arrivent bientôt.</p>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 md:gap-6">
           {[
-            { name: "Casablanca", img: cityCasablanca },
-            { name: "Rabat", img: cityRabat },
-            { name: "Tanger", img: cityTanger },
+            { name: "Casablanca", img: cityCasablanca, comingSoon: false },
+            { name: "Rabat", img: cityRabat, comingSoon: true },
+            { name: "Marrakech", img: cityTanger, comingSoon: true },
           ].map((city, i) => (
             <motion.div key={city.name} initial={{ opacity: 0, scale: 0.95 }} whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }} transition={{ delay: i * 0.1 }}
               whileHover={{ y: -6 }}
               className="relative rounded-3xl overflow-hidden aspect-[3/2] group cursor-default shadow-card hover:shadow-elevated transition-all duration-500">
-              <img src={city.img} alt={city.name} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" loading="lazy" />
+              <img src={city.img} alt={city.name} className={`w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 ${city.comingSoon ? "grayscale opacity-70" : ""}`} loading="lazy" />
               <div className="absolute inset-0 bg-go-dark/40 group-hover:bg-go-dark/50 transition-colors duration-500" />
               <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 bg-gradient-to-r from-transparent via-white/10 to-transparent" />
               <div className="absolute inset-0 flex items-center justify-center">
@@ -128,6 +128,9 @@ const Index = () => (
                     <MapPin className="h-5 w-5 md:h-6 md:w-6 text-primary" />
                   </div>
                   <h3 className="font-display text-2xl md:text-3xl font-bold text-primary-foreground">{city.name}</h3>
+                  {city.comingSoon && (
+                    <span className="inline-block mt-2 px-3 py-1 rounded-full bg-white/20 backdrop-blur-sm text-xs font-semibold text-primary-foreground/80 tracking-wide uppercase">Bientôt</span>
+                  )}
                 </div>
               </div>
             </motion.div>
