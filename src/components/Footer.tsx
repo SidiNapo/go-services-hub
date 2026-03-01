@@ -47,7 +47,7 @@ const Footer = () => (
         <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.3 }}>
           <h4 className="font-display font-semibold mb-4">Contact</h4>
           <ul className="space-y-3 text-sm opacity-70">
-            <li className="flex items-center gap-2"><Phone className="h-3.5 w-3.5" /> +212 6 00 00 00 00</li>
+            <li className="flex items-center gap-2"><Phone className="h-3.5 w-3.5" /> +212 6 60 88 01 10</li>
             <li className="flex items-center gap-2"><Mail className="h-3.5 w-3.5" /> contact@go212.ma</li>
           </ul>
           <p className="mt-4 text-sm opacity-70">Disponible 7j/7 — 9h à 22h</p>
