@@ -32,8 +32,8 @@ const Navbar = () => {
       transition={{ duration: 0.6, ease: "easeOut" }}
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
         scrolled
-          ? "glass-card border-b py-2"
-          : "bg-transparent py-4"
+          ? "bg-background border-b shadow-sm py-2"
+          : "bg-background py-4"
       }`}
     >
       <div className="container mx-auto flex items-center justify-between px-4">
@@ -87,7 +87,7 @@ const Navbar = () => {
         </nav>
 
         <div className="hidden lg:flex items-center gap-3">
-          <a href="https://wa.me/212600000000" target="_blank" rel="noopener noreferrer"
+          <a href="https://wa.me/212660880110" target="_blank" rel="noopener noreferrer"
             className="gradient-go px-6 py-2.5 rounded-xl text-sm font-semibold text-primary-foreground shadow-go hover:opacity-90 transition-opacity">
             Réserver maintenant
           </a>
@@ -116,7 +116,7 @@ const Navbar = () => {
                   <span className="block text-xs text-muted-foreground">{s.desc}</span>
                 </Link>
               ))}
-              <a href="https://wa.me/212600000000" target="_blank" rel="noopener noreferrer"
+              <a href="https://wa.me/212660880110" target="_blank" rel="noopener noreferrer"
                 className="block text-center gradient-go px-6 py-3 rounded-xl text-sm font-semibold text-primary-foreground mt-4">
                 Réserver maintenant
               </a>

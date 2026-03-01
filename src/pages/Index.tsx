@@ -201,11 +201,11 @@ const Index = () => (
             Rejoignez des milliers de clients satisfaits. Réservez votre premier service dès aujourd'hui.
           </p>
           <div className="flex flex-wrap justify-center gap-4">
-            <a href="https://wa.me/212600000000" target="_blank" rel="noopener noreferrer"
+            <a href="https://wa.me/212660880110" target="_blank" rel="noopener noreferrer"
               className="px-8 py-4 rounded-2xl font-display font-semibold bg-primary-foreground text-primary hover:opacity-90 transition-opacity inline-flex items-center gap-2">
               Réserver via WhatsApp <ArrowRight className="h-5 w-5" />
             </a>
-            <a href="tel:+212600000000"
+            <a href="tel:+212660880110"
               className="px-8 py-4 rounded-2xl font-display font-semibold border-2 border-primary-foreground text-primary-foreground hover:bg-primary-foreground/10 transition-colors">
               Appeler maintenant
             </a>

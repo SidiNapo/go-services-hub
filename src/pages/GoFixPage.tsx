@@ -30,7 +30,7 @@ const GoFixPage = () => (
           <p className="text-lg text-primary-foreground/80 max-w-xl mb-8">
             Plomberie, électricité, réparations et maintenance générale. On répare tout ce dont votre maison a besoin.
           </p>
-          <a href="https://wa.me/212600000000" className="gradient-go px-8 py-4 rounded-2xl font-display font-semibold text-primary-foreground shadow-go hover:opacity-90 transition-all inline-flex items-center gap-2">
+          <a href="https://wa.me/212660880110" className="gradient-go px-8 py-4 rounded-2xl font-display font-semibold text-primary-foreground shadow-go hover:opacity-90 transition-all inline-flex items-center gap-2">
             Demander une intervention <ArrowRight className="h-5 w-5" />
           </a>
         </motion.div>
@@ -123,7 +123,7 @@ const GoFixPage = () => (
           <p className="text-primary-foreground/80 text-lg max-w-xl mx-auto mb-8">
             Envoyez-nous une photo de votre problème et recevez un devis en 30 minutes.
           </p>
-          <a href="https://wa.me/212600000000" className="px-8 py-4 rounded-2xl font-display font-semibold bg-primary-foreground text-primary hover:opacity-90 transition-opacity inline-flex items-center gap-2">
+          <a href="https://wa.me/212660880110" className="px-8 py-4 rounded-2xl font-display font-semibold bg-primary-foreground text-primary hover:opacity-90 transition-opacity inline-flex items-center gap-2">
             Contacter GoFix <ArrowRight className="h-5 w-5" />
           </a>
         </motion.div>

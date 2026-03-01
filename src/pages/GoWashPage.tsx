@@ -87,7 +87,7 @@ const GoWashPage = () => {
 
   const handleSubmit = () => {
     const msg = `Bonjour, je souhaite réserver un lavage GoWash :\n• Véhicule: ${vehicleTypes.find(v => v.id === selectedVehicle)?.label}\n• Pack: ${selectedPack?.name} (${selectedPack?.price} DH)\n• Marque: ${brand}\n• Année: ${year}\n• Adresse: ${address}`;
-    window.open(`https://wa.me/212600000000?text=${encodeURIComponent(msg)}`, "_blank");
+    window.open(`https://wa.me/212660880110?text=${encodeURIComponent(msg)}`, "_blank");
   };
 
   return (

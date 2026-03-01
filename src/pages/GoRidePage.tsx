@@ -31,7 +31,7 @@ const GoRidePage = () => {
   const handleSubmit = () => {
     const plan = pricing.find((p) => p.id === selectedPlan);
     const msg = `Bonjour, je souhaite réserver une moto Flow :\n• Durée: ${plan?.duration}\n• Prix: ${plan?.price} ${plan?.unit}\n• Nom: ${name}\n• Tél: ${phone}\n• Adresse: ${address}`;
-    window.open(`https://wa.me/212600000000?text=${encodeURIComponent(msg)}`, "_blank");
+    window.open(`https://wa.me/212660880110?text=${encodeURIComponent(msg)}`, "_blank");
     setModalOpen(false);
   };
 
