@@ -1,58 +1,34 @@
 
 
-# Fix Geolocation for iPhone -- All 4 Services
+# Switch Reverse Geocoding to Google Maps API
 
-## Problem
-On iPhone (iOS Safari), the "Me localiser" button can fail silently because:
-1. No user feedback when geolocation permission is denied or times out
-2. No guidance to enable Location Services in iOS Settings
-3. Error callbacks just silently stop the spinner with no message
-4. GoWash has a slightly different (non-async) implementation pattern vs the other 3 pages
-5. iOS Safari requires HTTPS and explicit permission -- users need clear instructions if blocked
+## What Changes
+Replace the free Nominatim reverse geocoding with **Google Maps Geocoding API** for more accurate, reliable address results -- especially on iPhone where Nominatim can return vague addresses.
 
-## Solution
-Update all 4 service pages (GoRide, GoWash, GoClean, GoFix) with robust, iPhone-compatible geolocation:
+## What Stays the Same
+- The browser's native `navigator.geolocation` for GPS coordinates (this is NOT a Google Maps feature -- it's built into every browser)
+- All iOS permission handling, fallback logic, and toast messages
+- The WhatsApp Google Maps link generation
 
-### Changes per page
+## Changes
 
-**1. Add error handling with user-facing toast messages**
-- On `PERMISSION_DENIED`: show a toast explaining how to enable location in iOS Settings (Settings > Safari > Location)
-- On `POSITION_UNAVAILABLE`: show "Location unavailable, please enter manually"
-- On `TIMEOUT`: show "Location timed out, please try again"
-- Use the existing `sonner` toast system already installed
+### 1. Update `src/lib/geolocation.ts`
+- Replace the `reverseGeocode` function to call `https://maps.googleapis.com/maps/api/geocode/json?latlng=...&key=API_KEY&language=fr`
+- Store the API key as a constant in the file (Google Maps API keys are publishable/public keys restricted by domain)
+- Parse the Google response to get `formatted_address` instead of Nominatim's `display_name`
 
-**2. Standardize all 4 implementations**
-- Make GoWash use the same async/await pattern as the other 3 pages
-- Add `accept-language=fr` to GoWash's Nominatim call (missing vs other pages)
-- Ensure consistent error messages in French across all services
-
-**3. Add iOS-specific geolocation improvements**
-- Increase timeout from 15s to 20s (iOS can be slower on first prompt)
-- Add a fallback: if high-accuracy fails, retry once without `enableHighAccuracy` (Wi-Fi/cell tower positioning as backup)
-- Show a loading state with clear text: "Recherche GPS..." during locate
-
-### Files to modify
-- `src/pages/GoRidePage.tsx` -- update `handleLocateMe` with error toasts + fallback
-- `src/pages/GoWashPage.tsx` -- rewrite `handleLocateMe` to async pattern + error toasts + fallback
-- `src/pages/GoCleanPage.tsx` -- update `handleLocateMe` with error toasts + fallback
-- `src/pages/GoFixPage.tsx` -- update `handleLocateMe` with error toasts + fallback
-
-### Technical Details
-
-Each `handleLocateMe` will follow this pattern:
+### Technical Detail
 
 ```text
-handleLocateMe()
-  |-- Check navigator.geolocation exists
-  |     (if not: toast "Geolocation non supportée")
-  |-- Try HIGH ACCURACY (enableHighAccuracy: true, timeout: 20s)
-  |     |-- Success: save coords, reverse geocode, done
-  |     |-- Fail: 
-  |           |-- PERMISSION_DENIED: toast with iOS instructions
-  |           |-- TIMEOUT/UNAVAILABLE: retry LOW ACCURACY once
-  |                 |-- Success: save coords, reverse geocode
-  |                 |-- Fail: toast error message
+Current flow:
+  GPS coords --> Nominatim (free, less accurate) --> address string
+
+New flow:
+  GPS coords --> Google Maps Geocoding API (accurate, reliable) --> address string
 ```
 
-Import `toast` from `sonner` in each page (already available in the project).
+Only ONE file changes: `src/lib/geolocation.ts` -- the `reverseGeocode` function (lines 24-34). All 4 service pages already import from this file so they automatically benefit.
+
+## Next Step
+After approval, I'll ask you to provide the Google Maps API key.
 
