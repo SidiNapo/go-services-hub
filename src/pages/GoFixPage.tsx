@@ -120,10 +120,9 @@ const GoFixPage = () => {
       : "";
     const lines = [
       "Demande d'intervention GoFix",
-      "",
+      "---",
       `Type: ${typeLabel}`,
       `Probleme: ${description}`,
-      photo ? "Photo: jointe" : "",
       "",
       `Ville: ${city}`,
       `Adresse: ${address}${mapsLink}`,
@@ -133,7 +132,7 @@ const GoFixPage = () => {
       `Heure: ${hour}`,
       "",
       `Nom: ${name}`,
-      `Telephone: ${phone}`,
+      `Tel: ${phone}`,
       notes ? `Notes: ${notes}` : "",
     ].filter(Boolean);
     return lines.join("\n");
@@ -144,56 +143,67 @@ const GoFixPage = () => {
     setIsSubmitting(true);
 
     const msg = buildMessage();
-    const waUrl = `https://wa.me/212660880110?text=${encodeURIComponent(msg)}`;
+    const WA_NUMBER = "212660880110";
+    const waUrl = `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(msg)}`;
 
     try {
-      // If there's a photo, try Web Share API first (works on iPhone Safari)
       if (photo) {
-        const shareFile = new File([photo], photo.name || "photo-probleme.jpg", { type: photo.type });
-        const canShareFiles = typeof navigator.canShare === "function" && navigator.canShare({ files: [shareFile] });
+        // Build a proper File from the original upload
+        const shareFile = new File(
+          [photo],
+          photo.name || "photo-probleme.jpg",
+          { type: photo.type || "image/jpeg" }
+        );
+
+        // Try Web Share API (iPhone Safari, Android Chrome — sends image + text together)
+        const canShareFiles =
+          typeof navigator.canShare === "function" &&
+          navigator.canShare({ files: [shareFile] });
 
         if (canShareFiles) {
           try {
             await navigator.share({
-              text: msg,
+              text: `${msg}\n\nEnvoyez a: +${WA_NUMBER}`,
               files: [shareFile],
             });
-            toast({ title: "Demande envoyee", description: "Votre photo et message ont ete partages avec succes." });
+            toast({
+              title: "Demande envoyee !",
+              description: "Photo et details partages avec succes.",
+            });
             setOpen(false);
             return;
           } catch (err: any) {
-            // User cancelled the share sheet — not an error
             if (err?.name === "AbortError") {
+              // User cancelled share sheet — keep modal open
               return;
             }
-            // Share failed, fall through to WhatsApp text fallback
+            // Fall through to fallback
           }
         }
 
-        // Fallback: download the photo so user can attach manually in WhatsApp
+        // Fallback: open WhatsApp text + auto-download photo for manual attach
         try {
           const blobUrl = URL.createObjectURL(photo);
-          const link = document.createElement("a");
-          link.href = blobUrl;
-          link.download = photo.name || "photo-probleme.jpg";
-          document.body.appendChild(link);
-          link.click();
-          document.body.removeChild(link);
+          const a = document.createElement("a");
+          a.href = blobUrl;
+          a.download = photo.name || "photo-probleme.jpg";
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
           setTimeout(() => URL.revokeObjectURL(blobUrl), 5000);
-
-          toast({
-            title: "Photo telechargee",
-            description: "Joignez-la dans WhatsApp en appuyant sur le trombone.",
-          });
         } catch {
-          // Ignore download errors
+          // ignore
         }
 
-        // Small delay to let download start, then open WhatsApp
-        await new Promise(r => setTimeout(r, 600));
+        toast({
+          title: "Photo sauvegardee",
+          description: "Joignez la photo dans WhatsApp avec le bouton trombone.",
+        });
+
+        await new Promise(r => setTimeout(r, 700));
         window.open(waUrl, "_blank");
       } else {
-        // No photo — just open WhatsApp directly
+        // No photo — open WhatsApp directly
         window.open(waUrl, "_blank");
       }
 
@@ -637,32 +647,51 @@ const GoFixPage = () => {
                     </div>
 
                     {/* Summary */}
-                    <div className="glass-card rounded-2xl p-4 mt-2">
-                      <h4 className="font-display font-semibold text-sm mb-3">Récapitulatif</h4>
-                      <div className="space-y-2 text-sm">
-                        <div className="flex justify-between">
-                          <span className="text-muted-foreground">Type</span>
-                          <span className="font-medium">{problemTypes.find(p => p.id === problemType)?.label}</span>
+                    <div className="rounded-2xl border border-primary/20 bg-gradient-to-br from-primary/5 via-transparent to-primary/5 p-5 mt-3 space-y-4">
+                      <h4 className="font-display font-bold text-base flex items-center gap-2">
+                        <Check className="h-4 w-4 text-primary" /> Récapitulatif
+                      </h4>
+
+                      <div className="grid grid-cols-2 gap-x-4 gap-y-2.5 text-sm">
+                        <div>
+                          <span className="text-[11px] uppercase tracking-wider text-muted-foreground font-semibold">Type</span>
+                          <p className="font-medium mt-0.5">{problemTypes.find(p => p.id === problemType)?.label}</p>
                         </div>
-                        <div className="flex justify-between">
-                          <span className="text-muted-foreground">Ville</span>
-                          <span className="font-medium">{city}</span>
+                        <div>
+                          <span className="text-[11px] uppercase tracking-wider text-muted-foreground font-semibold">Ville</span>
+                          <p className="font-medium mt-0.5">{city}</p>
                         </div>
-                        <div className="flex justify-between">
-                          <span className="text-muted-foreground">Date</span>
-                          <span className="font-medium">{date ? format(date, "dd/MM/yyyy") : "-"}</span>
+                        <div>
+                          <span className="text-[11px] uppercase tracking-wider text-muted-foreground font-semibold">Date</span>
+                          <p className="font-medium mt-0.5">{date ? format(date, "dd MMM yyyy", { locale: fr }) : "-"}</p>
                         </div>
-                        <div className="flex justify-between">
-                          <span className="text-muted-foreground">Heure</span>
-                          <span className="font-medium">{hour}</span>
+                        <div>
+                          <span className="text-[11px] uppercase tracking-wider text-muted-foreground font-semibold">Heure</span>
+                          <p className="font-medium mt-0.5">{hour}</p>
                         </div>
-                        {photo && (
-                          <div className="flex justify-between items-center">
-                            <span className="text-muted-foreground">Photo</span>
-                            <span className="text-xs text-primary font-medium">📷 Jointe</span>
-                          </div>
-                        )}
                       </div>
+
+                      {/* Photo preview in summary */}
+                      {photoPreview && (
+                        <div className="rounded-xl overflow-hidden border border-border/50 relative">
+                          <img src={photoPreview} alt="Photo jointe" className="w-full h-32 object-cover" />
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
+                          <div className="absolute bottom-2 left-3 right-3 flex items-center gap-2">
+                            <Camera className="h-3.5 w-3.5 text-white/90" />
+                            <span className="text-xs text-white/90 font-medium truncate">{photo?.name}</span>
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Share guidance */}
+                      {photo && (
+                        <div className="rounded-xl bg-primary/10 border border-primary/20 px-4 py-3 flex items-start gap-3">
+                          <Share2 className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
+                          <p className="text-xs text-foreground/80 leading-relaxed">
+                            En cliquant <strong>Envoyer</strong>, votre photo et les détails seront partagés directement vers WhatsApp.
+                          </p>
+                        </div>
+                      )}
                     </div>
                   </div>
                 </motion.div>
