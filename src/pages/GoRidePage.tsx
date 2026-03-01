@@ -153,22 +153,16 @@ const GoRidePage = () => {
         <div className="absolute inset-0 bg-gradient-to-b from-[hsl(160_20%_5%/0.5)] via-[hsl(160_20%_8%/0.3)] to-[hsl(160_20%_5%/0.85)]" />
         <div className="absolute inset-0 bg-gradient-to-r from-[hsl(160_20%_5%/0.6)] via-transparent to-transparent" />
 
-        <motion.div className="absolute top-[15%] right-[10%] w-72 h-72 rounded-full bg-primary/10 blur-[100px]"
-          animate={{ scale: [1, 1.3, 1], opacity: [0.3, 0.6, 0.3] }}
-          transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }} />
-        <motion.div className="absolute bottom-[20%] left-[5%] w-56 h-56 rounded-full bg-primary/8 blur-[80px]"
-          animate={{ scale: [1.2, 1, 1.2], opacity: [0.2, 0.5, 0.2] }}
-          transition={{ duration: 6, repeat: Infinity, ease: "easeInOut", delay: 2 }} />
+        <div className="absolute top-[15%] right-[10%] w-72 h-72 rounded-full bg-primary/10 blur-[100px] opacity-40" />
+        <div className="absolute bottom-[20%] left-[5%] w-56 h-56 rounded-full bg-primary/8 blur-[80px] opacity-30" />
 
         <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: "radial-gradient(circle, hsl(var(--primary-foreground)) 1px, transparent 1px)", backgroundSize: "40px 40px" }} />
 
         <div className="container mx-auto px-4 relative z-10 pt-24">
           <div className="max-w-3xl">
-            <motion.div initial={{ opacity: 0, y: 20, scale: 0.9 }} animate={{ opacity: 1, y: 0, scale: 1 }} transition={{ duration: 0.6 }}
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-primary/15 backdrop-blur-xl border border-primary/20 text-primary-foreground text-sm font-medium mb-8">
-              <motion.div animate={{ rotate: [0, 10, -10, 0] }} transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}>
-                <Zap className="h-4 w-4" />
-              </motion.div>
+            <motion.div initial={{ opacity: 0, y: 20, scale: 0.9 }} animate={{ opacity: 1, y: 0, scale: 1 }} transition={{ duration: 0.5 }}
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-primary/15 border border-primary/20 text-primary-foreground text-sm font-medium mb-8">
+              <Zap className="h-4 w-4" />
               100% Électrique · Flow 2026
             </motion.div>
 
@@ -193,15 +187,13 @@ const GoRidePage = () => {
 
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.65 }}
               className="flex flex-col sm:flex-row items-start sm:items-center gap-6">
-              <motion.button onClick={openModal} whileHover={{ scale: 1.05, boxShadow: "0 0 40px hsl(142 72% 42% / 0.3)" }}
-                whileTap={{ scale: 0.95 }}
-                className="gradient-go px-8 py-4 rounded-2xl font-display font-semibold text-primary-foreground shadow-go inline-flex items-center gap-3 text-base relative overflow-hidden group">
-                <span className="relative z-10">Réserver maintenant</span>
-                <ArrowRight className="h-5 w-5 relative z-10 group-hover:translate-x-1 transition-transform" />
-                <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 bg-gradient-to-r from-transparent via-white/15 to-transparent" />
+              <motion.button onClick={openModal} whileTap={{ scale: 0.95 }}
+                className="gradient-go px-8 py-4 rounded-2xl font-display font-semibold text-primary-foreground shadow-go inline-flex items-center gap-3 text-base">
+                <span>Réserver maintenant</span>
+                <ArrowRight className="h-5 w-5" />
               </motion.button>
 
-              <div className="flex items-center gap-6 px-6 py-4 rounded-2xl bg-black/40 backdrop-blur-xl border border-white/20 shadow-lg">
+              <div className="flex items-center gap-6 px-6 py-4 rounded-2xl bg-black/40 border border-white/20 shadow-lg">
                 <div className="text-center">
                   <div className="font-display text-2xl font-bold text-white drop-shadow-md">30<span className="text-sm font-normal text-white/70">DH</span></div>
                   <div className="text-xs text-white/90 uppercase tracking-wider font-medium">/ heure</div>
@@ -222,10 +214,8 @@ const GoRidePage = () => {
       {/* Features */}
       <section className="py-20 relative overflow-hidden">
         <div className="absolute inset-0 gradient-go" />
-        <motion.div className="absolute top-10 left-[10%] w-40 h-40 rounded-full bg-white/10 blur-2xl"
-          animate={{ y: [0, -20, 0] }} transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }} />
-        <motion.div className="absolute bottom-5 right-[15%] w-56 h-56 rounded-full bg-white/5 blur-2xl"
-          animate={{ y: [0, 15, 0] }} transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }} />
+        <div className="absolute top-10 left-[10%] w-40 h-40 rounded-full bg-white/10 blur-2xl" />
+        <div className="absolute bottom-5 right-[15%] w-56 h-56 rounded-full bg-white/5 blur-2xl" />
 
         <div className="container mx-auto px-4 relative z-10">
           <div className="text-center mb-12">
