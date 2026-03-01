@@ -199,12 +199,15 @@ const GoWashPage = () => {
 
   const handleLocateMe = async () => {
     setLocating(true);
-    const result = await locateUser();
-    if (result) {
-      setLocationCoords({ lat: result.lat, lng: result.lng });
-      setAddress(result.address);
+    try {
+      const result = await locateUser();
+      if (result) {
+        setLocationCoords({ lat: result.lat, lng: result.lng });
+        setAddress(result.address);
+      }
+    } finally {
+      setLocating(false);
     }
-    setLocating(false);
   };
 
   const handleConfirmWhatsApp = () => {
