@@ -60,6 +60,7 @@ const GoFixPage = () => {
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [notes, setNotes] = useState("");
+  const [locationCoords, setLocationCoords] = useState<{ lat: number; lng: number } | null>(null);
 
   const openModal = () => { setStep(1); setOpen(true); };
 
@@ -80,17 +81,19 @@ const GoFixPage = () => {
     setLocating(true);
     navigator.geolocation.getCurrentPosition(
       async (pos) => {
+        const { latitude, longitude } = pos.coords;
+        setLocationCoords({ lat: latitude, lng: longitude });
         try {
-          const res = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${pos.coords.latitude}&lon=${pos.coords.longitude}&format=json&accept-language=fr`);
+          const res = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json&accept-language=fr`);
           const data = await res.json();
           if (data.display_name) setAddress(data.display_name);
         } catch {
-          setAddress(`${pos.coords.latitude.toFixed(6)}, ${pos.coords.longitude.toFixed(6)}`);
+          setAddress(`${latitude.toFixed(6)}, ${longitude.toFixed(6)}`);
         }
         setLocating(false);
       },
       () => setLocating(false),
-      { enableHighAccuracy: true }
+      { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
     );
   };
 
@@ -107,7 +110,8 @@ const GoFixPage = () => {
   const handleConfirm = () => {
     const typeLabel = problemTypes.find(p => p.id === problemType)?.label ?? "";
     const photoNote = photo ? "\n📷 *Photo jointe ci-dessous*" : "";
-    const msg = `Bonjour, je souhaite une intervention GoFix :\n\n🔧 Type: ${typeLabel}\n📝 Problème: ${description}${photoNote}\n\n🏙️ Ville: ${city}\n📍 Adresse: ${address}${accessInstructions ? `\n🔑 Accès: ${accessInstructions}` : ""}\n📅 Date: ${date ? format(date, "dd/MM/yyyy") : ""}\n🕐 Heure: ${hour}\n\n👤 ${name}\n📞 ${phone}${notes ? `\n📝 Notes: ${notes}` : ""}`;
+    const mapsLink = locationCoords ? `\n📌 Google Maps: https://www.google.com/maps?q=${locationCoords.lat},${locationCoords.lng}` : "";
+    const msg = `Bonjour, je souhaite une intervention GoFix :\n\n🔧 Type: ${typeLabel}\n📝 Problème: ${description}${photoNote}\n\n🏙️ Ville: ${city}\n📍 Adresse: ${address}${mapsLink}${accessInstructions ? `\n🔑 Accès: ${accessInstructions}` : ""}\n📅 Date: ${date ? format(date, "dd/MM/yyyy") : ""}\n🕐 Heure: ${hour}\n\n👤 ${name}\n📞 ${phone}${notes ? `\n📝 Notes: ${notes}` : ""}`;
 
     const waUrl = `https://wa.me/212660880110?text=${encodeURIComponent(msg)}`;
     window.open(waUrl, "_blank");

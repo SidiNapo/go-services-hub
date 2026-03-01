@@ -60,6 +60,7 @@ const GoRidePage = () => {
   const [city, setCity] = useState("Casablanca");
   const [address, setAddress] = useState("");
   const [locating, setLocating] = useState(false);
+  const [locationCoords, setLocationCoords] = useState<{ lat: number; lng: number } | null>(null);
 
   // Step 5: Personal info
   const [name, setName] = useState("");
@@ -73,17 +74,19 @@ const GoRidePage = () => {
     setLocating(true);
     navigator.geolocation.getCurrentPosition(
       async (pos) => {
+        const { latitude, longitude } = pos.coords;
+        setLocationCoords({ lat: latitude, lng: longitude });
         try {
-          const res = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${pos.coords.latitude}&lon=${pos.coords.longitude}&format=json&accept-language=fr`);
+          const res = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json&accept-language=fr`);
           const data = await res.json();
           if (data.display_name) setAddress(data.display_name);
         } catch {
-          setAddress(`${pos.coords.latitude.toFixed(6)}, ${pos.coords.longitude.toFixed(6)}`);
+          setAddress(`${latitude.toFixed(6)}, ${longitude.toFixed(6)}`);
         }
         setLocating(false);
       },
       () => setLocating(false),
-      { enableHighAccuracy: true }
+      { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
     );
   };
 
@@ -128,9 +131,10 @@ const GoRidePage = () => {
   };
 
   const handleConfirm = () => {
+    const mapsLink = locationCoords ? `\n📌 Google Maps: https://www.google.com/maps?q=${locationCoords.lat},${locationCoords.lng}` : "";
     const locationInfo = deliveryMode === "pickup"
       ? `📍 Récupération: ${pickupLocations.find(l => l.id === selectedPickup)?.name}\n📌 ${pickupLocations.find(l => l.id === selectedPickup)?.address}`
-      : `🚚 Livraison à domicile\n🏙️ Ville: ${city}\n📍 Adresse: ${address}`;
+      : `🚚 Livraison à domicile\n🏙️ Ville: ${city}\n📍 Adresse: ${address}${mapsLink}`;
     const dateInfo = selectedPlan === "day"
       ? `📅 Récupération: ${date ? format(date, "dd/MM/yyyy") : ""}\n📅 Retour: ${dropoffDate ? format(dropoffDate, "dd/MM/yyyy") : ""}`
       : `📅 Date: ${date ? format(date, "dd/MM/yyyy") : ""}`;

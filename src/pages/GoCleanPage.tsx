@@ -72,6 +72,7 @@ const GoCleanPage = () => {
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
   const [notes, setNotes] = useState("");
+  const [locationCoords, setLocationCoords] = useState<{ lat: number; lng: number } | null>(null);
 
   const openModal = () => {
     setStep(1);
@@ -87,19 +88,21 @@ const GoCleanPage = () => {
     setLocating(true);
     navigator.geolocation.getCurrentPosition(
       async (pos) => {
+        const { latitude, longitude } = pos.coords;
+        setLocationCoords({ lat: latitude, lng: longitude });
         try {
-          const res = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${pos.coords.latitude}&lon=${pos.coords.longitude}&format=json&accept-language=fr`);
+          const res = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json&accept-language=fr`);
           const data = await res.json();
           if (data.display_name) {
             setAddress(data.display_name);
           }
         } catch {
-          setAddress(`${pos.coords.latitude.toFixed(6)}, ${pos.coords.longitude.toFixed(6)}`);
+          setAddress(`${latitude.toFixed(6)}, ${longitude.toFixed(6)}`);
         }
         setLocating(false);
       },
       () => setLocating(false),
-      { enableHighAccuracy: true }
+      { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
     );
   };
 
@@ -122,7 +125,8 @@ const GoCleanPage = () => {
     const extrasText = selectedExtras.length > 0
       ? `\n🔧 Options: ${extras.filter(e => selectedExtras.includes(e.id)).map(e => e.label).join(", ")}`
       : "";
-    const msg = `Bonjour, je souhaite réserver GoClean :\n\n🏠 Type: ${selectedLocal?.label}\n🏙️ Ville: ${city}\n📍 Adresse: ${address}${accessInstructions ? `\n🔑 Accès: ${accessInstructions}` : ""}\n📅 Date: ${date ? format(date, "dd/MM/yyyy") : ""}\n🕐 Check-out: ${checkoutTime}\n🕐 Check-in: ${checkinTime}${extrasText}\n\n💰 Total: ${total} DH\n\n👤 ${name}\n📞 ${phone}${email ? `\n📧 ${email}` : ""}${notes ? `\n📝 ${notes}` : ""}`;
+    const mapsLink = locationCoords ? `\n📌 Google Maps: https://www.google.com/maps?q=${locationCoords.lat},${locationCoords.lng}` : "";
+    const msg = `Bonjour, je souhaite réserver GoClean :\n\n🏠 Type: ${selectedLocal?.label}\n🏙️ Ville: ${city}\n📍 Adresse: ${address}${mapsLink}${accessInstructions ? `\n🔑 Accès: ${accessInstructions}` : ""}\n📅 Date: ${date ? format(date, "dd/MM/yyyy") : ""}\n🕐 Check-out: ${checkoutTime}\n🕐 Check-in: ${checkinTime}${extrasText}\n\n💰 Total: ${total} DH\n\n👤 ${name}\n📞 ${phone}${email ? `\n📧 ${email}` : ""}${notes ? `\n📝 ${notes}` : ""}`;
     window.open(`https://wa.me/212660880110?text=${encodeURIComponent(msg)}`, "_blank");
     setOpen(false);
   };
