@@ -62,41 +62,41 @@ const packsByVehicle: Record<VehicleType, WashPack[]> = {
 };
 
 const carBrands: { name: string; logo: string }[] = [
-  { name: "Audi", logo: "https://www.carlogos.org/car-logos/audi-logo.png" },
-  { name: "BMW", logo: "https://www.carlogos.org/car-logos/bmw-logo.png" },
-  { name: "Citroën", logo: "https://www.carlogos.org/car-logos/citroen-logo.png" },
-  { name: "Dacia", logo: "https://www.carlogos.org/car-logos/dacia-logo.png" },
-  { name: "Fiat", logo: "https://www.carlogos.org/car-logos/fiat-logo.png" },
-  { name: "Ford", logo: "https://www.carlogos.org/car-logos/ford-logo.png" },
-  { name: "Honda", logo: "https://www.carlogos.org/car-logos/honda-logo.png" },
-  { name: "Hyundai", logo: "https://www.carlogos.org/car-logos/hyundai-logo.png" },
-  { name: "Jaguar", logo: "https://www.carlogos.org/car-logos/jaguar-logo.png" },
-  { name: "Jeep", logo: "https://www.carlogos.org/car-logos/jeep-logo.png" },
-  { name: "Kia", logo: "https://www.carlogos.org/car-logos/kia-logo.png" },
-  { name: "Land Rover", logo: "https://www.carlogos.org/car-logos/land-rover-logo.png" },
-  { name: "Lexus", logo: "https://www.carlogos.org/car-logos/lexus-logo.png" },
-  { name: "Mazda", logo: "https://www.carlogos.org/car-logos/mazda-logo.png" },
-  { name: "Mercedes", logo: "https://www.carlogos.org/car-logos/mercedes-benz-logo.png" },
-  { name: "Mini", logo: "https://www.carlogos.org/car-logos/mini-logo.png" },
-  { name: "Mitsubishi", logo: "https://www.carlogos.org/car-logos/mitsubishi-logo.png" },
-  { name: "Nissan", logo: "https://www.carlogos.org/car-logos/nissan-logo.png" },
-  { name: "Opel", logo: "https://www.carlogos.org/car-logos/opel-logo.png" },
-  { name: "Peugeot", logo: "https://www.carlogos.org/car-logos/peugeot-logo.png" },
-  { name: "Porsche", logo: "https://www.carlogos.org/car-logos/porsche-logo.png" },
-  { name: "Renault", logo: "https://www.carlogos.org/car-logos/renault-logo.png" },
-  { name: "Seat", logo: "https://www.carlogos.org/car-logos/seat-logo.png" },
-  { name: "Škoda", logo: "https://www.carlogos.org/car-logos/skoda-logo.png" },
-  { name: "Suzuki", logo: "https://www.carlogos.org/car-logos/suzuki-logo.png" },
-  { name: "Tesla", logo: "https://www.carlogos.org/car-logos/tesla-logo.png" },
-  { name: "Toyota", logo: "https://www.carlogos.org/car-logos/toyota-logo.png" },
-  { name: "Volkswagen", logo: "https://www.carlogos.org/car-logos/volkswagen-logo.png" },
-  { name: "Volvo", logo: "https://www.carlogos.org/car-logos/volvo-logo.png" },
-  { name: "Alfa Romeo", logo: "https://www.carlogos.org/car-logos/alfa-romeo-logo.png" },
-  { name: "Chevrolet", logo: "https://www.carlogos.org/car-logos/chevrolet-logo.png" },
-  { name: "Cupra", logo: "https://www.carlogos.org/car-logos/cupra-logo.png" },
-  { name: "DS", logo: "https://www.carlogos.org/car-logos/ds-automobiles-logo.png" },
-  { name: "MG", logo: "https://www.carlogos.org/car-logos/mg-logo.png" },
-  { name: "Subaru", logo: "https://www.carlogos.org/car-logos/subaru-logo.png" },
+  { name: "Audi", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/92/Audi-Logo_2016.svg/200px-Audi-Logo_2016.svg.png" },
+  { name: "BMW", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/44/BMW.svg/200px-BMW.svg.png" },
+  { name: "Citroën", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0b/Citro%C3%ABn_2022.svg/200px-Citro%C3%ABn_2022.svg.png" },
+  { name: "Dacia", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5d/Dacia_2021.svg/200px-Dacia_2021.svg.png" },
+  { name: "Fiat", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/12/Fiat_Automobiles_logo_%282006%29.svg/200px-Fiat_Automobiles_logo_%282006%29.svg.png" },
+  { name: "Ford", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3e/Ford_logo_flat.svg/200px-Ford_logo_flat.svg.png" },
+  { name: "Honda", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/38/Honda.svg/200px-Honda.svg.png" },
+  { name: "Hyundai", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/44/Hyundai_Motor_Company_logo.svg/200px-Hyundai_Motor_Company_logo.svg.png" },
+  { name: "Jaguar", logo: "https://upload.wikimedia.org/wikipedia/en/thumb/5/5f/Jaguar_2012_logo.svg/200px-Jaguar_2012_logo.svg.png" },
+  { name: "Jeep", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/45/Jeep_logo.svg/200px-Jeep_logo.svg.png" },
+  { name: "Kia", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/13/Kia-logo.png/200px-Kia-logo.png" },
+  { name: "Land Rover", logo: "https://upload.wikimedia.org/wikipedia/en/thumb/b/b4/Land_Rover_logo2.svg/200px-Land_Rover_logo2.svg.png" },
+  { name: "Lexus", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d1/Lexus_division_emblem.svg/200px-Lexus_division_emblem.svg.png" },
+  { name: "Mazda", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8c/Mazda_logo_with_emblem.svg/200px-Mazda_logo_with_emblem.svg.png" },
+  { name: "Mercedes", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/90/Mercedes-Logo.svg/200px-Mercedes-Logo.svg.png" },
+  { name: "Mini", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f4/Mini_logo.svg/200px-Mini_logo.svg.png" },
+  { name: "Mitsubishi", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5a/Mitsubishi_logo.svg/200px-Mitsubishi_logo.svg.png" },
+  { name: "Nissan", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8c/Nissan_logo_2020.svg/200px-Nissan_logo_2020.svg.png" },
+  { name: "Opel", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/28/Opel_2024.svg/200px-Opel_2024.svg.png" },
+  { name: "Peugeot", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/45/Peugeot_2021.svg/200px-Peugeot_2021.svg.png" },
+  { name: "Porsche", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/Porsche_logo.svg/200px-Porsche_logo.svg.png" },
+  { name: "Renault", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b7/Renault_2021_Text.svg/200px-Renault_2021_Text.svg.png" },
+  { name: "Seat", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/09/SEAT_Logo_from_2017.svg/200px-SEAT_Logo_from_2017.svg.png" },
+  { name: "Škoda", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/69/%C5%A0koda_Auto_2022.svg/200px-%C5%A0koda_Auto_2022.svg.png" },
+  { name: "Suzuki", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/12/Suzuki_logo_2.svg/200px-Suzuki_logo_2.svg.png" },
+  { name: "Tesla", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/bd/Tesla_Motors.svg/200px-Tesla_Motors.svg.png" },
+  { name: "Toyota", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/Toyota.svg/200px-Toyota.svg.png" },
+  { name: "Volkswagen", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6d/Volkswagen_logo_2019.svg/200px-Volkswagen_logo_2019.svg.png" },
+  { name: "Volvo", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/44/Volvo_Cars_logo.svg/200px-Volvo_Cars_logo.svg.png" },
+  { name: "Alfa Romeo", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b4/Alfa_Romeo_2015.svg/200px-Alfa_Romeo_2015.svg.png" },
+  { name: "Chevrolet", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1f/Chevrolet_logo.svg/200px-Chevrolet_logo.svg.png" },
+  { name: "MG", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e1/MG_Motor_logo.svg/200px-MG_Motor_logo.svg.png" },
+  { name: "Subaru", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/69/Subaru_logo.svg/200px-Subaru_logo.svg.png" },
+  { name: "Cupra", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e9/Cupra_logo.svg/200px-Cupra_logo.svg.png" },
+  { name: "DS", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c7/DS_Automobiles_logo.svg/200px-DS_Automobiles_logo.svg.png" },
 ];
 
 const GoWashPage = () => {
@@ -275,13 +275,16 @@ const GoWashPage = () => {
                               src={b.logo}
                               alt={b.name}
                               className="max-w-full max-h-full object-contain group-hover:scale-110 transition-transform duration-200"
+                              crossOrigin="anonymous"
+                              referrerPolicy="no-referrer"
                               onError={(e) => {
                                 const target = e.target as HTMLImageElement;
                                 target.style.display = 'none';
-                                target.nextElementSibling?.classList.remove('hidden');
+                                const fallback = target.nextElementSibling as HTMLElement;
+                                if (fallback) fallback.style.display = 'flex';
                               }}
                             />
-                            <span className="hidden w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center font-display font-bold text-primary text-lg">{b.name.charAt(0)}</span>
+                            <div style={{ display: 'none' }} className="w-10 h-10 rounded-full bg-primary/10 items-center justify-center font-display font-bold text-primary text-lg">{b.name.charAt(0)}</div>
                           </div>
                           <span className="text-xs font-medium text-foreground/80 leading-tight text-center truncate w-full">{b.name}</span>
                         </motion.button>
@@ -367,7 +370,7 @@ const GoWashPage = () => {
                   {/* Order details */}
                   <div className="space-y-3">
                     <div className="flex items-center justify-between">
-                      <span className="text-sm text-muted-foreground flex items-center gap-2"><Sparkles className="h-3.5 w-3.5" /> Formule</span>
+                      <span className="text-sm text-muted-foreground flex items-center gap-2"><Check className="h-3.5 w-3.5" /> Formule</span>
                       <span className="font-display font-semibold">{selectedPack.name}</span>
                     </div>
                     <div className="flex items-center justify-between">
