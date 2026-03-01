@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Zap, Battery, Clock, Shield, Leaf, ArrowRight, User, Phone, MapPin, ChevronLeft, Navigation, Calendar } from "lucide-react";
+import { Zap, Battery, Clock, Shield, Leaf, ArrowRight, User, Phone, MapPin, ChevronLeft, Navigation, Calendar, Truck, Building2, CheckCircle2 } from "lucide-react";
 import Layout from "@/components/Layout";
 import AnimatedSection from "@/components/AnimatedSection";
 import motoFlow from "@/assets/moto-flow.jpg";
@@ -12,6 +12,12 @@ import { format } from "date-fns";
 import { fr } from "date-fns/locale";
 
 type DurationType = "hour" | "day" | "week" | "month";
+type DeliveryMode = "delivery" | "pickup";
+
+const pickupLocations = [
+  { id: "oulfa", name: "Agence Oulfa", address: "Lotissement Smara, N°77 Rue 09, Rond-point Chahdia, Oulfa", area: "Oulfa" },
+  { id: "bourgogne", name: "Agence Bourgogne", address: "611, Rue Goulmima, Bourgogne", area: "Bourgogne" },
+];
 
 const pricing: { id: DurationType; duration: string; price: string; unit: string; popular: boolean; emoji: string; perUnit: string }[] = [
   { id: "hour", duration: "1 Heure", price: "30", unit: "DH", popular: false, emoji: "⏱️", perUnit: "/heure" },
@@ -36,7 +42,7 @@ const timeSlots = [
 const GoRidePage = () => {
   const [open, setOpen] = useState(false);
   const [step, setStep] = useState(1);
-  const totalSteps = 4;
+  const totalSteps = 5;
 
   // Step 1: Duration
   const [selectedPlan, setSelectedPlan] = useState<DurationType>("day");
@@ -45,12 +51,16 @@ const GoRidePage = () => {
   const [date, setDate] = useState<Date | undefined>(undefined);
   const [hour, setHour] = useState("");
 
-  // Step 3: Location
+  // Step 3: Delivery mode
+  const [deliveryMode, setDeliveryMode] = useState<DeliveryMode | "">("");
+  const [selectedPickup, setSelectedPickup] = useState("");
+
+  // Step 4: Location (for delivery mode)
   const [city, setCity] = useState("Casablanca");
   const [address, setAddress] = useState("");
   const [locating, setLocating] = useState(false);
 
-  // Step 4: Personal info
+  // Step 5: Personal info
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [notes, setNotes] = useState("");
@@ -82,19 +92,55 @@ const GoRidePage = () => {
     switch (step) {
       case 1: return !!selectedPlan;
       case 2: return !!date && !!hour;
-      case 3: return address.trim().length > 0;
-      case 4: return name.trim().length > 0 && phone.trim().length > 0;
+      case 3: return deliveryMode === "pickup" ? !!selectedPickup : deliveryMode === "delivery";
+      case 4: return deliveryMode === "pickup" || address.trim().length > 0;
+      case 5: return name.trim().length > 0 && phone.trim().length > 0;
       default: return false;
     }
   };
 
+  const handleNext = () => {
+    if (!canNext()) return;
+    // Skip address step if pickup
+    if (step === 3 && deliveryMode === "pickup") {
+      setStep(5);
+    } else {
+      setStep(step + 1);
+    }
+  };
+
+  const handleBack = () => {
+    // If on info step and pickup, go back to step 3
+    if (step === 5 && deliveryMode === "pickup") {
+      setStep(3);
+    } else {
+      setStep(step - 1);
+    }
+  };
+
+  const getLocationText = () => {
+    if (deliveryMode === "pickup") {
+      const loc = pickupLocations.find(l => l.id === selectedPickup);
+      return loc ? `Récupération · ${loc.name}` : "";
+    }
+    return `Livraison · ${address}`;
+  };
+
   const handleConfirm = () => {
-    const msg = `Bonjour, je souhaite réserver une moto GoRide Flow :\n\n🏍️ Durée: ${selectedPricing.duration}\n💰 Prix: ${selectedPricing.price} ${selectedPricing.unit}\n📅 Date: ${date ? format(date, "dd/MM/yyyy") : ""}\n🕐 Heure: ${hour}\n🏙️ Ville: ${city}\n📍 Adresse: ${address}\n\n👤 ${name}\n📞 ${phone}${notes ? `\n📝 Notes: ${notes}` : ""}`;
+    const locationInfo = deliveryMode === "pickup"
+      ? `📍 Récupération: ${pickupLocations.find(l => l.id === selectedPickup)?.name}\n📌 ${pickupLocations.find(l => l.id === selectedPickup)?.address}`
+      : `🚚 Livraison à domicile\n🏙️ Ville: ${city}\n📍 Adresse: ${address}`;
+    const msg = `Bonjour, je souhaite réserver une moto GoRide Flow :\n\n🏍️ Durée: ${selectedPricing.duration}\n💰 Prix: ${selectedPricing.price} ${selectedPricing.unit}\n📅 Date: ${date ? format(date, "dd/MM/yyyy") : ""}\n🕐 Heure: ${hour}\n\n${locationInfo}\n\n👤 ${name}\n📞 ${phone}${notes ? `\n📝 Notes: ${notes}` : ""}`;
     window.open(`https://wa.me/212660880110?text=${encodeURIComponent(msg)}`, "_blank");
     setOpen(false);
   };
 
-  const stepLabels = ["Durée", "Date", "Adresse", "Infos"];
+  const stepLabels = deliveryMode === "pickup"
+    ? ["Durée", "Date", "Mode", "—", "Infos"]
+    : ["Durée", "Date", "Mode", "Adresse", "Infos"];
+  const visibleSteps = deliveryMode === "pickup"
+    ? [{ label: "Durée", idx: 1 }, { label: "Date", idx: 2 }, { label: "Mode", idx: 3 }, { label: "Infos", idx: 5 }]
+    : [{ label: "Durée", idx: 1 }, { label: "Date", idx: 2 }, { label: "Mode", idx: 3 }, { label: "Adresse", idx: 4 }, { label: "Infos", idx: 5 }];
 
   return (
     <Layout>
@@ -235,16 +281,16 @@ const GoRidePage = () => {
               <span className="text-sm font-semibold text-primary">{selectedPricing.price} DH</span>
             </div>
             <div className="flex items-center gap-1">
-              {stepLabels.map((label, i) => (
-                <div key={label} className="flex-1 flex flex-col items-center gap-1">
+              {visibleSteps.map((vs, i) => (
+                <div key={vs.label} className="flex-1 flex flex-col items-center gap-1">
                   <div className={cn(
                     "w-full h-1.5 rounded-full transition-all duration-300",
-                    step > i + 1 ? "bg-primary" : step === i + 1 ? "bg-primary/60" : "bg-muted"
+                    step > vs.idx ? "bg-primary" : step === vs.idx ? "bg-primary/60" : "bg-muted"
                   )} />
                   <span className={cn(
                     "text-[10px] font-medium transition-colors",
-                    step >= i + 1 ? "text-primary" : "text-muted-foreground"
-                  )}>{label}</span>
+                    step >= vs.idx ? "text-primary" : "text-muted-foreground"
+                  )}>{vs.label}</span>
                 </div>
               ))}
             </div>
@@ -308,7 +354,7 @@ const GoRidePage = () => {
                     </PopoverContent>
                   </Popover>
 
-                  <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2 block">Heure de livraison *</label>
+                  <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2 block">Heure *</label>
                   <div className="grid grid-cols-4 sm:grid-cols-6 gap-2">
                     {timeSlots.map(t => (
                       <button key={t} onClick={() => setHour(t)}
@@ -323,9 +369,106 @@ const GoRidePage = () => {
                 </motion.div>
               )}
 
-              {/* Step 3: Location */}
+              {/* Step 3: Delivery mode */}
               {step === 3 && (
                 <motion.div key="s3" initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -30 }} transition={{ duration: 0.25 }}>
+                  <h3 className="font-display text-xl font-bold mb-1">Mode de récupération</h3>
+                  <p className="text-sm text-muted-foreground mb-6">Comment souhaitez-vous récupérer votre moto ?</p>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6">
+                    {/* Delivery option */}
+                    <button onClick={() => { setDeliveryMode("delivery"); setSelectedPickup(""); }}
+                      className={cn(
+                        "relative flex flex-col items-center p-6 rounded-2xl border-2 text-center transition-all duration-300 group overflow-hidden",
+                        deliveryMode === "delivery"
+                          ? "border-primary bg-primary/5 shadow-go"
+                          : "border-border hover:border-primary/30 hover:bg-muted/30"
+                      )}>
+                      <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 bg-gradient-to-r from-transparent via-primary/5 to-transparent" />
+                      <div className={cn(
+                        "w-14 h-14 rounded-2xl flex items-center justify-center mb-3 transition-all",
+                        deliveryMode === "delivery" ? "bg-primary/15" : "bg-muted"
+                      )}>
+                        <Truck className={cn("h-6 w-6 transition-colors", deliveryMode === "delivery" ? "text-primary" : "text-muted-foreground")} />
+                      </div>
+                      <span className="font-display font-bold text-base mb-1">Livraison</span>
+                      <span className="text-xs text-muted-foreground">On vous livre la moto à l'adresse de votre choix</span>
+                      {deliveryMode === "delivery" && (
+                        <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} className="absolute top-3 right-3">
+                          <CheckCircle2 className="h-5 w-5 text-primary" />
+                        </motion.div>
+                      )}
+                    </button>
+
+                    {/* Pickup option */}
+                    <button onClick={() => { setDeliveryMode("pickup"); setAddress(""); }}
+                      className={cn(
+                        "relative flex flex-col items-center p-6 rounded-2xl border-2 text-center transition-all duration-300 group overflow-hidden",
+                        deliveryMode === "pickup"
+                          ? "border-primary bg-primary/5 shadow-go"
+                          : "border-border hover:border-primary/30 hover:bg-muted/30"
+                      )}>
+                      <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 bg-gradient-to-r from-transparent via-primary/5 to-transparent" />
+                      <div className={cn(
+                        "w-14 h-14 rounded-2xl flex items-center justify-center mb-3 transition-all",
+                        deliveryMode === "pickup" ? "bg-primary/15" : "bg-muted"
+                      )}>
+                        <Building2 className={cn("h-6 w-6 transition-colors", deliveryMode === "pickup" ? "text-primary" : "text-muted-foreground")} />
+                      </div>
+                      <span className="font-display font-bold text-base mb-1">Récupération en agence</span>
+                      <span className="text-xs text-muted-foreground">Venez chercher votre moto dans l'une de nos agences</span>
+                      {deliveryMode === "pickup" && (
+                        <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} className="absolute top-3 right-3">
+                          <CheckCircle2 className="h-5 w-5 text-primary" />
+                        </motion.div>
+                      )}
+                    </button>
+                  </div>
+
+                  {/* Pickup locations */}
+                  <AnimatePresence>
+                    {deliveryMode === "pickup" && (
+                      <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }} transition={{ duration: 0.3 }}>
+                        <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3 block">Choisissez votre agence *</label>
+                        <div className="space-y-3">
+                          {pickupLocations.map((loc) => (
+                            <button key={loc.id} onClick={() => setSelectedPickup(loc.id)}
+                              className={cn(
+                                "w-full flex items-start gap-4 p-4 rounded-2xl border-2 text-left transition-all duration-200 group relative overflow-hidden",
+                                selectedPickup === loc.id
+                                  ? "border-primary bg-primary/5"
+                                  : "border-border hover:border-primary/30 hover:bg-muted/20"
+                              )}>
+                              <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 bg-gradient-to-r from-transparent via-primary/5 to-transparent" />
+                              <div className={cn(
+                                "w-10 h-10 rounded-xl flex items-center justify-center shrink-0 transition-all",
+                                selectedPickup === loc.id ? "bg-primary/15" : "bg-muted"
+                              )}>
+                                <MapPin className={cn("h-5 w-5 transition-colors", selectedPickup === loc.id ? "text-primary" : "text-muted-foreground")} />
+                              </div>
+                              <div className="flex-1 min-w-0 relative z-10">
+                                <div className="flex items-center gap-2 mb-1">
+                                  <span className="font-display font-bold text-sm">{loc.name}</span>
+                                  {selectedPickup === loc.id && (
+                                    <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }}>
+                                      <CheckCircle2 className="h-4 w-4 text-primary" />
+                                    </motion.div>
+                                  )}
+                                </div>
+                                <p className="text-xs text-muted-foreground leading-relaxed">{loc.address}</p>
+                              </div>
+                            </button>
+                          ))}
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </motion.div>
+              )}
+
+              {/* Step 4: Delivery address (only for delivery mode) */}
+              {step === 4 && (
+                <motion.div key="s4" initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -30 }} transition={{ duration: 0.25 }}>
                   <h3 className="font-display text-xl font-bold mb-1">Adresse de livraison</h3>
                   <p className="text-sm text-muted-foreground mb-5">Où livrer votre moto ?</p>
 
@@ -367,9 +510,9 @@ const GoRidePage = () => {
                 </motion.div>
               )}
 
-              {/* Step 4: Personal info */}
-              {step === 4 && (
-                <motion.div key="s4" initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -30 }} transition={{ duration: 0.25 }}>
+              {/* Step 5: Personal info */}
+              {step === 5 && (
+                <motion.div key="s5" initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -30 }} transition={{ duration: 0.25 }}>
                   <h3 className="font-display text-xl font-bold mb-1">Vos informations</h3>
                   <p className="text-sm text-muted-foreground mb-5">Pour confirmer votre réservation</p>
 
@@ -413,8 +556,8 @@ const GoRidePage = () => {
                           <span className="font-medium">{hour}</span>
                         </div>
                         <div className="flex justify-between">
-                          <span className="text-muted-foreground">Livraison</span>
-                          <span className="font-medium">{city}</span>
+                          <span className="text-muted-foreground">{deliveryMode === "pickup" ? "Agence" : "Livraison"}</span>
+                          <span className="font-medium text-right max-w-[60%]">{getLocationText()}</span>
                         </div>
                       </div>
                     </div>
@@ -427,14 +570,14 @@ const GoRidePage = () => {
           {/* Footer */}
           <div className="sticky bottom-0 bg-background/95 backdrop-blur-md border-t border-border/50 p-4 md:p-6 pt-4 flex items-center justify-between gap-3">
             {step > 1 ? (
-              <button onClick={() => setStep(step - 1)}
+              <button onClick={handleBack}
                 className="inline-flex items-center gap-1.5 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
                 <ChevronLeft className="h-4 w-4" /> Retour
               </button>
             ) : <div />}
 
             {step < totalSteps ? (
-              <button onClick={() => canNext() && setStep(step + 1)} disabled={!canNext()}
+              <button onClick={handleNext} disabled={!canNext()}
                 className={cn(
                   "gradient-go px-6 py-3 rounded-xl font-display font-semibold text-sm text-primary-foreground inline-flex items-center gap-2 transition-all",
                   !canNext() && "opacity-40 cursor-not-allowed"
