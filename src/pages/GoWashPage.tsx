@@ -143,6 +143,7 @@ const GoWashPage = () => {
 
   const [showMotoChoice, setShowMotoChoice] = useState(false);
   const bookingRef = useRef<HTMLDivElement>(null);
+  const infoFormRef = useRef<HTMLDivElement>(null);
   const totalSteps = 4;
 
   const scrollToBooking = () => {
@@ -331,49 +332,82 @@ const GoWashPage = () => {
                       <label className="text-sm font-display font-semibold mb-4 flex items-center gap-2">
                         <Car className="h-4 w-4 text-primary" /> Sélectionnez la marque
                       </label>
-                      <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-3">
-                        {carBrands.map((b, i) => (
-                          <motion.button
-                            key={b.name}
-                            initial={{ opacity: 0, y: 10 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: i * 0.015 }}
-                            onClick={() => setBrand(b.name)}
-                            className={`relative p-4 rounded-2xl flex flex-col items-center justify-center gap-2.5 border-2 transition-all duration-200 cursor-pointer group ${
-                              brand === b.name
-                                ? "border-primary bg-primary/5 shadow-go scale-[1.02]"
-                                : "border-border/60 bg-card hover:border-primary/40 hover:bg-accent/30 hover:shadow-md"
-                            }`}
+
+                      {/* Selected brand chip */}
+                      <AnimatePresence>
+                        {brand && (
+                          <motion.div
+                            initial={{ opacity: 0, scale: 0.9 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            exit={{ opacity: 0, scale: 0.9 }}
+                            transition={{ type: "spring", damping: 20, stiffness: 300 }}
+                            className="mb-4 inline-flex items-center gap-3 px-5 py-3 rounded-2xl border-2 border-primary bg-primary/5 shadow-go"
                           >
-                            {brand === b.name && (
-                              <motion.div
-                                initial={{ scale: 0 }}
-                                animate={{ scale: 1 }}
-                                className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full gradient-go flex items-center justify-center"
-                              >
-                                <Check className="h-3 w-3 text-primary-foreground" />
-                              </motion.div>
-                            )}
-                            <div className="w-12 h-12 flex items-center justify-center">
-                              <img
-                                src={b.logo}
-                                alt={b.name}
-                                className="max-w-full max-h-full object-contain group-hover:scale-110 transition-transform duration-200"
-                              />
+                            <img
+                              src={carBrands.find(b => b.name === brand)?.logo}
+                              alt={brand}
+                              className="w-8 h-8 object-contain"
+                            />
+                            <span className="font-display font-semibold text-sm">{brand}</span>
+                            <button
+                              onClick={() => setBrand("")}
+                              className="ml-1 p-1 rounded-full hover:bg-primary/10 transition-colors text-muted-foreground hover:text-foreground text-xs"
+                            >
+                              ✕
+                            </button>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+
+                      {/* Brand grid - collapses when brand is selected */}
+                      <AnimatePresence>
+                        {!brand && (
+                          <motion.div
+                            initial={{ opacity: 0, height: 0 }}
+                            animate={{ opacity: 1, height: "auto" }}
+                            exit={{ opacity: 0, height: 0 }}
+                            transition={{ duration: 0.4, ease: [0.4, 0, 0.2, 1] }}
+                            className="overflow-hidden"
+                          >
+                            <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-3">
+                              {carBrands.map((b, i) => (
+                                <motion.button
+                                  key={b.name}
+                                  initial={{ opacity: 0, y: 10 }}
+                                  animate={{ opacity: 1, y: 0 }}
+                                  transition={{ delay: i * 0.015 }}
+                                  onClick={() => {
+                                    setBrand(b.name);
+                                    setTimeout(() => {
+                                      infoFormRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+                                    }, 450);
+                                  }}
+                                  className="relative p-4 rounded-2xl flex flex-col items-center justify-center gap-2.5 border-2 transition-all duration-200 cursor-pointer group border-border/60 bg-card hover:border-primary/40 hover:bg-accent/30 hover:shadow-md"
+                                >
+                                  <div className="w-12 h-12 flex items-center justify-center">
+                                    <img
+                                      src={b.logo}
+                                      alt={b.name}
+                                      className="max-w-full max-h-full object-contain group-hover:scale-110 transition-transform duration-200"
+                                    />
+                                  </div>
+                                  <span className="text-xs font-medium text-foreground/80 leading-tight text-center truncate w-full">{b.name}</span>
+                                </motion.button>
+                              ))}
                             </div>
-                            <span className="text-xs font-medium text-foreground/80 leading-tight text-center truncate w-full">{b.name}</span>
-                          </motion.button>
-                        ))}
-                      </div>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
                     </div>
                   )}
 
                   {/* Year + personal info in a sleek card */}
                   <motion.div
+                    ref={infoFormRef}
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.3 }}
-                    className="glass-card rounded-2xl p-6 space-y-4"
+                    className="glass-card rounded-2xl p-6 space-y-4 scroll-mt-28"
                   >
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
