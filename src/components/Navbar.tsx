@@ -78,12 +78,6 @@ const Navbar = () => {
             </AnimatePresence>
           </div>
 
-          <Link to="/#about" className="px-4 py-2 rounded-lg text-sm font-medium hover:bg-accent transition-colors">
-            À propos
-          </Link>
-          <Link to="/#contact" className="px-4 py-2 rounded-lg text-sm font-medium hover:bg-accent transition-colors">
-            Contact
-          </Link>
         </nav>
 
         <div className="hidden lg:flex items-center gap-3">
