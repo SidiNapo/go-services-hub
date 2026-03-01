@@ -4,7 +4,7 @@ import Layout from "@/components/Layout";
 import AnimatedSection from "@/components/AnimatedSection";
 import ServiceCard from "@/components/ServiceCard";
 import cityHero from "@/assets/city-hero.jpg";
-import motoHero from "@/assets/moto-hero.jpg";
+import motoHero from "@/assets/moto-flow.jpg";
 import washHero from "@/assets/wash-hero.jpg";
 import cleanHero from "@/assets/clean-hero.jpg";
 import fixHero from "@/assets/fix-hero.jpg";
