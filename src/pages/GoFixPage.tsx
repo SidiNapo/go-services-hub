@@ -102,23 +102,43 @@ const GoFixPage = () => {
 
   const handleConfirm = () => {
     const typeLabel = problemTypes.find(p => p.id === problemType)?.label ?? "";
-    const photoNote = photo ? "\n📷 *Photo jointe ci-dessous*" : "";
+    const photoNote = photo ? "\n📷 *Photo jointe — téléchargement automatique*" : "";
     const mapsLink = locationCoords ? `\n📌 Google Maps: https://www.google.com/maps?q=${locationCoords.lat},${locationCoords.lng}` : "";
     const msg = `Bonjour, je souhaite une intervention GoFix :\n\n🔧 Type: ${typeLabel}\n📝 Problème: ${description}${photoNote}\n\n🏙️ Ville: ${city}\n📍 Adresse: ${address}${mapsLink}${accessInstructions ? `\n🔑 Accès: ${accessInstructions}` : ""}\n📅 Date: ${date ? format(date, "dd/MM/yyyy") : ""}\n🕐 Heure: ${hour}\n\n👤 ${name}\n📞 ${phone}${notes ? `\n📝 Notes: ${notes}` : ""}`;
 
-    const waUrl = `https://wa.me/212660880110?text=${encodeURIComponent(msg)}`;
-    window.open(waUrl, "_blank");
-
-    // If there's a photo, open it in a new tab so user can share it manually
-    if (photoPreview) {
-      // Small delay to let WhatsApp open first
-      setTimeout(() => {
+    // Download the photo FIRST (before modal closes and state is lost)
+    if (photoPreview && photo) {
+      try {
+        // Convert base64 data URL to a real Blob for reliable download
+        const [meta, base64Data] = photoPreview.split(",");
+        const mimeMatch = meta.match(/^data:(.*?);/);
+        const mimeType = mimeMatch?.[1] || "image/jpeg";
+        const binaryString = atob(base64Data);
+        const bytes = new Uint8Array(binaryString.length);
+        for (let i = 0; i < binaryString.length; i++) {
+          bytes[i] = binaryString.charCodeAt(i);
+        }
+        const blob = new Blob([bytes], { type: mimeType });
+        const blobUrl = URL.createObjectURL(blob);
         const link = document.createElement("a");
-        link.href = photoPreview;
-        link.download = photo?.name || "photo-probleme.jpg";
+        link.href = blobUrl;
+        link.download = photo.name || "photo-probleme.jpg";
+        document.body.appendChild(link);
         link.click();
-      }, 1500);
+        document.body.removeChild(link);
+        // Revoke after a short delay to ensure download starts
+        setTimeout(() => URL.revokeObjectURL(blobUrl), 3000);
+      } catch {
+        // Fallback: open the image in a new tab
+        window.open(photoPreview, "_blank");
+      }
     }
+
+    // Open WhatsApp with a small delay so download completes first
+    setTimeout(() => {
+      const waUrl = `https://wa.me/212660880110?text=${encodeURIComponent(msg)}`;
+      window.open(waUrl, "_blank");
+    }, 500);
 
     setOpen(false);
   };
