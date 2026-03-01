@@ -108,6 +108,9 @@ const GoWashPage = () => {
   const [phone, setPhone] = useState("");
   const [address, setAddress] = useState("");
   const [name, setName] = useState("");
+  const [city, setCity] = useState("");
+  const [date, setDate] = useState("");
+  const [hour, setHour] = useState("");
 
   const totalSteps = 4;
 
@@ -128,7 +131,7 @@ const GoWashPage = () => {
 
   const handleConfirmWhatsApp = () => {
     const vehicle = vehicleTypes.find(v => v.id === selectedVehicle);
-    const msg = `Bonjour, je confirme ma commande GoWash :\n\n🚗 Véhicule: ${vehicle?.label}\n🏷️ Marque: ${brand} (${year})\n✨ Formule: ${selectedPack?.name}\n💰 Prix: ${selectedPack?.price} DH\n\n👤 ${name}\n📞 ${phone}\n📍 ${address}`;
+    const msg = `Bonjour, je confirme ma commande GoWash :\n\n🚗 Véhicule: ${vehicle?.label}\n🏷️ Marque: ${brand} (${year})\n✨ Formule: ${selectedPack?.name}\n💰 Prix: ${selectedPack?.price} DH\n\n👤 ${name}\n📞 ${phone}\n🏙️ Ville: ${city}\n📍 ${address}\n📅 Date: ${date}\n🕐 Heure: ${hour}`;
     window.open(`https://wa.me/212660880110?text=${encodeURIComponent(msg)}`, "_blank");
   };
 
@@ -302,20 +305,11 @@ const GoWashPage = () => {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
                         <label className="text-sm font-medium mb-1.5 flex items-center gap-2">
-                          <Calendar className="h-3.5 w-3.5 text-primary" /> Année du véhicule
-                        </label>
-                        <input type="number" value={year} onChange={(e) => setYear(e.target.value)} placeholder="2024"
-                          className="w-full p-3.5 rounded-xl border border-border bg-background text-foreground focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all" />
-                      </div>
-                      <div>
-                        <label className="text-sm font-medium mb-1.5 flex items-center gap-2">
                           <User className="h-3.5 w-3.5 text-primary" /> Nom complet
                         </label>
                         <input type="text" value={name} onChange={(e) => setName(e.target.value)} placeholder="Votre nom"
                           className="w-full p-3.5 rounded-xl border border-border bg-background text-foreground focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all" />
                       </div>
-                    </div>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
                         <label className="text-sm font-medium mb-1.5 flex items-center gap-2">
                           <Phone className="h-3.5 w-3.5 text-primary" /> Téléphone
@@ -323,16 +317,46 @@ const GoWashPage = () => {
                         <input type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="+212 6 XX XX XX XX"
                           className="w-full p-3.5 rounded-xl border border-border bg-background text-foreground focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all" />
                       </div>
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
                         <label className="text-sm font-medium mb-1.5 flex items-center gap-2">
-                          <MapPin className="h-3.5 w-3.5 text-primary" /> Adresse
+                          <MapPin className="h-3.5 w-3.5 text-primary" /> Ville
+                        </label>
+                        <select value={city} onChange={(e) => setCity(e.target.value)}
+                          className="w-full p-3.5 rounded-xl border border-border bg-background text-foreground focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all">
+                          <option value="">-- Ville --</option>
+                          <option value="Casablanca">Casablanca</option>
+                          <option value="Rabat">Rabat</option>
+                          <option value="Tanger">Tanger</option>
+                        </select>
+                      </div>
+                      <div>
+                        <label className="text-sm font-medium mb-1.5 flex items-center gap-2">
+                          <MapPin className="h-3.5 w-3.5 text-primary" /> Adresse complète
                         </label>
                         <input type="text" value={address} onChange={(e) => setAddress(e.target.value)} placeholder="Votre adresse complète"
                           className="w-full p-3.5 rounded-xl border border-border bg-background text-foreground focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all" />
                       </div>
                     </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <label className="text-sm font-medium mb-1.5 flex items-center gap-2">
+                          <Calendar className="h-3.5 w-3.5 text-primary" /> Date
+                        </label>
+                        <input type="date" value={date} onChange={(e) => setDate(e.target.value)}
+                          className="w-full p-3.5 rounded-xl border border-border bg-background text-foreground focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all" />
+                      </div>
+                      <div>
+                        <label className="text-sm font-medium mb-1.5 flex items-center gap-2">
+                          <Clock className="h-3.5 w-3.5 text-primary" /> Heure
+                        </label>
+                        <input type="time" value={hour} onChange={(e) => setHour(e.target.value)}
+                          className="w-full p-3.5 rounded-xl border border-border bg-background text-foreground focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all" />
+                      </div>
+                    </div>
 
-                    <button onClick={handlePlaceOrder} disabled={!brand || !year || !phone || !address || !name}
+                    <button onClick={handlePlaceOrder} disabled={!brand || !phone || !address || !name || !city || !date || !hour}
                       className="w-full gradient-go px-8 py-4 rounded-2xl font-display font-semibold text-primary-foreground shadow-go hover:opacity-90 transition-all disabled:opacity-50 disabled:cursor-not-allowed inline-flex items-center justify-center gap-2 mt-2">
                       Passer la commande <ArrowRight className="h-5 w-5" />
                     </button>
@@ -374,6 +398,10 @@ const GoWashPage = () => {
                       <span className="font-display font-semibold">{selectedPack.name}</span>
                     </div>
                     <div className="flex items-center justify-between">
+                      <span className="text-sm text-muted-foreground flex items-center gap-2"><Car className="h-3.5 w-3.5" /> Marque</span>
+                      <span className="font-medium">{brand}</span>
+                    </div>
+                    <div className="flex items-center justify-between">
                       <span className="text-sm text-muted-foreground flex items-center gap-2"><User className="h-3.5 w-3.5" /> Client</span>
                       <span className="font-medium">{name}</span>
                     </div>
@@ -382,8 +410,20 @@ const GoWashPage = () => {
                       <span className="font-medium">{phone}</span>
                     </div>
                     <div className="flex items-center justify-between">
+                      <span className="text-sm text-muted-foreground flex items-center gap-2"><MapPin className="h-3.5 w-3.5" /> Ville</span>
+                      <span className="font-medium">{city}</span>
+                    </div>
+                    <div className="flex items-center justify-between">
                       <span className="text-sm text-muted-foreground flex items-center gap-2"><MapPin className="h-3.5 w-3.5" /> Adresse</span>
                       <span className="font-medium text-right max-w-[200px] truncate">{address}</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm text-muted-foreground flex items-center gap-2"><Calendar className="h-3.5 w-3.5" /> Date</span>
+                      <span className="font-medium">{date}</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm text-muted-foreground flex items-center gap-2"><Clock className="h-3.5 w-3.5" /> Heure</span>
+                      <span className="font-medium">{hour}</span>
                     </div>
                   </div>
 
