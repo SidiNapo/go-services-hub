@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { ArrowRight, Leaf, Clock, MapPin, Star, Zap, Shield, Users } from "lucide-react";
+import { ArrowRight, Leaf, Clock, MapPin, Star, Users } from "lucide-react";
 import Layout from "@/components/Layout";
 import AnimatedSection from "@/components/AnimatedSection";
 import ServiceCard from "@/components/ServiceCard";
@@ -25,18 +25,6 @@ const stats = [
   { icon: Star, value: "4.9/5", label: "Note moyenne" },
 ];
 
-const features = [
-  { icon: Zap, title: "Rapide & efficace", desc: "Nos équipes interviennent en moins de 30 minutes dans votre zone." },
-  { icon: Leaf, title: "100% écologique", desc: "Produits écoresponsables, motos électriques, zéro émission." },
-  { icon: Shield, title: "Fiable & sécurisé", desc: "Techniciens certifiés, paiement sécurisé, satisfaction garantie." },
-  { icon: Clock, title: "Disponible 7j/7", desc: "De 9h à 22h, tous les jours, même les jours fériés." },
-];
-
-const testimonials = [
-  { name: "Yasmine B.", city: "Casablanca", text: "GoWash a transformé mon rapport au lavage auto. Rapide, écologique et un résultat impeccable à chaque fois !", rating: 5 },
-  { name: "Karim M.", city: "Rabat", text: "J'utilise GoRide chaque jour pour mes déplacements. Plus de problème de stationnement, et c'est 100% électrique !", rating: 5 },
-  { name: "Salma A.", city: "Tanger", text: "GoClean est un vrai game-changer pour ma conciergerie Airbnb. Mes invités sont toujours ravis.", rating: 5 },
-];
 
 const Index = () => (
   <Layout>
@@ -74,82 +62,6 @@ const Index = () => (
       </div>
     </AnimatedSection>
 
-    {/* Why Go 212 */}
-    <section className="py-24 gradient-dark">
-      <div className="container mx-auto px-4">
-        <AnimatedSection className="text-center max-w-2xl mx-auto mb-16">
-          <span className="text-go-green-light font-display font-semibold text-sm uppercase tracking-widest">Pourquoi Go 212 ?</span>
-          <h2 className="font-display text-4xl md:text-5xl font-bold text-primary-foreground mt-3 mb-4">L'excellence au service de votre confort</h2>
-        </AnimatedSection>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {features.map((f, i) => (
-            <motion.div key={f.title} initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }} transition={{ delay: i * 0.1 }}
-              className="p-8 rounded-3xl border border-primary-foreground/10 hover:border-primary/30 transition-colors group">
-              <div className="p-3 rounded-2xl bg-primary/20 w-fit mb-6 group-hover:bg-primary/30 transition-colors">
-                <f.icon className="h-6 w-6 text-go-green-light" />
-              </div>
-              <h3 className="font-display font-bold text-xl text-primary-foreground mb-2">{f.title}</h3>
-              <p className="text-primary-foreground/60 text-sm leading-relaxed">{f.desc}</p>
-            </motion.div>
-          ))}
-        </div>
-      </div>
-    </section>
-
-    {/* Testimonials */}
-    <AnimatedSection className="py-24">
-      <div className="container mx-auto px-4">
-        <div className="text-center max-w-2xl mx-auto mb-16">
-          <span className="text-primary font-display font-semibold text-sm uppercase tracking-widest">Témoignages</span>
-          <h2 className="font-display text-4xl md:text-5xl font-bold mt-3 mb-4">Ce que disent nos clients</h2>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {testimonials.map((t, i) => (
-            <motion.div key={t.name} initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }} transition={{ delay: i * 0.1 }}
-              className="glass-card p-8 rounded-3xl">
-              <div className="flex gap-1 mb-4">
-                {Array.from({ length: t.rating }).map((_, j) => (
-                  <Star key={j} className="h-4 w-4 fill-primary text-primary" />
-                ))}
-              </div>
-              <p className="text-foreground/80 mb-6 leading-relaxed">"{t.text}"</p>
-              <div>
-                <div className="font-display font-semibold">{t.name}</div>
-                <div className="text-sm text-muted-foreground">{t.city}</div>
-              </div>
-            </motion.div>
-          ))}
-        </div>
-      </div>
-    </AnimatedSection>
-
-    {/* How it works */}
-    <AnimatedSection className="py-24 bg-go-surface">
-      <div className="container mx-auto px-4">
-        <div className="text-center max-w-2xl mx-auto mb-16">
-          <span className="text-primary font-display font-semibold text-sm uppercase tracking-widest">Comment ça marche ?</span>
-          <h2 className="font-display text-4xl md:text-5xl font-bold mt-3 mb-4">Simple comme 1, 2, 3</h2>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
-          {[
-            { step: "01", title: "Choisissez votre service", desc: "Sélectionnez parmi GoRide, GoWash, GoClean ou GoFix selon vos besoins." },
-            { step: "02", title: "Réservez en ligne", desc: "Choisissez votre date, heure et lieu. Paiement sécurisé en quelques clics." },
-            { step: "03", title: "Profitez du service", desc: "Nos experts se déplacent chez vous. Détendez-vous, on s'occupe de tout." },
-          ].map((s, i) => (
-            <motion.div key={s.step} initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }} transition={{ delay: i * 0.15 }} className="text-center">
-              <div className="inline-flex items-center justify-center w-16 h-16 rounded-full gradient-go text-primary-foreground font-display font-bold text-xl mb-6">
-                {s.step}
-              </div>
-              <h3 className="font-display font-bold text-xl mb-2">{s.title}</h3>
-              <p className="text-muted-foreground text-sm leading-relaxed">{s.desc}</p>
-            </motion.div>
-          ))}
-        </div>
-      </div>
-    </AnimatedSection>
 
     {/* Cities */}
     <AnimatedSection className="py-24">
@@ -183,12 +95,12 @@ const Index = () => (
     </AnimatedSection>
 
     {/* CTA */}
-    <section className="py-24 gradient-go" id="contact">
+    <section className="py-12 gradient-go" id="contact">
       <div className="container mx-auto px-4 text-center">
-        <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
-          <h2 className="font-display text-4xl md:text-5xl font-bold text-primary-foreground mb-6">Prêt à essayer Go 212 ?</h2>
-          <p className="text-primary-foreground/80 text-lg max-w-xl mx-auto mb-10">
-            Rejoignez des milliers de clients satisfaits. Réservez votre premier service dès aujourd'hui.
+        <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
+          <h2 className="font-display text-2xl md:text-3xl font-bold text-primary-foreground mb-3">Prêt à essayer Go 212 ?</h2>
+          <p className="text-primary-foreground/80 text-sm max-w-md mx-auto mb-6">
+            Rejoignez des milliers de clients satisfaits. Réservez dès aujourd'hui.
           </p>
           <div className="flex flex-wrap justify-center gap-4">
             <a href="https://wa.me/212660880110" target="_blank" rel="noopener noreferrer"
