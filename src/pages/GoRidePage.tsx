@@ -40,10 +40,6 @@ const GoRidePage = () => {
       {/* Compact moto card - directly visible */}
       <section className="pt-28 pb-16">
         <div className="container mx-auto px-4">
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center mb-10">
-            <span className="text-primary font-display font-semibold text-sm uppercase tracking-widest">GoRide</span>
-            <h1 className="font-display text-4xl md:text-5xl font-bold mt-2">Mobilité électrique</h1>
-          </motion.div>
 
           {/* Compact modern card */}
           <motion.div
