@@ -13,26 +13,13 @@ const services = [
 
 const GoFixPage = () => (
   <Layout>
-    {/* Hero */}
-    <section className="relative min-h-[70vh] flex items-center overflow-hidden">
-      <div className="absolute inset-0">
-        <img src={fixHero} alt="GoFix" className="w-full h-full object-cover" />
-        <div className="hero-overlay absolute inset-0" />
-      </div>
-      <div className="container mx-auto px-4 relative z-10 pt-24">
-        <motion.div initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }} className="max-w-2xl">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/20 backdrop-blur-md text-primary-foreground text-sm font-medium mb-6">
-            <Wrench className="h-4 w-4" /> GoFix
-          </div>
-          <h1 className="font-display text-5xl md:text-7xl font-bold text-primary-foreground leading-[0.9] mb-6">
-            Services <span className="text-gradient">techniques</span> à domicile
-          </h1>
-          <p className="text-lg text-primary-foreground/80 max-w-xl mb-8">
-            Plomberie, électricité, réparations et maintenance générale. On répare tout ce dont votre maison a besoin.
-          </p>
-          <a href="https://wa.me/212660880110" className="gradient-go px-8 py-4 rounded-2xl font-display font-semibold text-primary-foreground shadow-go hover:opacity-90 transition-all inline-flex items-center gap-2">
-            Demander une intervention <ArrowRight className="h-5 w-5" />
-          </a>
+    {/* Header */}
+    <section className="pt-28 pb-12">
+      <div className="container mx-auto px-4">
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center">
+          <span className="text-primary font-display font-semibold text-sm uppercase tracking-widest">GoFix</span>
+          <h1 className="font-display text-4xl md:text-5xl font-bold mt-2 mb-3">Services techniques à domicile</h1>
+          <p className="text-muted-foreground text-lg max-w-xl mx-auto">Plomberie, électricité, réparations et maintenance. On répare tout.</p>
         </motion.div>
       </div>
     </section>
