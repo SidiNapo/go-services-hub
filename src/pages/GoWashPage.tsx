@@ -1,6 +1,6 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Droplets, ArrowRight, Check, Car, ChevronRight, Leaf, Clock, Shield, Sparkles } from "lucide-react";
+import { Droplets, ArrowRight, Check, ChevronRight, Leaf, Clock, Shield, Sparkles, Car, Truck, Bike } from "lucide-react";
 import Layout from "@/components/Layout";
 import AnimatedSection from "@/components/AnimatedSection";
 import washHero from "@/assets/wash-hero.jpg";
@@ -14,13 +14,13 @@ interface WashPack {
   popular?: boolean;
 }
 
-const vehicleTypes: { id: VehicleType; label: string; icon: string }[] = [
-  { id: "citadine", label: "Citadine", icon: "🚗" },
-  { id: "berline", label: "Berline", icon: "🚘" },
-  { id: "suv_moyen", label: "SUV Moyen", icon: "🚙" },
-  { id: "suv_grand", label: "Grand SUV", icon: "🏎️" },
-  { id: "moto_petite", label: "Petite Moto", icon: "🏍️" },
-  { id: "moto_grande", label: "Grande Moto", icon: "🏍️" },
+const vehicleTypes: { id: VehicleType; label: string; Icon: React.ElementType }[] = [
+  { id: "citadine", label: "Citadine", Icon: Car },
+  { id: "berline", label: "Berline", Icon: Car },
+  { id: "suv_moyen", label: "SUV Moyen", Icon: Truck },
+  { id: "suv_grand", label: "Grand SUV", Icon: Truck },
+  { id: "moto_petite", label: "Petite Moto", Icon: Bike },
+  { id: "moto_grande", label: "Grande Moto", Icon: Bike },
 ];
 
 const packsByVehicle: Record<VehicleType, WashPack[]> = {
@@ -134,7 +134,9 @@ const GoWashPage = () => {
                       className={`glass-card p-6 rounded-2xl text-center hover:border-primary/50 transition-all group ${
                         selectedVehicle === v.id ? "border-primary ring-2 ring-primary/20" : ""
                       }`}>
-                      <div className="text-4xl mb-3">{v.icon}</div>
+                      <div className="inline-flex p-4 rounded-2xl bg-primary/10 mb-3 group-hover:bg-primary/20 transition-colors">
+                        <v.Icon className="h-8 w-8 text-primary" strokeWidth={1.5} />
+                      </div>
                       <span className="font-display font-semibold">{v.label}</span>
                     </button>
                   ))}
