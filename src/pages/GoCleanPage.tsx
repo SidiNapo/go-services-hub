@@ -266,13 +266,7 @@ const GoCleanPage = () => {
                 <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-bl from-primary/10 to-transparent rounded-bl-[60px] opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
                 <div className="relative z-10">
-                  {/* Icon with animated ring */}
-                  <div className="relative w-14 h-14 mb-6">
-                    <div className="absolute inset-0 rounded-2xl gradient-go opacity-20 group-hover:opacity-30 transition-opacity group-hover:scale-110 duration-500" />
-                    <div className="relative w-14 h-14 rounded-2xl bg-primary/10 group-hover:bg-primary/15 flex items-center justify-center transition-all duration-300">
-                      <s.icon className="h-6 w-6 text-primary group-hover:scale-110 transition-transform duration-300" />
-                    </div>
-                  </div>
+                  <div className="text-3xl mb-6">{s.emoji}</div>
 
                   <h3 className="font-display font-bold text-xl md:text-2xl mb-3 group-hover:text-primary transition-colors duration-300">{s.title}</h3>
                   <p className="text-muted-foreground text-sm md:text-base leading-relaxed">{s.desc}</p>
