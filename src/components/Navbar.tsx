@@ -49,35 +49,11 @@ const Navbar = () => {
           <Link to="/" className="px-4 py-2 rounded-lg text-sm font-medium hover:bg-accent transition-colors">
             Accueil
           </Link>
-
-          <div className="relative" onMouseEnter={() => setServicesOpen(true)} onMouseLeave={() => setServicesOpen(false)}>
-            <button className="flex items-center gap-1 px-4 py-2 rounded-lg text-sm font-medium hover:bg-accent transition-colors">
-              Services <ChevronDown className={`h-4 w-4 transition-transform ${servicesOpen ? "rotate-180" : ""}`} />
-            </button>
-            <AnimatePresence>
-              {servicesOpen && (
-                <motion.div
-                  initial={{ opacity: 0, y: 8 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: 8 }}
-                  transition={{ duration: 0.2 }}
-                  className="absolute top-full left-0 mt-1 w-72 glass-card rounded-2xl p-2 shadow-elevated"
-                >
-                  {services.map((s) => (
-                    <Link
-                      key={s.path}
-                      to={s.path}
-                      className="flex flex-col px-4 py-3 rounded-xl hover:bg-accent transition-colors"
-                    >
-                      <span className="font-display font-semibold text-sm">{s.name}</span>
-                      <span className="text-xs text-muted-foreground">{s.desc}</span>
-                    </Link>
-                  ))}
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
-
+          {services.map((s) => (
+            <Link key={s.path} to={s.path} className="px-4 py-2 rounded-lg text-sm font-medium hover:bg-accent transition-colors">
+              {s.name}
+            </Link>
+          ))}
         </nav>
 
         <div className="hidden lg:flex items-center gap-3">
