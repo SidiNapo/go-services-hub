@@ -836,20 +836,22 @@ const GoWashPage = () => {
                   </span>
                 )}
 
-                <div className="p-5 pb-0 flex items-start gap-4">
-                  <motion.div
-                    whileHover={{ rotate: [0, -6, 6, 0] }}
-                    className={`w-12 h-12 rounded-xl ${pack.accentBg} flex items-center justify-center flex-shrink-0 border border-border/40`}
-                  >
-                    <IconComp className={`h-6 w-6 ${pack.accentText}`} strokeWidth={1.5} />
-                  </motion.div>
-                  <div className="flex-1 min-w-0">
-                    <h3 className="font-display text-base font-bold leading-tight">{pack.name}</h3>
-                    <p className="text-[11px] text-muted-foreground">Intérieur + Extérieur</p>
+                <div className="p-5 pb-0">
+                  <div className="flex items-center gap-3 mb-3">
+                    <motion.div
+                      whileHover={{ rotate: [0, -6, 6, 0] }}
+                      className={`w-11 h-11 rounded-xl ${pack.accentBg} flex items-center justify-center flex-shrink-0 border border-border/40`}
+                    >
+                      <IconComp className={`h-5 w-5 ${pack.accentText}`} strokeWidth={1.5} />
+                    </motion.div>
+                    <div className="flex-1 min-w-0">
+                      <h3 className="font-display text-base font-bold leading-tight">{pack.name}</h3>
+                      <p className="text-[11px] text-muted-foreground">Intérieur + Extérieur</p>
+                    </div>
                   </div>
-                  <div className="text-right flex-shrink-0">
-                    <span className={`font-display text-2xl font-extrabold bg-gradient-to-r ${pack.accent} bg-clip-text text-transparent`}>{pack.price}</span>
-                    <span className="text-xs text-muted-foreground ml-0.5">DH</span>
+                  <div className="flex items-baseline gap-1">
+                    <span className={`font-display text-3xl font-extrabold bg-gradient-to-r ${pack.accent} bg-clip-text text-transparent`}>{pack.price}</span>
+                    <span className="text-sm text-muted-foreground">DH</span>
                   </div>
                 </div>
 
