@@ -199,15 +199,15 @@ const GoCleanPage = () => {
               </motion.button>
 
               {/* Floating stats */}
-              <div className="flex items-center gap-6">
+              <div className="flex items-center gap-6 px-6 py-3 rounded-2xl bg-white/10 backdrop-blur-md border border-white/15">
                 <div className="text-center">
-                  <div className="font-display text-2xl font-bold text-primary-foreground">500+</div>
-                  <div className="text-[11px] text-primary-foreground/50 uppercase tracking-wider">Nettoyages</div>
+                  <div className="font-display text-2xl font-bold text-white">500+</div>
+                  <div className="text-[11px] text-white/70 uppercase tracking-wider">Nettoyages</div>
                 </div>
-                <div className="w-px h-8 bg-primary-foreground/15" />
+                <div className="w-px h-8 bg-white/25" />
                 <div className="text-center">
-                  <div className="font-display text-2xl font-bold text-primary-foreground">4.9<span className="text-primary text-lg">★</span></div>
-                  <div className="text-[11px] text-primary-foreground/50 uppercase tracking-wider">Satisfaction</div>
+                  <div className="font-display text-2xl font-bold text-white">4.9<span className="text-primary text-lg ml-1">★</span></div>
+                  <div className="text-[11px] text-white/70 uppercase tracking-wider">Satisfaction</div>
                 </div>
               </div>
             </motion.div>
