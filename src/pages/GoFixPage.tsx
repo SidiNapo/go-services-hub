@@ -1,6 +1,6 @@
 import React, { useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Wrench, ArrowRight, Check, Zap, Droplets, Paintbrush, Settings, Phone, Shield, Clock, MapPin, User, Calendar, ChevronLeft, Navigation, Camera, ImagePlus, X, Loader2, Share2 } from "lucide-react";
+import { Wrench, ArrowRight, Check, Zap, Droplets, Paintbrush, Settings, Phone, Shield, Clock, MapPin, User, Calendar, ChevronLeft, Navigation, Camera, ImagePlus, X, Loader2 } from "lucide-react";
 import { locateUser } from "@/lib/geolocation";
 import Layout from "@/components/Layout";
 import AnimatedSection from "@/components/AnimatedSection";
@@ -148,40 +148,7 @@ const GoFixPage = () => {
 
     try {
       if (photo) {
-        // Build a proper File from the original upload
-        const shareFile = new File(
-          [photo],
-          photo.name || "photo-probleme.jpg",
-          { type: photo.type || "image/jpeg" }
-        );
-
-        // Try Web Share API (iPhone Safari, Android Chrome — sends image + text together)
-        const canShareFiles =
-          typeof navigator.canShare === "function" &&
-          navigator.canShare({ files: [shareFile] });
-
-        if (canShareFiles) {
-          try {
-            await navigator.share({
-              text: `${msg}\n\nEnvoyez a: +${WA_NUMBER}`,
-              files: [shareFile],
-            });
-            toast({
-              title: "Demande envoyee !",
-              description: "Photo et details partages avec succes.",
-            });
-            setOpen(false);
-            return;
-          } catch (err: any) {
-            if (err?.name === "AbortError") {
-              // User cancelled share sheet — keep modal open
-              return;
-            }
-            // Fall through to fallback
-          }
-        }
-
-        // Fallback: open WhatsApp text + auto-download photo for manual attach
+        // Download photo so user can attach it in WhatsApp
         try {
           const blobUrl = URL.createObjectURL(photo);
           const a = document.createElement("a");
@@ -192,21 +159,20 @@ const GoFixPage = () => {
           document.body.removeChild(a);
           setTimeout(() => URL.revokeObjectURL(blobUrl), 5000);
         } catch {
-          // ignore
+          // ignore download error
         }
 
         toast({
-          title: "Photo sauvegardee",
-          description: "Joignez la photo dans WhatsApp avec le bouton trombone.",
+          title: "Photo téléchargée",
+          description: "Joignez la photo dans WhatsApp avec le bouton 📎 trombone.",
         });
 
-        await new Promise(r => setTimeout(r, 700));
-        window.open(waUrl, "_blank");
-      } else {
-        // No photo — open WhatsApp directly
-        window.open(waUrl, "_blank");
+        // Small delay then open WhatsApp
+        await new Promise(r => setTimeout(r, 600));
       }
 
+      // Always open WhatsApp directly with the message
+      window.open(waUrl, "_blank");
       setOpen(false);
     } finally {
       setIsSubmitting(false);
@@ -667,12 +633,12 @@ const GoFixPage = () => {
                         </div>
                       )}
 
-                      {/* Share guidance */}
+                      {/* WhatsApp guidance */}
                       {photo && (
                         <div className="rounded-xl bg-primary/10 border border-primary/20 px-4 py-3 flex items-start gap-3">
-                          <Share2 className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
+                          <Camera className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
                           <p className="text-xs text-foreground/80 leading-relaxed">
-                            En cliquant <strong>Envoyer</strong>, votre photo et les détails seront partagés directement vers WhatsApp.
+                            La photo sera téléchargée automatiquement. Joignez-la dans WhatsApp avec le bouton 📎 trombone.
                           </p>
                         </div>
                       )}
@@ -708,10 +674,8 @@ const GoFixPage = () => {
                 )}>
                 {isSubmitting ? (
                   <><Loader2 className="h-4 w-4 animate-spin" /> Envoi...</>
-                ) : photo ? (
-                  <><Share2 className="h-4 w-4" /> Envoyer avec photo</>
                 ) : (
-                  <>Confirmer sur WhatsApp <ArrowRight className="h-4 w-4" /></>
+                  <>Confirmer via WhatsApp <ArrowRight className="h-4 w-4" /></>
                 )}
               </button>
             )}
