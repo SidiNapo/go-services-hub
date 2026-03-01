@@ -1,9 +1,14 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Droplets, ArrowRight, Check, ChevronRight, Leaf, Clock, Shield, Sparkles, Car, Truck, Bike } from "lucide-react";
+import { Droplets, ArrowRight, Check, ChevronRight, Leaf, Clock, Shield, Sparkles } from "lucide-react";
 import Layout from "@/components/Layout";
 import AnimatedSection from "@/components/AnimatedSection";
 import washHero from "@/assets/wash-hero.jpg";
+import vehicleCitadine from "@/assets/vehicle-citadine.png";
+import vehicleBerline from "@/assets/vehicle-berline.png";
+import vehicleSuvMoyen from "@/assets/vehicle-suv-moyen.png";
+import vehicleSuvGrand from "@/assets/vehicle-suv-grand.png";
+import vehicleMoto from "@/assets/vehicle-moto.png";
 
 type VehicleType = "citadine" | "berline" | "suv_moyen" | "suv_grand" | "moto_petite" | "moto_grande";
 
@@ -14,13 +19,13 @@ interface WashPack {
   popular?: boolean;
 }
 
-const vehicleTypes: { id: VehicleType; label: string; Icon: React.ElementType }[] = [
-  { id: "citadine", label: "Citadine", Icon: Car },
-  { id: "berline", label: "Berline", Icon: Car },
-  { id: "suv_moyen", label: "SUV Moyen", Icon: Truck },
-  { id: "suv_grand", label: "Grand SUV", Icon: Truck },
-  { id: "moto_petite", label: "Petite Moto", Icon: Bike },
-  { id: "moto_grande", label: "Grande Moto", Icon: Bike },
+const vehicleTypes: { id: VehicleType; label: string; img: string }[] = [
+  { id: "citadine", label: "Citadine", img: vehicleCitadine },
+  { id: "berline", label: "Berline", img: vehicleBerline },
+  { id: "suv_moyen", label: "SUV Moyen", img: vehicleSuvMoyen },
+  { id: "suv_grand", label: "Grand SUV", img: vehicleSuvGrand },
+  { id: "moto_petite", label: "Petite Moto", img: vehicleMoto },
+  { id: "moto_grande", label: "Grande Moto", img: vehicleMoto },
 ];
 
 const packsByVehicle: Record<VehicleType, WashPack[]> = {
@@ -128,17 +133,18 @@ const GoWashPage = () => {
             {step === 1 && (
               <motion.div key="step1" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
                 <h2 className="font-display text-3xl font-bold text-center mb-8">Quel est votre type de véhicule ?</h2>
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                  {vehicleTypes.map((v) => (
-                    <button key={v.id} onClick={() => handleVehicleSelect(v.id)}
-                      className={`glass-card p-6 rounded-2xl text-center hover:border-primary/50 transition-all group ${
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-5">
+                  {vehicleTypes.map((v, i) => (
+                    <motion.button key={v.id} onClick={() => handleVehicleSelect(v.id)}
+                      initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.08 }}
+                      className={`glass-card p-5 rounded-2xl text-center hover:border-primary/50 hover:shadow-go transition-all group cursor-pointer ${
                         selectedVehicle === v.id ? "border-primary ring-2 ring-primary/20" : ""
                       }`}>
-                      <div className="inline-flex p-4 rounded-2xl bg-primary/10 mb-3 group-hover:bg-primary/20 transition-colors">
-                        <v.Icon className="h-8 w-8 text-primary" strokeWidth={1.5} />
+                      <div className="h-24 flex items-center justify-center mb-3">
+                        <img src={v.img} alt={v.label} className="h-full w-auto object-contain group-hover:scale-110 transition-transform duration-300" />
                       </div>
-                      <span className="font-display font-semibold">{v.label}</span>
-                    </button>
+                      <span className="font-display font-semibold text-sm">{v.label}</span>
+                    </motion.button>
                   ))}
                 </div>
               </motion.div>
