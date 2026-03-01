@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Zap, Battery, Clock, Shield, Leaf, ArrowRight, User, Phone, MapPin, ChevronLeft, Navigation, Calendar, Truck, Building2, CheckCircle2 } from "lucide-react";
+import { Zap, Battery, Clock, Shield, Leaf, ArrowRight, User, Phone, MapPin, ChevronLeft, Navigation, Calendar, Truck, Building2, CheckCircle2, Loader2 } from "lucide-react";
+import { locateUser } from "@/lib/geolocation";
 import Layout from "@/components/Layout";
 import AnimatedSection from "@/components/AnimatedSection";
 import motoFlow from "@/assets/moto-flow.jpg";
@@ -69,25 +70,14 @@ const GoRidePage = () => {
 
   const openModal = () => { setStep(1); setOpen(true); };
 
-  const handleLocateMe = () => {
-    if (!navigator.geolocation) return;
+  const handleLocateMe = async () => {
     setLocating(true);
-    navigator.geolocation.getCurrentPosition(
-      async (pos) => {
-        const { latitude, longitude } = pos.coords;
-        setLocationCoords({ lat: latitude, lng: longitude });
-        try {
-          const res = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json&accept-language=fr`);
-          const data = await res.json();
-          if (data.display_name) setAddress(data.display_name);
-        } catch {
-          setAddress(`${latitude.toFixed(6)}, ${longitude.toFixed(6)}`);
-        }
-        setLocating(false);
-      },
-      () => setLocating(false),
-      { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
-    );
+    const result = await locateUser();
+    if (result) {
+      setLocationCoords({ lat: result.lat, lng: result.lng });
+      setAddress(result.address);
+    }
+    setLocating(false);
   };
 
   const selectedPricing = pricing.find(p => p.id === selectedPlan)!;

@@ -1,6 +1,7 @@
 import React, { useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Wrench, ArrowRight, Check, Zap, Droplets, Paintbrush, Settings, Phone, Shield, Clock, MapPin, User, Calendar, ChevronLeft, Navigation, Camera, ImagePlus, X } from "lucide-react";
+import { Wrench, ArrowRight, Check, Zap, Droplets, Paintbrush, Settings, Phone, Shield, Clock, MapPin, User, Calendar, ChevronLeft, Navigation, Camera, ImagePlus, X, Loader2 } from "lucide-react";
+import { locateUser } from "@/lib/geolocation";
 import Layout from "@/components/Layout";
 import AnimatedSection from "@/components/AnimatedSection";
 import fixHero from "@/assets/fix-hero.jpg";
@@ -76,25 +77,14 @@ const GoFixPage = () => {
 
   const removePhoto = () => { setPhoto(null); setPhotoPreview(null); };
 
-  const handleLocateMe = () => {
-    if (!navigator.geolocation) return;
+  const handleLocateMe = async () => {
     setLocating(true);
-    navigator.geolocation.getCurrentPosition(
-      async (pos) => {
-        const { latitude, longitude } = pos.coords;
-        setLocationCoords({ lat: latitude, lng: longitude });
-        try {
-          const res = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json&accept-language=fr`);
-          const data = await res.json();
-          if (data.display_name) setAddress(data.display_name);
-        } catch {
-          setAddress(`${latitude.toFixed(6)}, ${longitude.toFixed(6)}`);
-        }
-        setLocating(false);
-      },
-      () => setLocating(false),
-      { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
-    );
+    const result = await locateUser();
+    if (result) {
+      setLocationCoords({ lat: result.lat, lng: result.lng });
+      setAddress(result.address);
+    }
+    setLocating(false);
   };
 
   const canNext = () => {
