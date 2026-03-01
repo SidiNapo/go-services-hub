@@ -177,24 +177,29 @@ const Index = () => {
                 initial={{ opacity: 0, y: 30, filter: "blur(8px)" }}
                 animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
                 transition={{ duration: 0.7, delay: 1.2 }}
-                className="flex flex-col sm:flex-row items-center justify-center gap-5"
+                className="flex flex-col sm:flex-row items-center justify-center gap-4"
               >
-                <a
+                <motion.a
                   href="#services"
-                  className="group relative gradient-go px-10 py-4.5 rounded-2xl font-display font-semibold text-primary-foreground shadow-go inline-flex items-center gap-3 overflow-hidden"
+                  whileHover={{ scale: 1.04 }}
+                  whileTap={{ scale: 0.97 }}
+                  className="group relative gradient-go h-14 px-8 rounded-full font-display font-semibold text-primary-foreground shadow-go inline-flex items-center gap-2.5 overflow-hidden text-sm"
                 >
-                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/15 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
+                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
                   <span className="relative">Découvrir nos services</span>
-                  <ArrowRight className="h-5 w-5 relative group-hover:translate-x-1 transition-transform" />
-                </a>
-                <a
+                  <ArrowRight className="h-4 w-4 relative group-hover:translate-x-1 transition-transform" />
+                </motion.a>
+                <motion.a
                   href="https://wa.me/212660880110"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="px-8 py-4 rounded-2xl font-display font-semibold border-2 border-border text-foreground hover:bg-accent transition-colors inline-flex items-center gap-2"
+                  whileHover={{ scale: 1.04 }}
+                  whileTap={{ scale: 0.97 }}
+                  className="group h-14 px-8 rounded-full font-display font-semibold border border-border bg-background/60 backdrop-blur-sm text-foreground hover:border-primary/30 hover:bg-accent/50 transition-all inline-flex items-center gap-2.5 text-sm"
                 >
                   Contacter via WhatsApp
-                </a>
+                  <ArrowUpRight className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors" />
+                </motion.a>
               </motion.div>
 
               {/* Floating mini stats */}
