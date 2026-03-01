@@ -17,18 +17,37 @@ const ServiceCard = ({ title, description, image, path, index }: Props) => (
     viewport={{ once: true }}
     transition={{ duration: 0.5, delay: index * 0.1 }}
   >
-    <Link to={path} className="group block relative rounded-3xl overflow-hidden aspect-[4/5]">
+    <Link to={path} className="group block relative rounded-3xl overflow-hidden aspect-[3/4] md:aspect-[4/5]">
       <img src={image} alt={title} className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
-      <div className="absolute inset-0 bg-gradient-to-t from-go-dark/90 via-go-dark/30 to-transparent" />
-      <div className="absolute bottom-0 left-0 right-0 p-6 md:p-8">
-        <div className="flex items-end justify-between">
-          <div>
-            <h3 className="font-display text-2xl md:text-3xl font-bold text-primary-foreground mb-2">{title}</h3>
-            <p className="text-sm text-primary-foreground/70 max-w-xs">{description}</p>
+      
+      {/* Multi-layer gradient overlay */}
+      <div className="absolute inset-0 bg-gradient-to-t from-go-dark via-go-dark/40 to-transparent opacity-80 group-hover:opacity-90 transition-opacity duration-500" />
+      
+      {/* Shine effect on hover */}
+      <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 bg-gradient-to-r from-transparent via-white/10 to-transparent" />
+      
+      {/* Top badge */}
+      <div className="absolute top-4 left-4 md:top-5 md:left-5">
+        <div className="px-3 py-1.5 rounded-full bg-primary/20 backdrop-blur-md border border-primary/30 text-primary-foreground text-xs font-display font-semibold tracking-wider uppercase">
+          {title}
+        </div>
+      </div>
+
+      {/* Bottom content */}
+      <div className="absolute bottom-0 left-0 right-0 p-5 md:p-7">
+        <div className="flex items-end justify-between gap-4">
+          <div className="flex-1">
+            <h3 className="font-display text-xl sm:text-2xl md:text-3xl font-bold text-primary-foreground mb-1.5 leading-tight">{title}</h3>
+            <p className="text-xs sm:text-sm text-primary-foreground/70 line-clamp-2 max-w-xs leading-relaxed">{description}</p>
           </div>
-          <div className="p-3 rounded-2xl gradient-go text-primary-foreground opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300">
-            <ArrowUpRight className="h-5 w-5" />
-          </div>
+          <motion.div
+            className="flex-shrink-0 p-2.5 md:p-3 rounded-2xl gradient-go text-primary-foreground shadow-go"
+            initial={false}
+            whileHover={{ scale: 1.1, rotate: 5 }}
+            transition={{ type: "spring", stiffness: 300 }}
+          >
+            <ArrowUpRight className="h-4 w-4 md:h-5 md:w-5" />
+          </motion.div>
         </div>
       </div>
     </Link>

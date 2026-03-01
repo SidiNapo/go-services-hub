@@ -565,31 +565,38 @@ const GoWashPage = () => {
       </AnimatedSection>
 
       {/* Features */}
-      <AnimatedSection className="py-24 bg-go-surface">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-16">
-            <h2 className="font-display text-4xl md:text-5xl font-bold">Pourquoi GoWash ?</h2>
+      <section className="py-16 md:py-24 relative overflow-hidden">
+        <div className="absolute inset-0 gradient-go" />
+        <motion.div className="absolute top-10 left-[10%] w-40 h-40 rounded-full bg-white/10 blur-2xl"
+          animate={{ y: [0, -20, 0] }} transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }} />
+        <motion.div className="absolute bottom-5 right-[15%] w-56 h-56 rounded-full bg-white/5 blur-2xl"
+          animate={{ y: [0, 15, 0] }} transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }} />
+
+        <div className="container mx-auto px-4 relative z-10">
+          <div className="text-center mb-10 md:mb-16">
+            <h2 className="font-display text-3xl md:text-5xl font-bold text-primary-foreground">Pourquoi GoWash ?</h2>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-6">
             {[
-              { icon: Leaf, title: "Écologique", desc: "150 litres d'eau économisés par lavage grâce à notre technologie sans eau." },
-              { icon: Clock, title: "Rapide", desc: "Service en 30-60 minutes directement chez vous." },
-              { icon: Shield, title: "Sûr", desc: "Produits certifiés, adaptés à tous les véhicules y compris électriques." },
-              { icon: Sparkles, title: "Impeccable", desc: "Résultats professionnels garantis à chaque lavage." },
+              { emoji: "🌱", title: "Écologique", desc: "150 litres d'eau économisés par lavage grâce à notre technologie sans eau." },
+              { emoji: "⚡", title: "Rapide", desc: "Service en 30-60 minutes directement chez vous." },
+              { emoji: "🛡️", title: "Sûr", desc: "Produits certifiés, adaptés à tous les véhicules y compris électriques." },
+              { emoji: "✨", title: "Impeccable", desc: "Résultats professionnels garantis à chaque lavage." },
             ].map((f, i) => (
               <motion.div key={f.title} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }} transition={{ delay: i * 0.1 }}
-                className="glass-card p-8 rounded-2xl text-center">
-                <div className="inline-flex p-3 rounded-xl bg-primary/10 mb-4">
-                  <f.icon className="h-6 w-6 text-primary" />
-                </div>
-                <h3 className="font-display font-bold text-lg mb-2">{f.title}</h3>
-                <p className="text-sm text-muted-foreground">{f.desc}</p>
+                whileHover={{ y: -6 }}
+                className="group rounded-2xl md:rounded-3xl bg-white/15 backdrop-blur-md border border-white/20 p-4 md:p-8 text-center transition-all duration-300 hover:bg-white/25 hover:border-white/35 cursor-default relative overflow-hidden"
+              >
+                <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 bg-gradient-to-r from-transparent via-white/15 to-transparent" />
+                <motion.span className="text-2xl md:text-3xl block mb-2 md:mb-4" whileHover={{ scale: 1.2, rotate: [0, -10, 10, 0] }}>{f.emoji}</motion.span>
+                <h3 className="font-display font-bold text-sm md:text-lg mb-1 md:mb-2 text-primary-foreground">{f.title}</h3>
+                <p className="text-[10px] md:text-sm text-primary-foreground/70">{f.desc}</p>
               </motion.div>
             ))}
           </div>
         </div>
-      </AnimatedSection>
+      </section>
     </Layout>
   );
 };
