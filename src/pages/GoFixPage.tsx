@@ -12,6 +12,7 @@ import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 const servicesData = [
   { icon: Droplets, title: "Plomberie", emoji: "🔧", items: ["Réparation fuites", "Débouchage canalisations", "Installation sanitaire", "Chauffe-eau"] },
@@ -142,38 +143,67 @@ const GoFixPage = () => {
     if (isSubmitting) return;
     setIsSubmitting(true);
 
-    const msg = buildMessage();
     const WA_NUMBER = "212660880110";
-    const waUrl = `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(msg)}`;
 
     try {
-      if (photo) {
-        // Download photo so user can attach it in WhatsApp
-        try {
-          const blobUrl = URL.createObjectURL(photo);
-          const a = document.createElement("a");
-          a.href = blobUrl;
-          a.download = photo.name || "photo-probleme.jpg";
-          document.body.appendChild(a);
-          a.click();
-          document.body.removeChild(a);
-          setTimeout(() => URL.revokeObjectURL(blobUrl), 5000);
-        } catch {
-          // ignore download error
-        }
+      let photoUrl: string | null = null;
 
-        toast({
-          title: "Photo téléchargée",
-          description: "Joignez la photo dans WhatsApp avec le bouton 📎 trombone.",
+      // Upload photo to cloud if present
+      if (photo) {
+        const formData = new FormData();
+        formData.append("repair_type", problemType || "");
+        formData.append("description", description);
+        formData.append("city", city);
+        formData.append("address", address);
+        formData.append("preferred_date", date ? format(date, "dd/MM/yyyy") : "");
+        formData.append("preferred_time", hour);
+        formData.append("client_name", name);
+        formData.append("client_phone", phone);
+        formData.append("photo", photo);
+
+        const { data, error } = await supabase.functions.invoke("send-gofix-request", {
+          body: formData,
         });
 
-        // Small delay then open WhatsApp
-        await new Promise(r => setTimeout(r, 600));
+        if (error) throw error;
+        photoUrl = data?.photo_url;
+      } else {
+        // No photo — still save to DB via edge function
+        const formData = new FormData();
+        formData.append("repair_type", problemType || "");
+        formData.append("description", description);
+        formData.append("city", city);
+        formData.append("address", address);
+        formData.append("preferred_date", date ? format(date, "dd/MM/yyyy") : "");
+        formData.append("preferred_time", hour);
+        formData.append("client_name", name);
+        formData.append("client_phone", phone);
+
+        await supabase.functions.invoke("send-gofix-request", { body: formData });
       }
 
-      // Always open WhatsApp directly with the message
+      // Build WhatsApp message with photo URL included
+      let msg = buildMessage();
+      if (photoUrl) {
+        msg += `\n\n📸 Photo du problème:\n${photoUrl}`;
+      }
+
+      const waUrl = `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(msg)}`;
       window.open(waUrl, "_blank");
+
+      toast({
+        title: "Demande envoyée ✓",
+        description: "Votre demande a été enregistrée. WhatsApp s'ouvre avec les détails.",
+      });
+
       setOpen(false);
+    } catch (err: any) {
+      console.error("GoFix submit error:", err);
+      toast({
+        title: "Erreur d'envoi",
+        description: "Impossible d'envoyer la demande. Réessayez.",
+        variant: "destructive",
+      });
     } finally {
       setIsSubmitting(false);
     }
@@ -633,12 +663,12 @@ const GoFixPage = () => {
                         </div>
                       )}
 
-                      {/* WhatsApp guidance */}
+                      {/* Cloud upload info */}
                       {photo && (
                         <div className="rounded-xl bg-primary/10 border border-primary/20 px-4 py-3 flex items-start gap-3">
                           <Camera className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
                           <p className="text-xs text-foreground/80 leading-relaxed">
-                            La photo sera téléchargée automatiquement. Joignez-la dans WhatsApp avec le bouton 📎 trombone.
+                            La photo sera uploadée automatiquement et incluse comme lien dans le message WhatsApp. Aucune action manuelle nécessaire.
                           </p>
                         </div>
                       )}

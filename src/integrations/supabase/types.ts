@@ -14,7 +14,48 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      gofix_requests: {
+        Row: {
+          address: string | null
+          city: string | null
+          client_name: string | null
+          client_phone: string | null
+          created_at: string
+          description: string | null
+          id: string
+          photo_url: string | null
+          preferred_date: string | null
+          preferred_time: string | null
+          repair_type: string
+        }
+        Insert: {
+          address?: string | null
+          city?: string | null
+          client_name?: string | null
+          client_phone?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          photo_url?: string | null
+          preferred_date?: string | null
+          preferred_time?: string | null
+          repair_type: string
+        }
+        Update: {
+          address?: string | null
+          city?: string | null
+          client_name?: string | null
+          client_phone?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          photo_url?: string | null
+          preferred_date?: string | null
+          preferred_time?: string | null
+          repair_type?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
