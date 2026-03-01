@@ -1,6 +1,5 @@
-import { motion, useMotionValue, useTransform, animate } from "framer-motion";
-import { useEffect, useRef } from "react";
-import { ArrowRight, MapPin, Droplets, TrendingUp, Users } from "lucide-react";
+import { motion } from "framer-motion";
+import { ArrowRight, MapPin } from "lucide-react";
 import Layout from "@/components/Layout";
 import AnimatedSection from "@/components/AnimatedSection";
 import ServiceCard from "@/components/ServiceCard";
@@ -19,32 +18,6 @@ const services = [
   { title: "GoFix", description: "Plomberie, électricité, réparations & maintenance à domicile.", image: fixHero, path: "/gofix" },
 ];
 
-const stats = [
-  { value: 15000, suffix: "+", label: "Clients satisfaits", emoji: "🙌" },
-  { value: 500, suffix: "K+", label: "Litres d'eau économisés", emoji: "💧" },
-  { value: 3, suffix: "", label: "Villes desservies", emoji: "📍" },
-  { value: 4.9, suffix: "/5", label: "Note moyenne", emoji: "⭐" },
-];
-
-function CountUp({ target, suffix, decimals = 0 }: { target: number; suffix: string; decimals?: number }) {
-  const ref = useRef<HTMLSpanElement>(null);
-  const motionVal = useMotionValue(0);
-  const rounded = useTransform(motionVal, (v) => decimals ? v.toFixed(decimals) : Math.floor(v).toLocaleString("fr-FR"));
-
-  useEffect(() => {
-    const controls = animate(motionVal, target, { duration: 2, ease: "easeOut" });
-    return controls.stop;
-  }, [target, motionVal]);
-
-  useEffect(() => {
-    const unsubscribe = rounded.on("change", (v) => {
-      if (ref.current) ref.current.textContent = v + suffix;
-    });
-    return unsubscribe;
-  }, [rounded, suffix]);
-
-  return <span ref={ref}>0{suffix}</span>;
-}
 
 const Index = () => (
   <Layout>
@@ -59,43 +32,6 @@ const Index = () => (
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6">
           {services.map((s, i) => (
             <ServiceCard key={s.title} {...s} index={i} />
-          ))}
-        </div>
-      </div>
-    </section>
-
-    {/* Stats */}
-    <section className="py-12 md:py-16 relative overflow-hidden">
-      <div className="absolute inset-0 gradient-go" />
-      <motion.div className="absolute top-10 left-[10%] w-40 h-40 rounded-full bg-white/10 blur-2xl"
-        animate={{ y: [0, -25, 0], x: [0, 15, 0] }} transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }} />
-      <motion.div className="absolute bottom-5 right-[15%] w-56 h-56 rounded-full bg-white/8 blur-2xl"
-        animate={{ y: [0, 20, 0], x: [0, -20, 0] }} transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }} />
-      <motion.div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-72 h-72 rounded-full bg-white/5 blur-3xl"
-        animate={{ scale: [1, 1.2, 1] }} transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }} />
-
-      <div className="container mx-auto px-4 relative z-10">
-        <motion.p initial={{ opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
-          className="text-center text-primary-foreground/70 font-display text-sm uppercase tracking-[0.25em] mb-8 md:mb-10">
-          Go 212 en chiffres
-        </motion.p>
-
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-6">
-          {stats.map((s, i) => (
-            <motion.div key={s.label} initial={{ opacity: 0, y: 50 }} whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }} transition={{ delay: i * 0.12, type: "spring", stiffness: 80, damping: 15 }}
-              whileHover={{ y: -6 }} className="group cursor-default">
-              <div className="relative rounded-2xl md:rounded-3xl bg-white/15 backdrop-blur-md border border-white/20 p-4 md:p-8 text-center overflow-hidden transition-all duration-300 group-hover:bg-white/25 group-hover:border-white/35 group-hover:shadow-[0_8px_40px_-8px_rgba(255,255,255,0.2)]">
-                <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 bg-gradient-to-r from-transparent via-white/15 to-transparent" />
-                <motion.span className="text-2xl md:text-4xl block mb-2 md:mb-3" whileHover={{ scale: 1.3, rotate: [0, -15, 15, 0] }} transition={{ duration: 0.4 }}>
-                  {s.emoji}
-                </motion.span>
-                <div className="font-display text-2xl md:text-5xl font-bold text-primary-foreground mb-1 tracking-tight">
-                  <CountUp target={s.value} suffix={s.suffix} decimals={s.label === "Note moyenne" ? 1 : 0} />
-                </div>
-                <div className="text-[10px] md:text-sm text-primary-foreground/70 font-medium tracking-wide">{s.label}</div>
-              </div>
-            </motion.div>
           ))}
         </div>
       </div>
