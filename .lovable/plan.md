@@ -1,34 +1,64 @@
 
+Goal: make iPhone geolocation prompt and capture flow reliable across the whole app, while hardening API-key usage and modernizing the UX.
 
-# Switch Reverse Geocoding to Google Maps API
+What I found in the current codebase
+- Geolocation is centralized in `src/lib/geolocation.ts` and used by all 4 pages (`GoRide`, `GoWash`, `GoClean`, `GoFix`) via `locateUser()`.
+- `locateUser()` currently does an async permission pre-check (`navigator.permissions.query`) and then waits 600ms before calling `getCurrentPosition`.
+- On iOS Safari, `navigator.permissions` behavior is inconsistent, and delaying the actual geolocation call can cause prompt reliability issues.
+- The Google Maps key is hardcoded in `src/lib/geolocation.ts` and has already been exposed in code/chat.
+- The app is currently not published; testing inside embedded contexts can block geolocation depending on permissions policy.
 
-## What Changes
-Replace the free Nominatim reverse geocoding with **Google Maps Geocoding API** for more accurate, reliable address results -- especially on iPhone where Nominatim can return vague addresses.
+Do I know what the issue is?
+- Yes. The permission prompt flow is fragile on iPhone because it depends on an unreliable pre-check and delayed call path before requesting geolocation, plus iOS/browser-context constraints (iframe/in-app browser/denied state).
 
-## What Stays the Same
-- The browser's native `navigator.geolocation` for GPS coordinates (this is NOT a Google Maps feature -- it's built into every browser)
-- All iOS permission handling, fallback logic, and toast messages
-- The WhatsApp Google Maps link generation
+Implementation plan
 
-## Changes
+1) Rebuild geolocation request flow in `src/lib/geolocation.ts` (core fix)
+- Remove iOS-fragile gating logic before permission prompt (`permissions.query` dependency and pre-call delay).
+- Trigger `navigator.geolocation.getCurrentPosition` immediately in the call path initiated by the user click.
+- Keep dual-attempt strategy:
+  - Attempt 1: high accuracy (GPS, 20s timeout)
+  - Attempt 2: lower accuracy fallback (network, 15s timeout)
+- Add strict `try/finally` and normalized error mapping (`permission_denied`, `timeout`, `unavailable`, `blocked_context`, `unsupported`, `unknown`) so UI responses are consistent.
+- Keep reverse geocoding with Google Maps API and coordinate fallback if geocode fails.
 
-### 1. Update `src/lib/geolocation.ts`
-- Replace the `reverseGeocode` function to call `https://maps.googleapis.com/maps/api/geocode/json?latlng=...&key=API_KEY&language=fr`
-- Store the API key as a constant in the file (Google Maps API keys are publishable/public keys restricted by domain)
-- Parse the Google response to get `formatted_address` instead of Nominatim's `display_name`
+2) Add modern iPhone/browser-context guards (reliability)
+- Before requesting GPS, detect non-recoverable contexts:
+  - non-secure context
+  - embedded context where geolocation may be policy-blocked
+  - common in-app browsers known to block/alter permission behavior
+- Return actionable user guidance when blocked (open directly in Safari, enable location in iOS settings).
+- Keep denied-permission instructions, but make them concise and step-based for iPhone.
 
-### Technical Detail
+3) Standardize UI behavior on all 4 service pages
+Files:
+- `src/pages/GoRidePage.tsx`
+- `src/pages/GoWashPage.tsx`
+- `src/pages/GoCleanPage.tsx`
+- `src/pages/GoFixPage.tsx`
 
-```text
-Current flow:
-  GPS coords --> Nominatim (free, less accurate) --> address string
+Changes:
+- Ensure `handleLocateMe` uses `try/finally` so loading state always resets.
+- Keep button disabled/loading state and consistent French status labels.
+- Show success state only when coords/address are actually resolved.
+- Keep manual address entry as first-class fallback when location is denied or unavailable.
 
-New flow:
-  GPS coords --> Google Maps Geocoding API (accurate, reliable) --> address string
-```
+4) Security hardening for Google Maps usage (critical)
+- Immediate operational action: rotate the currently exposed key in Google Cloud.
+- Apply API restrictions:
+  - allow only Geocoding API
+  - enforce HTTP referrer allowlist for your exact domains (preview + production)
+- Apply abuse controls:
+  - quotas and budget alerts
+  - monitoring for abnormal usage
+- In code, avoid spreading key usage beyond one utility module.
 
-Only ONE file changes: `src/lib/geolocation.ts` -- the `reverseGeocode` function (lines 24-34). All 4 service pages already import from this file so they automatically benefit.
+5) iPhone-first verification checklist (acceptance criteria)
+- First-time user on iPhone Safari (Ask): native permission prompt appears and successful address fills.
+- User previously denied: no silent failure; clear steps to re-enable in iOS settings.
+- GPS timeout: automatic fallback returns best available network location.
+- Embedded/in-app browser: user gets explicit “open in Safari” guidance.
+- All 4 flows (`GoRide`, `GoWash`, `GoClean`, `GoFix`) behave identically and include Maps link in WhatsApp summary when coordinates exist.
 
-## Next Step
-After approval, I'll ask you to provide the Google Maps API key.
-
+Important reality check
+- No web app can force iOS to show the native permission popup every time after a denial; that is controlled by iOS/Safari. The rebuild will make the request path robust, remove silent failures, and provide deterministic fallback/instructions so users can complete the flow reliably.
