@@ -1,6 +1,6 @@
 import React, { useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Droplets, ArrowRight, Check, ChevronRight, Leaf, Clock, Shield, Sparkles, MapPin, Phone, Car, Calendar, CheckCircle2, MessageCircle, User } from "lucide-react";
+import { Droplets, ArrowRight, Check, ChevronRight, Leaf, Clock, Shield, Sparkles, MapPin, Phone, Car, Calendar, CheckCircle2, MessageCircle, User, Zap, Crown, Diamond, Star } from "lucide-react";
 import Layout from "@/components/Layout";
 import AnimatedSection from "@/components/AnimatedSection";
 import washHero from "@/assets/wash-hero.jpg";
@@ -588,35 +588,53 @@ const GoWashPage = () => {
                 name: "Lavage Complet",
                 price: 60,
                 badge: null as string | null,
+                icon: Droplets,
+                accent: "from-sky-400 to-blue-500",
+                accentBg: "bg-sky-500/10",
+                accentText: "text-sky-600",
                 services: ["Lavage carrosserie", "Nettoyage Intérieurs", "Aspiration Habitacle / Coffre", "Nettoyage Vitres", "Nettoyage Jantes", "Cirage Pneus"],
               },
               {
                 name: "Lavage Spécial",
                 price: 80,
                 badge: null as string | null,
+                icon: Zap,
+                accent: "from-amber-400 to-orange-500",
+                accentBg: "bg-amber-500/10",
+                accentText: "text-amber-600",
                 services: ["Lavage / Démoustication Carrosserie"],
               },
               {
                 name: "Lavage Extra",
                 price: 200,
                 badge: "Populaire",
+                icon: Star,
+                accent: "from-emerald-400 to-green-600",
+                accentBg: "bg-emerald-500/10",
+                accentText: "text-emerald-600",
                 services: ["Traitement taches Sièges / Tapis", "Lavage Carrosserie", "Aspiration Habitacle / Coffre", "Rénovation Plastique", "Nettoyage Vitres", "Décrassage Jantes", "Cirage Pneus"],
               },
               {
                 name: "Lavage Premium",
                 price: 300,
                 badge: "Premium",
+                icon: Crown,
+                accent: "from-violet-400 to-purple-600",
+                accentBg: "bg-violet-500/10",
+                accentText: "text-violet-600",
                 services: ["Traitement taches Sièges / Tapis", "Traitement taches toit", "Rénovation Plastique", "Nettoyage Vitres", "Décrassage Jantes", "Cirage Pneus"],
               },
-            ].map((pack, i) => (
+            ].map((pack, i) => {
+              const IconComp = pack.icon;
+              return (
               <motion.div
                 key={pack.name}
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ delay: i * 0.1, type: "spring", damping: 20 }}
-                whileHover={{ y: -8 }}
-                className={`relative group rounded-3xl border bg-card p-6 flex flex-col transition-all duration-300 hover:shadow-xl ${
+                transition={{ delay: i * 0.12, type: "spring", damping: 18 }}
+                whileHover={{ y: -10, scale: 1.02 }}
+                className={`relative group rounded-3xl border bg-card overflow-hidden flex flex-col transition-all duration-300 hover:shadow-2xl ${
                   pack.badge === "Populaire"
                     ? "border-primary ring-2 ring-primary/20 shadow-go"
                     : pack.badge === "Premium"
@@ -624,54 +642,78 @@ const GoWashPage = () => {
                     : "border-border hover:border-primary/30"
                 }`}
               >
-                <div className="absolute inset-0 rounded-3xl -translate-x-full group-hover:translate-x-full transition-transform duration-700 bg-gradient-to-r from-transparent via-primary/5 to-transparent pointer-events-none" />
+                {/* Gradient header strip */}
+                <div className={`h-1.5 w-full bg-gradient-to-r ${pack.accent}`} />
+
+                {/* Decorative background glow */}
+                <div className={`absolute -top-12 -right-12 w-32 h-32 rounded-full bg-gradient-to-br ${pack.accent} opacity-[0.07] blur-2xl group-hover:opacity-[0.15] transition-opacity duration-500`} />
+
+                {/* Shine sweep */}
+                <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 bg-gradient-to-r from-transparent via-white/10 to-transparent pointer-events-none" />
 
                 {pack.badge && (
-                  <span className={`absolute -top-3 right-4 px-3 py-1 rounded-full text-xs font-display font-semibold ${
+                  <span className={`absolute top-4 right-4 px-3 py-1 rounded-full text-[10px] font-display font-bold uppercase tracking-wider ${
                     pack.badge === "Premium"
-                      ? "bg-foreground text-background"
+                      ? "bg-gradient-to-r from-violet-500 to-purple-600 text-white"
                       : "gradient-go text-primary-foreground"
                   }`}>
                     {pack.badge}
                   </span>
                 )}
 
-                <div className="mb-4">
-                  <span className="text-lg mb-1 block">🚗</span>
-                  <h3 className="font-display text-lg font-bold">{pack.name}</h3>
-                  <p className="text-xs text-muted-foreground">Intérieur + Extérieur</p>
+                <div className="p-6 pb-0">
+                  {/* Icon badge */}
+                  <motion.div
+                    whileHover={{ rotate: [0, -8, 8, 0], scale: 1.1 }}
+                    transition={{ duration: 0.5 }}
+                    className={`w-14 h-14 rounded-2xl ${pack.accentBg} flex items-center justify-center mb-4 border border-border/50`}
+                  >
+                    <IconComp className={`h-7 w-7 ${pack.accentText}`} strokeWidth={1.5} />
+                  </motion.div>
+
+                  <h3 className="font-display text-lg font-bold mb-0.5">{pack.name}</h3>
+                  <p className="text-xs text-muted-foreground mb-4">Intérieur + Extérieur</p>
+
+                  {/* Price */}
+                  <div className="flex items-baseline gap-1 mb-5">
+                    <span className={`font-display text-4xl font-extrabold bg-gradient-to-r ${pack.accent} bg-clip-text text-transparent`}>{pack.price}</span>
+                    <span className="text-sm font-medium text-muted-foreground">DH</span>
+                  </div>
                 </div>
 
-                <div className="mb-5">
-                  <span className="font-display text-4xl font-bold text-primary">{pack.price}</span>
-                  <span className="text-sm text-muted-foreground ml-1">DH</span>
+                {/* Divider */}
+                <div className="mx-6 h-px bg-border/60" />
+
+                <div className="p-6 pt-4 flex-1 flex flex-col">
+                  <ul className="space-y-2.5 flex-1 mb-6">
+                    {pack.services.map((s) => (
+                      <li key={s} className="flex items-start gap-2.5 text-sm text-muted-foreground">
+                        <div className={`w-5 h-5 rounded-full ${pack.accentBg} flex items-center justify-center flex-shrink-0 mt-0.5`}>
+                          <Check className={`h-3 w-3 ${pack.accentText}`} strokeWidth={2.5} />
+                        </div>
+                        <span>{s}</span>
+                      </li>
+                    ))}
+                  </ul>
+
+                  <motion.a
+                    whileHover={{ scale: 1.04 }}
+                    whileTap={{ scale: 0.96 }}
+                    href={`https://wa.me/212660880110?text=${encodeURIComponent(`Bonjour, je souhaite réserver le pack Go 212 "${pack.name}" à ${pack.price} DH.`)}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={`w-full py-3.5 rounded-2xl font-display font-semibold text-sm text-center inline-flex items-center justify-center gap-2 transition-all ${
+                      pack.badge
+                        ? `bg-gradient-to-r ${pack.accent} text-white shadow-lg hover:shadow-xl`
+                        : "bg-primary/10 text-primary hover:bg-primary/20"
+                    }`}
+                  >
+                    <MessageCircle className="h-4 w-4" /> Réserver
+                  </motion.a>
                 </div>
-
-                <ul className="space-y-2.5 flex-1 mb-6">
-                  {pack.services.map((s) => (
-                    <li key={s} className="flex items-start gap-2 text-sm text-muted-foreground">
-                      <Check className="h-4 w-4 text-primary flex-shrink-0 mt-0.5" />
-                      <span>{s}</span>
-                    </li>
-                  ))}
-                </ul>
-
-                <motion.a
-                  whileHover={{ scale: 1.03 }}
-                  whileTap={{ scale: 0.97 }}
-                  href={`https://wa.me/212660880110?text=${encodeURIComponent(`Bonjour, je souhaite réserver le pack Go 212 "${pack.name}" à ${pack.price} DH.`)}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={`w-full py-3 rounded-2xl font-display font-semibold text-sm text-center inline-flex items-center justify-center gap-2 transition-all ${
-                    pack.badge
-                      ? "gradient-go text-primary-foreground shadow-go hover:shadow-lg"
-                      : "bg-primary/10 text-primary hover:bg-primary/20"
-                  }`}
-                >
-                  <MessageCircle className="h-4 w-4" /> Réserver
-                </motion.a>
               </motion.div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </section>
