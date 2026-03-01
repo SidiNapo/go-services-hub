@@ -1,15 +1,23 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Zap, Battery, Clock, Shield, Leaf, ArrowRight, X, User, Phone, MapPin } from "lucide-react";
+import { Zap, Battery, Clock, Shield, Leaf, ArrowRight, User, Phone, MapPin, ChevronLeft, Navigation, Calendar } from "lucide-react";
 import Layout from "@/components/Layout";
 import AnimatedSection from "@/components/AnimatedSection";
 import motoFlow from "@/assets/moto-flow.jpg";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
+import { Calendar as CalendarUI } from "@/components/ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { cn } from "@/lib/utils";
+import { format } from "date-fns";
+import { fr } from "date-fns/locale";
 
-const pricing = [
-  { id: "hour", duration: "1 Heure", price: "30", unit: "DH", popular: false },
-  { id: "day", duration: "1 Jour", price: "160", unit: "DH", popular: true },
-  { id: "week", duration: "1 Semaine", price: "800", unit: "DH", popular: false },
-  { id: "month", duration: "1 Mois", price: "2 300", unit: "DH", popular: false },
+type DurationType = "hour" | "day" | "week" | "month";
+
+const pricing: { id: DurationType; duration: string; price: string; unit: string; popular: boolean; emoji: string; perUnit: string }[] = [
+  { id: "hour", duration: "1 Heure", price: "30", unit: "DH", popular: false, emoji: "⏱️", perUnit: "/heure" },
+  { id: "day", duration: "1 Jour", price: "160", unit: "DH", popular: true, emoji: "☀️", perUnit: "/jour" },
+  { id: "week", duration: "1 Semaine", price: "800", unit: "DH", popular: false, emoji: "📅", perUnit: "/semaine" },
+  { id: "month", duration: "1 Mois", price: "2 300", unit: "DH", popular: false, emoji: "🗓️", perUnit: "/mois" },
 ];
 
 const features = [
@@ -20,63 +28,151 @@ const features = [
   { icon: Leaf, title: "Écologique", desc: "Zéro empreinte carbone.", emoji: "🌱" },
 ];
 
+const timeSlots = [
+  "08:00", "09:00", "10:00", "11:00", "12:00", "13:00",
+  "14:00", "15:00", "16:00", "17:00", "18:00", "19:00",
+];
+
 const GoRidePage = () => {
-  const [modalOpen, setModalOpen] = useState(false);
-  const [step, setStep] = useState<1 | 2>(1);
-  const [selectedPlan, setSelectedPlan] = useState("day");
+  const [open, setOpen] = useState(false);
+  const [step, setStep] = useState(1);
+  const totalSteps = 4;
+
+  // Step 1: Duration
+  const [selectedPlan, setSelectedPlan] = useState<DurationType>("day");
+
+  // Step 2: Date & Time
+  const [date, setDate] = useState<Date | undefined>(undefined);
+  const [hour, setHour] = useState("");
+
+  // Step 3: Location
+  const [city, setCity] = useState("Casablanca");
+  const [address, setAddress] = useState("");
+  const [locating, setLocating] = useState(false);
+
+  // Step 4: Personal info
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
-  const [address, setAddress] = useState("");
+  const [notes, setNotes] = useState("");
 
-  const handleSubmit = () => {
-    const plan = pricing.find((p) => p.id === selectedPlan);
-    const msg = `Bonjour, je souhaite réserver une moto Flow :\n• Durée: ${plan?.duration}\n• Prix: ${plan?.price} ${plan?.unit}\n• Nom: ${name}\n• Tél: ${phone}\n• Adresse: ${address}`;
-    window.open(`https://wa.me/212660880110?text=${encodeURIComponent(msg)}`, "_blank");
-    setModalOpen(false);
+  const openModal = () => { setStep(1); setOpen(true); };
+
+  const handleLocateMe = () => {
+    if (!navigator.geolocation) return;
+    setLocating(true);
+    navigator.geolocation.getCurrentPosition(
+      async (pos) => {
+        try {
+          const res = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${pos.coords.latitude}&lon=${pos.coords.longitude}&format=json&accept-language=fr`);
+          const data = await res.json();
+          if (data.display_name) setAddress(data.display_name);
+        } catch {
+          setAddress(`${pos.coords.latitude.toFixed(6)}, ${pos.coords.longitude.toFixed(6)}`);
+        }
+        setLocating(false);
+      },
+      () => setLocating(false),
+      { enableHighAccuracy: true }
+    );
   };
+
+  const selectedPricing = pricing.find(p => p.id === selectedPlan)!;
+
+  const canNext = () => {
+    switch (step) {
+      case 1: return !!selectedPlan;
+      case 2: return !!date && !!hour;
+      case 3: return address.trim().length > 0;
+      case 4: return name.trim().length > 0 && phone.trim().length > 0;
+      default: return false;
+    }
+  };
+
+  const handleConfirm = () => {
+    const msg = `Bonjour, je souhaite réserver une moto GoRide Flow :\n\n🏍️ Durée: ${selectedPricing.duration}\n💰 Prix: ${selectedPricing.price} ${selectedPricing.unit}\n📅 Date: ${date ? format(date, "dd/MM/yyyy") : ""}\n🕐 Heure: ${hour}\n🏙️ Ville: ${city}\n📍 Adresse: ${address}\n\n👤 ${name}\n📞 ${phone}${notes ? `\n📝 Notes: ${notes}` : ""}`;
+    window.open(`https://wa.me/212660880110?text=${encodeURIComponent(msg)}`, "_blank");
+    setOpen(false);
+  };
+
+  const stepLabels = ["Durée", "Date", "Adresse", "Infos"];
 
   return (
     <Layout>
-      {/* Moto showcase */}
-      <section className="pt-28 pb-16">
-        <div className="container mx-auto px-4">
-          <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
-            className="max-w-sm mx-auto">
-            <div
-              onClick={() => { setModalOpen(true); setStep(1); }}
-              className="group cursor-pointer rounded-3xl overflow-hidden shadow-elevated hover:shadow-go transition-all duration-500 bg-card border border-border/50"
-            >
-              <div className="relative aspect-[4/3] overflow-hidden">
-                <img src={motoFlow} alt="Flow 2026" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
-                <div className="absolute inset-0 bg-gradient-to-t from-go-dark/60 via-transparent to-transparent" />
-                <div className="absolute top-4 left-4 px-3 py-1.5 rounded-full gradient-go text-primary-foreground text-xs font-semibold flex items-center gap-1.5 shadow-go">
-                  <Zap className="h-3 w-3" /> 100% Électrique
-                </div>
-                <div className="absolute bottom-4 right-4 px-3 py-1.5 rounded-full bg-card/90 backdrop-blur-sm text-xs font-display font-bold border border-border/50">
-                  2026
-                </div>
-              </div>
-              <div className="p-6">
-                <h2 className="font-display text-2xl font-bold mb-1">Flow</h2>
-                <p className="text-sm text-muted-foreground mb-4">2 places · Swap batterie · Autonomie illimitée</p>
-                <div className="flex items-baseline gap-1 mb-5">
-                  <span className="font-display text-3xl font-bold text-primary">30</span>
-                  <span className="text-sm text-muted-foreground">DH / heure</span>
-                </div>
-                <motion.div
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  className="gradient-go w-full py-3.5 rounded-2xl text-center font-display font-semibold text-primary-foreground text-sm shadow-go flex items-center justify-center gap-2"
-                >
-                  Réserver <ArrowRight className="h-4 w-4" />
-                </motion.div>
-              </div>
+      {/* Hero - immersive moto showcase */}
+      <section className="relative min-h-[85vh] md:min-h-[90vh] flex items-center overflow-hidden">
+        <motion.div className="absolute inset-0" initial={{ scale: 1.1 }} animate={{ scale: 1 }} transition={{ duration: 1.5, ease: "easeOut" }}>
+          <img src={motoFlow} alt="Flow 2026" className="w-full h-full object-cover" loading="eager" />
+        </motion.div>
+        <div className="absolute inset-0 bg-gradient-to-b from-[hsl(160_20%_5%/0.5)] via-[hsl(160_20%_8%/0.3)] to-[hsl(160_20%_5%/0.85)]" />
+        <div className="absolute inset-0 bg-gradient-to-r from-[hsl(160_20%_5%/0.6)] via-transparent to-transparent" />
+
+        <motion.div className="absolute top-[15%] right-[10%] w-72 h-72 rounded-full bg-primary/10 blur-[100px]"
+          animate={{ scale: [1, 1.3, 1], opacity: [0.3, 0.6, 0.3] }}
+          transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }} />
+        <motion.div className="absolute bottom-[20%] left-[5%] w-56 h-56 rounded-full bg-primary/8 blur-[80px]"
+          animate={{ scale: [1.2, 1, 1.2], opacity: [0.2, 0.5, 0.2] }}
+          transition={{ duration: 6, repeat: Infinity, ease: "easeInOut", delay: 2 }} />
+
+        <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: "radial-gradient(circle, hsl(var(--primary-foreground)) 1px, transparent 1px)", backgroundSize: "40px 40px" }} />
+
+        <div className="container mx-auto px-4 relative z-10 pt-24">
+          <div className="max-w-3xl">
+            <motion.div initial={{ opacity: 0, y: 20, scale: 0.9 }} animate={{ opacity: 1, y: 0, scale: 1 }} transition={{ duration: 0.6 }}
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-primary/15 backdrop-blur-xl border border-primary/20 text-primary-foreground text-sm font-medium mb-8">
+              <motion.div animate={{ rotate: [0, 10, -10, 0] }} transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}>
+                <Zap className="h-4 w-4" />
+              </motion.div>
+              100% Électrique · Flow 2026
+            </motion.div>
+
+            <div className="overflow-hidden mb-3">
+              <motion.h1 initial={{ y: 80, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ duration: 0.8, delay: 0.2 }}
+                className="font-display text-4xl sm:text-6xl md:text-8xl font-bold text-primary-foreground leading-[0.85] tracking-tight">
+                Roulez
+              </motion.h1>
             </div>
-          </motion.div>
+            <div className="overflow-hidden mb-8">
+              <motion.h1 initial={{ y: 80, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ duration: 0.8, delay: 0.35 }}
+                className="font-display text-4xl sm:text-6xl md:text-8xl font-bold leading-[0.85] tracking-tight">
+                <span className="text-gradient">électrique</span>{" "}
+                <span className="text-primary-foreground/60 font-light">dès maintenant</span>
+              </motion.h1>
+            </div>
+
+            <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.5 }}
+              className="text-base md:text-xl text-primary-foreground/70 max-w-xl mb-10 leading-relaxed">
+              2 places · Swap batterie instantané · Autonomie illimitée. À partir de 30 DH/heure.
+            </motion.p>
+
+            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.65 }}
+              className="flex flex-col sm:flex-row items-start sm:items-center gap-6">
+              <motion.button onClick={openModal} whileHover={{ scale: 1.05, boxShadow: "0 0 40px hsl(142 72% 42% / 0.3)" }}
+                whileTap={{ scale: 0.95 }}
+                className="gradient-go px-8 py-4 rounded-2xl font-display font-semibold text-primary-foreground shadow-go inline-flex items-center gap-3 text-base relative overflow-hidden group">
+                <span className="relative z-10">Réserver maintenant</span>
+                <ArrowRight className="h-5 w-5 relative z-10 group-hover:translate-x-1 transition-transform" />
+                <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 bg-gradient-to-r from-transparent via-white/15 to-transparent" />
+              </motion.button>
+
+              <div className="flex items-center gap-6 px-6 py-4 rounded-2xl bg-black/40 backdrop-blur-xl border border-white/20 shadow-lg">
+                <div className="text-center">
+                  <div className="font-display text-2xl font-bold text-white drop-shadow-md">30<span className="text-sm font-normal text-white/70">DH</span></div>
+                  <div className="text-xs text-white/90 uppercase tracking-wider font-medium">/ heure</div>
+                </div>
+                <div className="w-px h-8 bg-white/40" />
+                <div className="text-center">
+                  <div className="font-display text-2xl font-bold text-white drop-shadow-md">15min</div>
+                  <div className="text-xs text-white/90 uppercase tracking-wider font-medium">Livraison</div>
+                </div>
+              </div>
+            </motion.div>
+          </div>
         </div>
+
+        <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-background to-transparent" />
       </section>
 
-      {/* Features - glassmorphism style */}
+      {/* Features */}
       <section className="py-20 relative overflow-hidden">
         <div className="absolute inset-0 gradient-go" />
         <motion.div className="absolute top-10 left-[10%] w-40 h-40 rounded-full bg-white/10 blur-2xl"
@@ -93,8 +189,7 @@ const GoRidePage = () => {
               <motion.div key={f.title} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }} transition={{ delay: i * 0.08 }}
                 whileHover={{ y: -6 }}
-                className="group rounded-2xl md:rounded-3xl bg-white/15 backdrop-blur-md border border-white/20 p-4 md:p-6 text-center transition-all duration-300 hover:bg-white/25 hover:border-white/35 cursor-default overflow-hidden relative"
-              >
+                className="group rounded-2xl md:rounded-3xl bg-white/15 backdrop-blur-md border border-white/20 p-4 md:p-6 text-center transition-all duration-300 hover:bg-white/25 hover:border-white/35 cursor-default overflow-hidden relative">
                 <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 bg-gradient-to-r from-transparent via-white/15 to-transparent" />
                 <motion.span className="text-2xl md:text-3xl block mb-2 md:mb-3"
                   whileHover={{ scale: 1.2, rotate: [0, -10, 10, 0] }} transition={{ duration: 0.4 }}>
@@ -109,127 +204,255 @@ const GoRidePage = () => {
       </section>
 
       {/* CTA */}
-      <section className="py-16 md:py-20 bg-go-surface">
-        <div className="container mx-auto px-4 text-center">
-          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
-            <h2 className="font-display text-3xl md:text-4xl font-bold mb-4">Roulez électrique dès aujourd'hui</h2>
-            <p className="text-muted-foreground max-w-md mx-auto mb-8 text-sm md:text-base">
-              À partir de 30 DH/heure. Réservez et recevez votre moto en moins de 15 minutes.
-            </p>
-            <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
-              onClick={() => { setModalOpen(true); setStep(1); }}
-              className="px-8 py-4 rounded-2xl font-display font-semibold gradient-go text-primary-foreground shadow-go hover:opacity-90 transition-opacity inline-flex items-center gap-2">
-              Réserver maintenant <ArrowRight className="h-5 w-5" />
+      <section className="py-10 md:py-14 relative overflow-hidden">
+        <div className="absolute inset-0 bg-go-surface" />
+        <div className="container mx-auto px-4 relative z-10">
+          <motion.div initial={{ opacity: 0, y: 15 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
+            className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-8">
+            <h3 className="font-display text-xl md:text-2xl font-bold text-center sm:text-left">
+              Roulez électrique dès aujourd'hui
+            </h3>
+            <motion.button onClick={openModal} whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
+              className="px-6 py-3 rounded-xl font-display font-semibold gradient-go text-primary-foreground shadow-go inline-flex items-center gap-2 text-sm whitespace-nowrap">
+              Réserver <ArrowRight className="h-4 w-4" />
             </motion.button>
           </motion.div>
         </div>
       </section>
 
-      {/* Reservation Modal */}
-      <AnimatePresence>
-        {modalOpen && (
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4"
-            onClick={() => setModalOpen(false)}>
-            <div className="absolute inset-0 bg-go-dark/60 backdrop-blur-sm" />
-            <motion.div
-              initial={{ opacity: 0, y: 100 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 100 }}
-              transition={{ type: "spring", damping: 25, stiffness: 300 }}
-              onClick={(e) => e.stopPropagation()}
-              className="relative bg-card rounded-t-3xl sm:rounded-3xl shadow-elevated w-full max-w-md overflow-hidden max-h-[90vh] overflow-y-auto"
-            >
-              {/* Modal header */}
-              <div className="flex items-center justify-between p-6 pb-0 sticky top-0 bg-card z-10">
-                <div>
-                  <h3 className="font-display text-xl font-bold">Réserver le Flow</h3>
-                  <p className="text-sm text-muted-foreground">Étape {step}/2</p>
-                </div>
-                <button onClick={() => setModalOpen(false)} className="p-2 rounded-xl hover:bg-muted transition-colors">
-                  <X className="h-5 w-5" />
-                </button>
+      {/* ── Reservation Modal ─────────────────────────── */}
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto p-0 rounded-3xl border-border/50 gap-0">
+          <DialogTitle className="sr-only">Réserver GoRide Flow</DialogTitle>
+
+          {/* Header */}
+          <div className="sticky top-0 z-10 bg-background/95 backdrop-blur-md border-b border-border/50 p-4 md:p-6 pb-4">
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-2">
+                <Zap className="h-5 w-5 text-primary" />
+                <span className="font-display font-bold text-lg">GoRide · Flow</span>
               </div>
-
-              {/* Progress */}
-              <div className="px-6 pt-4">
-                <div className="h-1.5 rounded-full bg-muted overflow-hidden">
-                  <motion.div className="h-full gradient-go rounded-full" animate={{ width: step === 1 ? "50%" : "100%" }} transition={{ type: "spring", stiffness: 100 }} />
+              <span className="text-sm font-semibold text-primary">{selectedPricing.price} DH</span>
+            </div>
+            <div className="flex items-center gap-1">
+              {stepLabels.map((label, i) => (
+                <div key={label} className="flex-1 flex flex-col items-center gap-1">
+                  <div className={cn(
+                    "w-full h-1.5 rounded-full transition-all duration-300",
+                    step > i + 1 ? "bg-primary" : step === i + 1 ? "bg-primary/60" : "bg-muted"
+                  )} />
+                  <span className={cn(
+                    "text-[10px] font-medium transition-colors",
+                    step >= i + 1 ? "text-primary" : "text-muted-foreground"
+                  )}>{label}</span>
                 </div>
-              </div>
+              ))}
+            </div>
+          </div>
 
-              <AnimatePresence mode="wait">
-                {step === 1 && (
-                  <motion.div key="s1" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="p-6">
-                    <p className="font-display font-semibold mb-4">Choisissez votre durée</p>
-                    <div className="space-y-2.5">
-                      {pricing.map((p) => (
-                        <motion.button key={p.id} onClick={() => setSelectedPlan(p.id)}
-                          whileHover={{ scale: 1.01 }} whileTap={{ scale: 0.99 }}
-                          className={`w-full flex items-center justify-between p-4 rounded-2xl border-2 transition-all ${
-                            selectedPlan === p.id ? "border-primary bg-accent shadow-go" : "border-border hover:border-primary/30"
-                          }`}>
-                          <div className="flex items-center gap-3">
-                            <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-colors ${
-                              selectedPlan === p.id ? "border-primary bg-primary" : "border-muted-foreground/30"
-                            }`}>
-                              {selectedPlan === p.id && <div className="w-2 h-2 rounded-full bg-primary-foreground" />}
-                            </div>
-                            <span className="font-display font-semibold text-sm">{p.duration}</span>
-                            {p.popular && <span className="px-2 py-0.5 rounded-full gradient-go text-primary-foreground text-[10px] font-semibold">Populaire</span>}
-                          </div>
-                          <span className="font-display font-bold">{p.price} <span className="text-xs font-normal text-muted-foreground">{p.unit}</span></span>
-                        </motion.button>
-                      ))}
-                    </div>
-                    <motion.button onClick={() => setStep(2)}
-                      whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
-                      className="w-full mt-6 gradient-go py-3.5 rounded-2xl font-display font-semibold text-primary-foreground shadow-go flex items-center justify-center gap-2">
-                      Continuer <ArrowRight className="h-4 w-4" />
-                    </motion.button>
-                  </motion.div>
-                )}
+          <div className="p-4 md:p-6">
+            <AnimatePresence mode="wait">
+              {/* Step 1: Duration selection */}
+              {step === 1 && (
+                <motion.div key="s1" initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -30 }} transition={{ duration: 0.25 }}>
+                  <h3 className="font-display text-xl font-bold mb-1">Choisissez votre durée</h3>
+                  <p className="text-sm text-muted-foreground mb-6">Sélectionnez la formule qui vous convient</p>
 
-                {step === 2 && (
-                  <motion.div key="s2" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="p-6">
-                    <button onClick={() => setStep(1)} className="text-xs text-muted-foreground hover:text-foreground mb-4 inline-flex items-center gap-1">← Modifier la durée</button>
-                    <div className="space-y-3">
-                      {[
-                        { label: "Nom complet", icon: User, value: name, set: setName, placeholder: "Votre nom", type: "text" },
-                        { label: "Téléphone", icon: Phone, value: phone, set: setPhone, placeholder: "+212 6 XX XX XX XX", type: "tel" },
-                        { label: "Adresse de livraison", icon: MapPin, value: address, set: setAddress, placeholder: "Votre adresse", type: "text" },
-                      ].map((field) => (
-                        <div key={field.label}>
-                          <label className="text-xs font-medium mb-1.5 block text-muted-foreground">{field.label}</label>
-                          <div className="relative">
-                            <field.icon className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                            <input value={field.value} onChange={(e) => field.set(e.target.value)} placeholder={field.placeholder} type={field.type}
-                              className="w-full pl-10 pr-4 py-3.5 rounded-xl border-2 border-border bg-background text-foreground text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all" />
-                          </div>
+                  <div className="grid grid-cols-2 gap-3">
+                    {pricing.map((p) => (
+                      <button key={p.id} onClick={() => setSelectedPlan(p.id)}
+                        className={cn(
+                          "relative flex flex-col items-center p-5 rounded-2xl border-2 text-center transition-all duration-200",
+                          selectedPlan === p.id
+                            ? "border-primary bg-primary/5 shadow-go"
+                            : "border-border hover:border-primary/30 hover:bg-muted/30"
+                        )}>
+                        {p.popular && (
+                          <span className="absolute -top-2.5 right-3 px-2.5 py-0.5 rounded-full gradient-go text-primary-foreground text-[10px] font-semibold">
+                            Populaire
+                          </span>
+                        )}
+                        <span className="text-2xl mb-2">{p.emoji}</span>
+                        <span className="font-display font-semibold text-sm mb-1">{p.duration}</span>
+                        <div className="flex items-baseline gap-0.5">
+                          <span className="font-display text-2xl font-bold text-primary">{p.price}</span>
+                          <span className="text-xs text-muted-foreground">{p.unit}</span>
                         </div>
-                      ))}
+                      </button>
+                    ))}
+                  </div>
+                </motion.div>
+              )}
+
+              {/* Step 2: Date & Time */}
+              {step === 2 && (
+                <motion.div key="s2" initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -30 }} transition={{ duration: 0.25 }}>
+                  <h3 className="font-display text-xl font-bold mb-1">Date & Heure</h3>
+                  <p className="text-sm text-muted-foreground mb-5">Quand voulez-vous votre moto ?</p>
+
+                  <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2 block">Date de début *</label>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <button className={cn(
+                        "w-full flex items-center gap-3 px-4 py-3 rounded-xl border text-left text-sm transition-all mb-5",
+                        date ? "border-primary bg-primary/5" : "border-input hover:border-primary/30"
+                      )}>
+                        <Calendar className="h-4 w-4 text-primary" />
+                        {date ? format(date, "EEEE d MMMM yyyy", { locale: fr }) : "Sélectionner une date"}
+                      </button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="start">
+                      <CalendarUI mode="single" selected={date} onSelect={setDate}
+                        disabled={(d) => d < new Date()}
+                        className={cn("p-3 pointer-events-auto")} />
+                    </PopoverContent>
+                  </Popover>
+
+                  <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2 block">Heure de livraison *</label>
+                  <div className="grid grid-cols-4 sm:grid-cols-6 gap-2">
+                    {timeSlots.map(t => (
+                      <button key={t} onClick={() => setHour(t)}
+                        className={cn(
+                          "py-2.5 rounded-lg text-xs font-medium transition-all",
+                          hour === t
+                            ? "gradient-go text-primary-foreground shadow-go"
+                            : "border border-border hover:border-primary/30 text-foreground"
+                        )}>{t}</button>
+                    ))}
+                  </div>
+                </motion.div>
+              )}
+
+              {/* Step 3: Location */}
+              {step === 3 && (
+                <motion.div key="s3" initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -30 }} transition={{ duration: 0.25 }}>
+                  <h3 className="font-display text-xl font-bold mb-1">Adresse de livraison</h3>
+                  <p className="text-sm text-muted-foreground mb-5">Où livrer votre moto ?</p>
+
+                  <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2 block">Ville</label>
+                  <div className="flex gap-2 mb-5">
+                    {[
+                      { name: "Casablanca", active: true },
+                      { name: "Rabat", active: false },
+                      { name: "Marrakech", active: false },
+                    ].map(c => (
+                      <button key={c.name} type="button" disabled={!c.active}
+                        onClick={() => c.active && setCity(c.name)}
+                        className={cn(
+                          "flex-1 py-3 rounded-xl text-sm font-semibold transition-all",
+                          c.active && city === c.name
+                            ? "border-2 border-primary bg-primary/5 text-foreground"
+                            : c.active
+                              ? "border border-border text-foreground hover:border-primary/30"
+                              : "border border-border bg-muted/30 text-muted-foreground opacity-60 cursor-not-allowed"
+                        )}>
+                        {c.name}
+                        {!c.active && <span className="block text-[10px] text-primary/60 font-medium mt-0.5">Bientôt</span>}
+                      </button>
+                    ))}
+                  </div>
+
+                  <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2 block">Adresse complète *</label>
+                  <div className="relative mb-2">
+                    <MapPin className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                    <input value={address} onChange={e => setAddress(e.target.value)}
+                      placeholder="Ex: 123 Rue Mohammed V, Maarif"
+                      className="w-full pl-10 pr-4 py-3 rounded-xl border border-input bg-background text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all" />
+                  </div>
+                  <button type="button" onClick={handleLocateMe} disabled={locating}
+                    className="inline-flex items-center gap-2 text-xs font-medium text-primary hover:text-primary/80 transition-colors">
+                    <Navigation className={cn("h-3.5 w-3.5", locating && "animate-spin")} />
+                    {locating ? "Localisation en cours..." : "📍 Me localiser automatiquement"}
+                  </button>
+                </motion.div>
+              )}
+
+              {/* Step 4: Personal info */}
+              {step === 4 && (
+                <motion.div key="s4" initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -30 }} transition={{ duration: 0.25 }}>
+                  <h3 className="font-display text-xl font-bold mb-1">Vos informations</h3>
+                  <p className="text-sm text-muted-foreground mb-5">Pour confirmer votre réservation</p>
+
+                  <div className="space-y-4">
+                    <div>
+                      <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2 block">Nom complet *</label>
+                      <div className="relative">
+                        <User className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                        <input value={name} onChange={e => setName(e.target.value)} placeholder="Votre nom"
+                          className="w-full pl-10 pr-4 py-3 rounded-xl border border-input bg-background text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all" />
+                      </div>
+                    </div>
+                    <div>
+                      <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2 block">Téléphone *</label>
+                      <div className="relative">
+                        <Phone className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                        <input value={phone} onChange={e => setPhone(e.target.value)} placeholder="06 XX XX XX XX" type="tel"
+                          className="w-full pl-10 pr-4 py-3 rounded-xl border border-input bg-background text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all" />
+                      </div>
+                    </div>
+                    <div>
+                      <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2 block">Notes (optionnel)</label>
+                      <textarea value={notes} onChange={e => setNotes(e.target.value)} placeholder="Instructions spéciales..."
+                        rows={2} className="w-full px-4 py-3 rounded-xl border border-input bg-background text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all resize-none" />
                     </div>
 
                     {/* Summary */}
-                    <div className="mt-5 p-4 rounded-2xl bg-accent/50 border border-border">
-                      <div className="flex items-center justify-between text-sm">
-                        <span className="text-muted-foreground">Flow · {pricing.find(p => p.id === selectedPlan)?.duration}</span>
-                        <span className="font-display font-bold text-primary">{pricing.find(p => p.id === selectedPlan)?.price} DH</span>
+                    <div className="glass-card rounded-2xl p-4 mt-2">
+                      <h4 className="font-display font-semibold text-sm mb-3">Récapitulatif</h4>
+                      <div className="space-y-2 text-sm">
+                        <div className="flex justify-between">
+                          <span className="text-muted-foreground">Moto Flow · {selectedPricing.duration}</span>
+                          <span className="font-bold text-primary">{selectedPricing.price} DH</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-muted-foreground">Date</span>
+                          <span className="font-medium">{date ? format(date, "dd/MM/yyyy") : "-"}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-muted-foreground">Heure</span>
+                          <span className="font-medium">{hour}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-muted-foreground">Livraison</span>
+                          <span className="font-medium">{city}</span>
+                        </div>
                       </div>
                     </div>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
 
-                    <motion.button onClick={handleSubmit} disabled={!name || !phone || !address}
-                      whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
-                      className="w-full mt-5 gradient-go py-3.5 rounded-2xl font-display font-semibold text-primary-foreground shadow-go transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2">
-                      Confirmer via WhatsApp <ArrowRight className="h-4 w-4" />
-                    </motion.button>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+          {/* Footer */}
+          <div className="sticky bottom-0 bg-background/95 backdrop-blur-md border-t border-border/50 p-4 md:p-6 pt-4 flex items-center justify-between gap-3">
+            {step > 1 ? (
+              <button onClick={() => setStep(step - 1)}
+                className="inline-flex items-center gap-1.5 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
+                <ChevronLeft className="h-4 w-4" /> Retour
+              </button>
+            ) : <div />}
+
+            {step < totalSteps ? (
+              <button onClick={() => canNext() && setStep(step + 1)} disabled={!canNext()}
+                className={cn(
+                  "gradient-go px-6 py-3 rounded-xl font-display font-semibold text-sm text-primary-foreground inline-flex items-center gap-2 transition-all",
+                  !canNext() && "opacity-40 cursor-not-allowed"
+                )}>
+                Continuer <ArrowRight className="h-4 w-4" />
+              </button>
+            ) : (
+              <button onClick={handleConfirm} disabled={!canNext()}
+                className={cn(
+                  "gradient-go px-6 py-3 rounded-xl font-display font-semibold text-sm text-primary-foreground inline-flex items-center gap-2 transition-all",
+                  !canNext() && "opacity-40 cursor-not-allowed"
+                )}>
+                Confirmer sur WhatsApp <ArrowRight className="h-4 w-4" />
+              </button>
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
     </Layout>
   );
 };
