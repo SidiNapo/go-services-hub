@@ -225,22 +225,16 @@ const GoFixPage = () => {
         <div className="absolute inset-0 bg-gradient-to-b from-[hsl(160_20%_5%/0.6)] via-[hsl(160_20%_8%/0.4)] to-[hsl(160_20%_5%/0.85)]" />
         <div className="absolute inset-0 bg-gradient-to-r from-[hsl(160_20%_5%/0.5)] via-transparent to-transparent" />
 
-        <motion.div className="absolute top-[15%] right-[10%] w-72 h-72 rounded-full bg-primary/10 blur-[100px]"
-          animate={{ scale: [1, 1.3, 1], opacity: [0.3, 0.6, 0.3] }}
-          transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }} />
-        <motion.div className="absolute bottom-[20%] left-[5%] w-56 h-56 rounded-full bg-primary/8 blur-[80px]"
-          animate={{ scale: [1.2, 1, 1.2], opacity: [0.2, 0.5, 0.2] }}
-          transition={{ duration: 6, repeat: Infinity, ease: "easeInOut", delay: 2 }} />
+        <div className="absolute top-[15%] right-[10%] w-72 h-72 rounded-full bg-primary/10 blur-[100px] opacity-40" />
+        <div className="absolute bottom-[20%] left-[5%] w-56 h-56 rounded-full bg-primary/8 blur-[80px] opacity-30" />
 
         <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: "radial-gradient(circle, hsl(var(--primary-foreground)) 1px, transparent 1px)", backgroundSize: "40px 40px" }} />
 
         <div className="container mx-auto px-4 relative z-10 pt-24">
           <div className="max-w-3xl">
-            <motion.div initial={{ opacity: 0, y: 20, scale: 0.9 }} animate={{ opacity: 1, y: 0, scale: 1 }} transition={{ duration: 0.6 }}
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-primary/15 backdrop-blur-xl border border-primary/20 text-primary-foreground text-sm font-medium mb-8">
-              <motion.div animate={{ rotate: [0, 10, -10, 0] }} transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}>
-                <Wrench className="h-4 w-4" />
-              </motion.div>
+            <motion.div initial={{ opacity: 0, y: 20, scale: 0.9 }} animate={{ opacity: 1, y: 0, scale: 1 }} transition={{ duration: 0.5 }}
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-primary/15 border border-primary/20 text-primary-foreground text-sm font-medium mb-8">
+              <Wrench className="h-4 w-4" />
               Services techniques à domicile
             </motion.div>
 
@@ -265,15 +259,13 @@ const GoFixPage = () => {
 
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.65 }}
               className="flex flex-col sm:flex-row items-start sm:items-center gap-6">
-              <motion.button onClick={openModal} whileHover={{ scale: 1.05, boxShadow: "0 0 40px hsl(142 72% 42% / 0.3)" }}
-                whileTap={{ scale: 0.95 }}
-                className="gradient-go px-8 py-4 rounded-2xl font-display font-semibold text-primary-foreground shadow-go inline-flex items-center gap-3 text-base relative overflow-hidden group">
-                <span className="relative z-10">Demander une intervention</span>
-                <ArrowRight className="h-5 w-5 relative z-10 group-hover:translate-x-1 transition-transform" />
-                <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 bg-gradient-to-r from-transparent via-white/15 to-transparent" />
+              <motion.button onClick={openModal} whileTap={{ scale: 0.95 }}
+                className="gradient-go px-8 py-4 rounded-2xl font-display font-semibold text-primary-foreground shadow-go inline-flex items-center gap-3 text-base">
+                <span>Demander une intervention</span>
+                <ArrowRight className="h-5 w-5" />
               </motion.button>
 
-              <div className="flex items-center gap-6 px-6 py-4 rounded-2xl bg-black/40 backdrop-blur-xl border border-white/20 shadow-lg">
+              <div className="flex items-center gap-6 px-6 py-4 rounded-2xl bg-black/40 border border-white/20 shadow-lg">
                 <div className="text-center">
                   <div className="font-display text-2xl font-bold text-white drop-shadow-md">24h</div>
                   <div className="text-xs text-white/90 uppercase tracking-wider font-medium">Intervention</div>
@@ -294,12 +286,8 @@ const GoFixPage = () => {
       {/* Services grid */}
       <section className="py-20 md:py-32 relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-b from-background via-accent/20 to-background" />
-        <motion.div className="absolute top-20 left-[10%] w-80 h-80 rounded-full bg-primary/5 blur-[120px]"
-          animate={{ scale: [1, 1.2, 1], opacity: [0.3, 0.5, 0.3] }}
-          transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }} />
-        <motion.div className="absolute bottom-20 right-[10%] w-60 h-60 rounded-full bg-primary/8 blur-[100px]"
-          animate={{ scale: [1.1, 0.9, 1.1] }}
-          transition={{ duration: 6, repeat: Infinity, ease: "easeInOut", delay: 3 }} />
+        <div className="absolute top-20 left-[10%] w-80 h-80 rounded-full bg-primary/5 blur-[120px] opacity-40" />
+        <div className="absolute bottom-20 right-[10%] w-60 h-60 rounded-full bg-primary/8 blur-[100px] opacity-30" />
 
         <div className="container mx-auto px-4 relative z-10">
           <div className="text-center max-w-2xl mx-auto mb-16 md:mb-20">
@@ -359,10 +347,8 @@ const GoFixPage = () => {
       {/* Process */}
       <section className="py-16 md:py-24 relative overflow-hidden">
         <div className="absolute inset-0 gradient-go" />
-        <motion.div className="absolute top-10 left-[20%] w-48 h-48 rounded-full bg-white/10 blur-2xl"
-          animate={{ y: [0, -20, 0] }} transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }} />
-        <motion.div className="absolute bottom-10 right-[10%] w-32 h-32 rounded-full bg-white/5 blur-2xl"
-          animate={{ y: [0, 15, 0] }} transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }} />
+        <div className="absolute top-10 left-[20%] w-48 h-48 rounded-full bg-white/10 blur-2xl" />
+        <div className="absolute bottom-10 right-[10%] w-32 h-32 rounded-full bg-white/5 blur-2xl" />
         
         <div className="container mx-auto px-4 relative z-10">
           <div className="text-center mb-12 md:mb-16">
@@ -375,11 +361,9 @@ const GoFixPage = () => {
               { step: "03", title: "Intervention rapide", desc: "Le technicien se déplace et résout le problème. Paiement après satisfaction.", emoji: "🔧" },
             ].map((s, i) => (
               <motion.div key={s.step} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }} transition={{ delay: i * 0.15 }}
-                whileHover={{ y: -6 }}
-                className="group text-center rounded-3xl bg-white/15 backdrop-blur-md border border-white/20 p-6 md:p-8 transition-all duration-300 hover:bg-white/25 hover:border-white/35 relative overflow-hidden cursor-default">
-                <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 bg-gradient-to-r from-transparent via-white/15 to-transparent" />
-                <motion.span className="text-3xl md:text-4xl block mb-4" whileHover={{ scale: 1.2 }}>{s.emoji}</motion.span>
+                viewport={{ once: true }} transition={{ delay: i * 0.1 }}
+                className="group text-center rounded-3xl bg-white/15 border border-white/20 p-6 md:p-8 transition-colors duration-300 hover:bg-white/20 cursor-default">
+                <span className="text-3xl md:text-4xl block mb-4">{s.emoji}</span>
                 <div className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/20 text-primary-foreground font-display font-bold text-sm mb-4">
                   {s.step}
                 </div>

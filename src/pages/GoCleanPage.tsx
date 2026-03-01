@@ -136,16 +136,9 @@ const GoCleanPage = () => {
         <div className="absolute inset-0 bg-gradient-to-b from-[hsl(160_20%_5%/0.6)] via-[hsl(160_20%_8%/0.4)] to-[hsl(160_20%_5%/0.85)]" />
         <div className="absolute inset-0 bg-gradient-to-r from-[hsl(160_20%_5%/0.5)] via-transparent to-transparent" />
 
-        {/* Animated ambient orbs */}
-        <motion.div className="absolute top-[15%] right-[10%] w-72 h-72 rounded-full bg-primary/10 blur-[100px]"
-          animate={{ scale: [1, 1.3, 1], opacity: [0.3, 0.6, 0.3] }}
-          transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }} />
-        <motion.div className="absolute bottom-[20%] left-[5%] w-56 h-56 rounded-full bg-primary/8 blur-[80px]"
-          animate={{ scale: [1.2, 1, 1.2], opacity: [0.2, 0.5, 0.2] }}
-          transition={{ duration: 6, repeat: Infinity, ease: "easeInOut", delay: 2 }} />
-        <motion.div className="absolute top-[40%] right-[30%] w-40 h-40 rounded-full bg-primary/5 blur-[60px]"
-          animate={{ y: [0, -30, 0], x: [0, 20, 0] }}
-          transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }} />
+        {/* Static ambient orbs */}
+        <div className="absolute top-[15%] right-[10%] w-72 h-72 rounded-full bg-primary/10 blur-[100px] opacity-40" />
+        <div className="absolute bottom-[20%] left-[5%] w-56 h-56 rounded-full bg-primary/8 blur-[80px] opacity-30" />
 
         {/* Subtle grid pattern overlay */}
         <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: "radial-gradient(circle, hsl(var(--primary-foreground)) 1px, transparent 1px)", backgroundSize: "40px 40px" }} />
@@ -153,11 +146,9 @@ const GoCleanPage = () => {
         <div className="container mx-auto px-4 relative z-10 pt-24">
           <div className="max-w-3xl">
             {/* Badge */}
-            <motion.div initial={{ opacity: 0, y: 20, scale: 0.9 }} animate={{ opacity: 1, y: 0, scale: 1 }} transition={{ duration: 0.6 }}
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-primary/15 backdrop-blur-xl border border-primary/20 text-primary-foreground text-sm font-medium mb-8">
-              <motion.div animate={{ rotate: [0, 10, -10, 0] }} transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}>
-                <SprayCan className="h-4 w-4" />
-              </motion.div>
+            <motion.div initial={{ opacity: 0, y: 20, scale: 0.9 }} animate={{ opacity: 1, y: 0, scale: 1 }} transition={{ duration: 0.5 }}
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-primary/15 border border-primary/20 text-primary-foreground text-sm font-medium mb-8">
+              <SprayCan className="h-4 w-4" />
               Service professionnel de nettoyage
             </motion.div>
 
@@ -185,16 +176,14 @@ const GoCleanPage = () => {
             {/* CTA + Stats row */}
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.65 }}
               className="flex flex-col sm:flex-row items-start sm:items-center gap-6">
-              <motion.button onClick={openModal} whileHover={{ scale: 1.05, boxShadow: "0 0 40px hsl(142 72% 42% / 0.3)" }}
-                whileTap={{ scale: 0.95 }}
-                className="gradient-go px-8 py-4 rounded-2xl font-display font-semibold text-primary-foreground shadow-go inline-flex items-center gap-3 text-base relative overflow-hidden group">
-                <span className="relative z-10">Réserver maintenant</span>
-                <ArrowRight className="h-5 w-5 relative z-10 group-hover:translate-x-1 transition-transform" />
-                <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 bg-gradient-to-r from-transparent via-white/15 to-transparent" />
+              <motion.button onClick={openModal} whileTap={{ scale: 0.95 }}
+                className="gradient-go px-8 py-4 rounded-2xl font-display font-semibold text-primary-foreground shadow-go inline-flex items-center gap-3 text-base">
+                <span>Réserver maintenant</span>
+                <ArrowRight className="h-5 w-5" />
               </motion.button>
 
               {/* Floating stats */}
-              <div className="flex items-center gap-6 px-6 py-4 rounded-2xl bg-black/40 backdrop-blur-xl border border-white/20 shadow-lg">
+              <div className="flex items-center gap-6 px-6 py-4 rounded-2xl bg-black/40 border border-white/20 shadow-lg">
                 <div className="text-center">
                   <div className="font-display text-2xl font-bold text-white drop-shadow-md">500+</div>
                   <div className="text-xs text-white/90 uppercase tracking-wider font-medium drop-shadow-sm">Nettoyages</div>
@@ -217,12 +206,8 @@ const GoCleanPage = () => {
       <section className="py-20 md:py-32 relative overflow-hidden">
         {/* Background ambient effects */}
         <div className="absolute inset-0 bg-gradient-to-b from-background via-accent/20 to-background" />
-        <motion.div className="absolute top-20 left-[10%] w-80 h-80 rounded-full bg-primary/5 blur-[120px]"
-          animate={{ scale: [1, 1.2, 1], opacity: [0.3, 0.5, 0.3] }}
-          transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }} />
-        <motion.div className="absolute bottom-20 right-[10%] w-60 h-60 rounded-full bg-primary/8 blur-[100px]"
-          animate={{ scale: [1.1, 0.9, 1.1] }}
-          transition={{ duration: 6, repeat: Infinity, ease: "easeInOut", delay: 3 }} />
+        <div className="absolute top-20 left-[10%] w-80 h-80 rounded-full bg-primary/5 blur-[120px] opacity-40" />
+        <div className="absolute bottom-20 right-[10%] w-60 h-60 rounded-full bg-primary/8 blur-[100px] opacity-30" />
 
         <div className="container mx-auto px-4 relative z-10">
           {/* Section header */}
