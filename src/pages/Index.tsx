@@ -1,6 +1,5 @@
-import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Bike, Droplets, SprayCan, Wrench, ArrowRight, Leaf, Clock, MapPin, Star, Zap, Shield, Users } from "lucide-react";
+import { ArrowRight, Leaf, Clock, MapPin, Star, Zap, Shield, Users } from "lucide-react";
 import Layout from "@/components/Layout";
 import AnimatedSection from "@/components/AnimatedSection";
 import ServiceCard from "@/components/ServiceCard";
@@ -39,56 +38,19 @@ const testimonials = [
 
 const Index = () => (
   <Layout>
-    {/* Hero */}
-    <section className="relative min-h-screen flex items-center overflow-hidden">
-      <div className="absolute inset-0">
-        <img src={cityHero} alt="Casablanca" className="w-full h-full object-cover" />
-        <div className="hero-overlay absolute inset-0" />
-      </div>
-      <div className="container mx-auto px-4 relative z-10 pt-24">
-        <motion.div initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }} className="max-w-3xl">
-          <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.2 }}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/20 backdrop-blur-md text-primary-foreground text-sm font-medium mb-8">
-            <Zap className="h-4 w-4" /> Vos services du quotidien, réinventés
-          </motion.div>
-
-          <h1 className="font-display text-5xl md:text-7xl lg:text-8xl font-bold text-primary-foreground leading-[0.9] mb-6">
-            Go <span className="text-gradient">212</span>
-          </h1>
-          <p className="text-lg md:text-xl text-primary-foreground/80 max-w-xl mb-10 leading-relaxed">
-            Mobilité électrique, lavage écologique, nettoyage professionnel et réparations à domicile. Tout ce dont vous avez besoin, à portée de clic.
-          </p>
-
-          <div className="flex flex-wrap gap-4">
-            <Link to="/goride"
-              className="gradient-go px-8 py-4 rounded-2xl font-display font-semibold text-primary-foreground shadow-go hover:opacity-90 transition-all inline-flex items-center gap-2">
-              Découvrir nos services <ArrowRight className="h-5 w-5" />
-            </Link>
-            <a href="https://wa.me/212600000000" target="_blank" rel="noopener noreferrer"
-              className="px-8 py-4 rounded-2xl font-display font-semibold border border-primary-foreground/20 text-primary-foreground hover:bg-primary-foreground/10 transition-colors">
-              Nous contacter
-            </a>
-          </div>
+    {/* Services - First thing users see */}
+    <section className="pt-28 pb-24">
+      <div className="container mx-auto px-4">
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} className="text-center max-w-2xl mx-auto mb-12">
+          <span className="text-primary font-display font-semibold text-sm uppercase tracking-widest">Nos Services</span>
+          <h1 className="font-display text-4xl md:text-5xl font-bold mt-3 mb-4">Tout pour votre quotidien</h1>
+          <p className="text-muted-foreground text-lg">Quatre services pensés pour simplifier votre vie, avec une touche d'innovation et de responsabilité écologique.</p>
         </motion.div>
-
-        {/* Quick service icons */}
-        <motion.div initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }}
-          className="mt-20 grid grid-cols-2 md:grid-cols-4 gap-4">
-          {[
-            { icon: Bike, label: "GoRide", path: "/goride" },
-            { icon: Droplets, label: "GoWash", path: "/gowash" },
-            { icon: SprayCan, label: "GoClean", path: "/goclean" },
-            { icon: Wrench, label: "GoFix", path: "/gofix" },
-          ].map((s) => (
-            <Link key={s.label} to={s.path}
-              className="group flex items-center gap-3 p-4 rounded-2xl bg-primary-foreground/5 backdrop-blur-md border border-primary-foreground/10 hover:bg-primary-foreground/10 transition-all">
-              <div className="p-2.5 rounded-xl gradient-go">
-                <s.icon className="h-5 w-5 text-primary-foreground" />
-              </div>
-              <span className="font-display font-semibold text-primary-foreground text-sm">{s.label}</span>
-            </Link>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {services.map((s, i) => (
+            <ServiceCard key={s.title} {...s} index={i} />
           ))}
-        </motion.div>
+        </div>
       </div>
     </section>
 
