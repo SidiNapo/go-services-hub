@@ -277,11 +277,6 @@ const GoCleanPage = () => {
                   <h3 className="font-display font-bold text-xl md:text-2xl mb-3 group-hover:text-primary transition-colors duration-300">{s.title}</h3>
                   <p className="text-muted-foreground text-sm md:text-base leading-relaxed">{s.desc}</p>
 
-                  {/* Subtle arrow indicator */}
-                  <div className="mt-5 flex items-center gap-2 text-primary/60 group-hover:text-primary transition-colors duration-300">
-                    <span className="text-xs font-semibold uppercase tracking-wider">En savoir plus</span>
-                    <ArrowRight className="h-3.5 w-3.5 group-hover:translate-x-1 transition-transform duration-300" />
-                  </div>
                 </div>
               </motion.div>
             ))}
