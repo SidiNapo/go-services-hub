@@ -21,13 +21,18 @@ function getPosition(highAccuracy: boolean, timeout: number): Promise<Geolocatio
   });
 }
 
+const GOOGLE_MAPS_API_KEY = "AIzaSyAKvruUC1LBR5c_AVRXTsasLDRo5PxviFY";
+
 async function reverseGeocode(lat: number, lng: number): Promise<string> {
   try {
     const res = await fetch(
-      `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json&accept-language=fr`
+      `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=${GOOGLE_MAPS_API_KEY}&language=fr`
     );
     const data = await res.json();
-    return data.display_name || `${lat.toFixed(6)}, ${lng.toFixed(6)}`;
+    if (data.status === "OK" && data.results?.length > 0) {
+      return data.results[0].formatted_address;
+    }
+    return `${lat.toFixed(6)}, ${lng.toFixed(6)}`;
   } catch {
     return `${lat.toFixed(6)}, ${lng.toFixed(6)}`;
   }
