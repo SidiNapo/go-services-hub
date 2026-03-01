@@ -3,6 +3,7 @@ import { Wrench, ArrowRight, Check, Zap, Droplets, Paintbrush, Settings, Phone, 
 import Layout from "@/components/Layout";
 import AnimatedSection from "@/components/AnimatedSection";
 import fixHero from "@/assets/fix-hero.jpg";
+import { cn } from "@/lib/utils";
 
 const services = [
   { icon: Droplets, title: "Plomberie", emoji: "🔧", items: ["Réparation fuites", "Débouchage canalisations", "Installation sanitaire", "Chauffe-eau"] },
@@ -14,66 +15,148 @@ const services = [
 const GoFixPage = () => (
   <Layout>
     {/* Hero */}
-    <section className="relative min-h-[60vh] md:min-h-[70vh] flex items-center overflow-hidden">
-      <div className="absolute inset-0">
+    <section className="relative min-h-[85vh] md:min-h-[90vh] flex items-center overflow-hidden">
+      <motion.div className="absolute inset-0" initial={{ scale: 1.1 }} animate={{ scale: 1 }} transition={{ duration: 1.5, ease: "easeOut" }}>
         <img src={fixHero} alt="GoFix" className="w-full h-full object-cover" loading="eager" />
-        <div className="hero-overlay absolute inset-0" />
-      </div>
+      </motion.div>
+      <div className="absolute inset-0 bg-gradient-to-b from-[hsl(160_20%_5%/0.6)] via-[hsl(160_20%_8%/0.4)] to-[hsl(160_20%_5%/0.85)]" />
+      <div className="absolute inset-0 bg-gradient-to-r from-[hsl(160_20%_5%/0.5)] via-transparent to-transparent" />
+
+      {/* Ambient orbs */}
+      <motion.div className="absolute top-[15%] right-[10%] w-72 h-72 rounded-full bg-primary/10 blur-[100px]"
+        animate={{ scale: [1, 1.3, 1], opacity: [0.3, 0.6, 0.3] }}
+        transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }} />
+      <motion.div className="absolute bottom-[20%] left-[5%] w-56 h-56 rounded-full bg-primary/8 blur-[80px]"
+        animate={{ scale: [1.2, 1, 1.2], opacity: [0.2, 0.5, 0.2] }}
+        transition={{ duration: 6, repeat: Infinity, ease: "easeInOut", delay: 2 }} />
+
+      {/* Dot grid */}
+      <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: "radial-gradient(circle, hsl(var(--primary-foreground)) 1px, transparent 1px)", backgroundSize: "40px 40px" }} />
+
       <div className="container mx-auto px-4 relative z-10 pt-24">
-        <motion.div initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }} className="max-w-2xl">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/20 backdrop-blur-md border border-primary/30 text-primary-foreground text-sm font-medium mb-6">
-            <Wrench className="h-4 w-4" /> GoFix
+        <div className="max-w-3xl">
+          <motion.div initial={{ opacity: 0, y: 20, scale: 0.9 }} animate={{ opacity: 1, y: 0, scale: 1 }} transition={{ duration: 0.6 }}
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-primary/15 backdrop-blur-xl border border-primary/20 text-primary-foreground text-sm font-medium mb-8">
+            <motion.div animate={{ rotate: [0, 10, -10, 0] }} transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}>
+              <Wrench className="h-4 w-4" />
+            </motion.div>
+            Services techniques à domicile
+          </motion.div>
+
+          <div className="overflow-hidden mb-3">
+            <motion.h1 initial={{ y: 80, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ duration: 0.8, delay: 0.2 }}
+              className="font-display text-4xl sm:text-6xl md:text-8xl font-bold text-primary-foreground leading-[0.85] tracking-tight">
+              Services
+            </motion.h1>
           </div>
-          <h1 className="font-display text-4xl sm:text-5xl md:text-7xl font-bold text-primary-foreground leading-[0.9] mb-6">
-            Services <span className="text-gradient">techniques</span> à domicile
-          </h1>
-          <p className="text-base md:text-lg text-primary-foreground/80 max-w-xl mb-8">
+          <div className="overflow-hidden mb-8">
+            <motion.h1 initial={{ y: 80, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ duration: 0.8, delay: 0.35 }}
+              className="font-display text-4xl sm:text-6xl md:text-8xl font-bold leading-[0.85] tracking-tight">
+              <span className="text-gradient">techniques</span>{" "}
+              <span className="text-primary-foreground/60 font-light">pro</span>
+            </motion.h1>
+          </div>
+
+          <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.5 }}
+            className="text-base md:text-xl text-primary-foreground/70 max-w-xl mb-10 leading-relaxed">
             Plomberie, électricité, réparations et maintenance générale. On répare tout ce dont votre maison a besoin.
-          </p>
-          <motion.a href="https://wa.me/212660880110" whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
-            className="gradient-go px-8 py-4 rounded-2xl font-display font-semibold text-primary-foreground shadow-go inline-flex items-center gap-2">
-            Demander une intervention <ArrowRight className="h-5 w-5" />
-          </motion.a>
-        </motion.div>
+          </motion.p>
+
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.65 }}
+            className="flex flex-col sm:flex-row items-start sm:items-center gap-6">
+            <motion.a href="https://wa.me/212660880110" whileHover={{ scale: 1.05, boxShadow: "0 0 40px hsl(142 72% 42% / 0.3)" }}
+              whileTap={{ scale: 0.95 }}
+              className="gradient-go px-8 py-4 rounded-2xl font-display font-semibold text-primary-foreground shadow-go inline-flex items-center gap-3 text-base relative overflow-hidden group">
+              <span className="relative z-10">Demander une intervention</span>
+              <ArrowRight className="h-5 w-5 relative z-10 group-hover:translate-x-1 transition-transform" />
+              <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 bg-gradient-to-r from-transparent via-white/15 to-transparent" />
+            </motion.a>
+
+            <div className="flex items-center gap-6 px-6 py-4 rounded-2xl bg-black/40 backdrop-blur-xl border border-white/20 shadow-lg">
+              <div className="text-center">
+                <div className="font-display text-2xl font-bold text-white drop-shadow-md">24h</div>
+                <div className="text-xs text-white/90 uppercase tracking-wider font-medium">Intervention</div>
+              </div>
+              <div className="w-px h-8 bg-white/40" />
+              <div className="text-center">
+                <div className="font-display text-2xl font-bold text-white drop-shadow-md">30min</div>
+                <div className="text-xs text-white/90 uppercase tracking-wider font-medium">Devis gratuit</div>
+              </div>
+            </div>
+          </motion.div>
+        </div>
       </div>
+
+      <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-background to-transparent" />
     </section>
 
     {/* Services grid */}
-    <AnimatedSection className="py-16 md:py-24">
-      <div className="container mx-auto px-4">
-        <div className="text-center max-w-2xl mx-auto mb-12 md:mb-16">
-          <span className="text-primary font-display font-semibold text-sm uppercase tracking-widest">Nos expertises</span>
-          <h2 className="font-display text-3xl md:text-5xl font-bold mt-3">Tous les métiers du bâtiment</h2>
+    <section className="py-20 md:py-32 relative overflow-hidden">
+      <div className="absolute inset-0 bg-gradient-to-b from-background via-accent/20 to-background" />
+      <motion.div className="absolute top-20 left-[10%] w-80 h-80 rounded-full bg-primary/5 blur-[120px]"
+        animate={{ scale: [1, 1.2, 1], opacity: [0.3, 0.5, 0.3] }}
+        transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }} />
+      <motion.div className="absolute bottom-20 right-[10%] w-60 h-60 rounded-full bg-primary/8 blur-[100px]"
+        animate={{ scale: [1.1, 0.9, 1.1] }}
+        transition={{ duration: 6, repeat: Infinity, ease: "easeInOut", delay: 3 }} />
+
+      <div className="container mx-auto px-4 relative z-10">
+        <div className="text-center max-w-2xl mx-auto mb-16 md:mb-20">
+          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-semibold uppercase tracking-widest mb-6">
+            <Wrench className="h-3.5 w-3.5" /> Nos expertises
+          </motion.div>
+          <motion.h2 initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.1 }}
+            className="font-display text-3xl md:text-5xl lg:text-6xl font-bold leading-tight">
+            Tous les métiers<br className="hidden sm:block" /> du <span className="text-gradient">bâtiment</span>
+          </motion.h2>
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6 max-w-4xl mx-auto">
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-6 max-w-5xl mx-auto">
           {services.map((s, i) => (
-            <motion.div key={s.title} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }} transition={{ delay: i * 0.1 }}
-              whileHover={{ y: -4 }}
-              className="group glass-card p-6 md:p-8 rounded-3xl hover:border-primary/30 transition-all duration-300 hover:shadow-go relative overflow-hidden cursor-default"
-            >
-              <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 bg-gradient-to-r from-transparent via-primary/5 to-transparent" />
-              <div className="flex items-center gap-3 mb-4">
-                <div className="p-3 rounded-2xl bg-primary/10 group-hover:bg-primary/20 transition-colors">
-                  <span className="text-2xl">{s.emoji}</span>
+            <motion.div key={s.title}
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-50px" }}
+              transition={{ delay: i * 0.12, duration: 0.5 }}
+              whileHover={{ y: -6, scale: 1.01 }}
+              className={cn(
+                "group relative rounded-3xl p-7 md:p-9 transition-all duration-500 cursor-default overflow-hidden border",
+                i === 0 ? "bg-gradient-to-br from-primary/10 via-primary/5 to-transparent border-primary/20 hover:border-primary/40 hover:shadow-go" :
+                "glass-card border-border/50 hover:border-primary/30 hover:shadow-go"
+              )}>
+              <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-gradient-to-br from-primary/5 via-transparent to-primary/3" />
+              <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 bg-gradient-to-r from-transparent via-primary/8 to-transparent" />
+              <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-bl from-primary/10 to-transparent rounded-bl-[60px] opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+
+              <div className="relative z-10">
+                <div className="flex items-center gap-4 mb-5">
+                  <div className="relative w-14 h-14">
+                    <div className="absolute inset-0 rounded-2xl gradient-go opacity-20 group-hover:opacity-30 transition-opacity group-hover:scale-110 duration-500" />
+                    <div className="relative w-14 h-14 rounded-2xl bg-primary/10 group-hover:bg-primary/15 flex items-center justify-center transition-all duration-300">
+                      <s.icon className="h-6 w-6 text-primary group-hover:scale-110 transition-transform duration-300" />
+                    </div>
+                  </div>
+                  <h3 className="font-display font-bold text-xl md:text-2xl group-hover:text-primary transition-colors duration-300">{s.title}</h3>
                 </div>
-                <h3 className="font-display font-bold text-lg md:text-xl">{s.title}</h3>
+                <ul className="space-y-2.5">
+                  {s.items.map((item) => (
+                    <li key={item} className="flex items-center gap-3 text-sm text-muted-foreground group-hover:text-foreground/70 transition-colors">
+                      <div className="flex-shrink-0 w-5 h-5 rounded-md bg-primary/10 group-hover:bg-primary/20 flex items-center justify-center transition-colors">
+                        <Check className="h-3 w-3 text-primary" />
+                      </div>
+                      {item}
+                    </li>
+                  ))}
+                </ul>
               </div>
-              <ul className="space-y-2">
-                {s.items.map((item) => (
-                  <li key={item} className="flex items-center gap-2 text-sm text-muted-foreground">
-                    <div className="w-1.5 h-1.5 rounded-full bg-primary flex-shrink-0" />
-                    {item}
-                  </li>
-                ))}
-              </ul>
             </motion.div>
           ))}
         </div>
       </div>
-    </AnimatedSection>
+    </section>
 
-    {/* Process - creative steps */}
+    {/* Process */}
     <section className="py-16 md:py-24 relative overflow-hidden">
       <div className="absolute inset-0 gradient-go" />
       <motion.div className="absolute top-10 left-[20%] w-48 h-48 rounded-full bg-white/10 blur-2xl"
@@ -134,16 +217,17 @@ const GoFixPage = () => (
     </AnimatedSection>
 
     {/* CTA */}
-    <section className="py-16 md:py-24 bg-go-surface">
-      <div className="container mx-auto px-4 text-center">
-        <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
-          <h2 className="font-display text-3xl md:text-5xl font-bold mb-6">Un problème ? GoFix s'en occupe</h2>
-          <p className="text-muted-foreground text-base md:text-lg max-w-xl mx-auto mb-8">
-            Envoyez-nous une photo de votre problème et recevez un devis en 30 minutes.
-          </p>
+    <section className="py-10 md:py-14 relative overflow-hidden">
+      <div className="absolute inset-0 gradient-go" />
+      <div className="container mx-auto px-4 relative z-10">
+        <motion.div initial={{ opacity: 0, y: 15 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
+          className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-8">
+          <h3 className="font-display text-xl md:text-2xl font-bold text-primary-foreground text-center sm:text-left">
+            Un problème ? GoFix s'en occupe
+          </h3>
           <motion.a href="https://wa.me/212660880110" whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
-            className="px-8 py-4 rounded-2xl font-display font-semibold gradient-go text-primary-foreground shadow-go inline-flex items-center gap-2">
-            Contacter GoFix <ArrowRight className="h-5 w-5" />
+            className="px-6 py-3 rounded-xl font-display font-semibold bg-primary-foreground text-primary hover:opacity-90 transition-opacity inline-flex items-center gap-2 text-sm shadow-elevated whitespace-nowrap">
+            Contacter GoFix <ArrowRight className="h-4 w-4" />
           </motion.a>
         </motion.div>
       </div>
