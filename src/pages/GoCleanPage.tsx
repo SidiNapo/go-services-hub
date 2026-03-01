@@ -132,28 +132,90 @@ const GoCleanPage = () => {
   return (
     <Layout>
       {/* Hero */}
-      <section className="relative min-h-[60vh] md:min-h-[70vh] flex items-center overflow-hidden">
-        <div className="absolute inset-0">
+      <section className="relative min-h-[85vh] md:min-h-[90vh] flex items-center overflow-hidden">
+        {/* Background image with parallax-like scale */}
+        <motion.div className="absolute inset-0" initial={{ scale: 1.1 }} animate={{ scale: 1 }} transition={{ duration: 1.5, ease: "easeOut" }}>
           <img src={cleanHero} alt="GoClean" className="w-full h-full object-cover" loading="eager" />
-          <div className="hero-overlay absolute inset-0" />
-        </div>
+        </motion.div>
+        {/* Multi-layer overlay for depth */}
+        <div className="absolute inset-0 bg-gradient-to-b from-[hsl(160_20%_5%/0.6)] via-[hsl(160_20%_8%/0.4)] to-[hsl(160_20%_5%/0.85)]" />
+        <div className="absolute inset-0 bg-gradient-to-r from-[hsl(160_20%_5%/0.5)] via-transparent to-transparent" />
+
+        {/* Animated ambient orbs */}
+        <motion.div className="absolute top-[15%] right-[10%] w-72 h-72 rounded-full bg-primary/10 blur-[100px]"
+          animate={{ scale: [1, 1.3, 1], opacity: [0.3, 0.6, 0.3] }}
+          transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }} />
+        <motion.div className="absolute bottom-[20%] left-[5%] w-56 h-56 rounded-full bg-primary/8 blur-[80px]"
+          animate={{ scale: [1.2, 1, 1.2], opacity: [0.2, 0.5, 0.2] }}
+          transition={{ duration: 6, repeat: Infinity, ease: "easeInOut", delay: 2 }} />
+        <motion.div className="absolute top-[40%] right-[30%] w-40 h-40 rounded-full bg-primary/5 blur-[60px]"
+          animate={{ y: [0, -30, 0], x: [0, 20, 0] }}
+          transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }} />
+
+        {/* Subtle grid pattern overlay */}
+        <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: "radial-gradient(circle, hsl(var(--primary-foreground)) 1px, transparent 1px)", backgroundSize: "40px 40px" }} />
+
         <div className="container mx-auto px-4 relative z-10 pt-24">
-          <motion.div initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }} className="max-w-2xl">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/20 backdrop-blur-md border border-primary/30 text-primary-foreground text-sm font-medium mb-6">
-              <SprayCan className="h-4 w-4" /> GoClean
+          <div className="max-w-3xl">
+            {/* Badge */}
+            <motion.div initial={{ opacity: 0, y: 20, scale: 0.9 }} animate={{ opacity: 1, y: 0, scale: 1 }} transition={{ duration: 0.6 }}
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-primary/15 backdrop-blur-xl border border-primary/20 text-primary-foreground text-sm font-medium mb-8">
+              <motion.div animate={{ rotate: [0, 10, -10, 0] }} transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}>
+                <SprayCan className="h-4 w-4" />
+              </motion.div>
+              Service professionnel de nettoyage
+            </motion.div>
+
+            {/* Title with staggered reveal */}
+            <div className="overflow-hidden mb-3">
+              <motion.h1 initial={{ y: 80, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ duration: 0.8, delay: 0.2 }}
+                className="font-display text-4xl sm:text-6xl md:text-8xl font-bold text-primary-foreground leading-[0.85] tracking-tight">
+                Nettoyage
+              </motion.h1>
             </div>
-            <h1 className="font-display text-4xl sm:text-5xl md:text-7xl font-bold text-primary-foreground leading-[0.9] mb-6">
-              Nettoyage <span className="text-gradient">Airbnb</span> professionnel
-            </h1>
-            <p className="text-base md:text-lg text-primary-foreground/80 max-w-xl mb-8">
+            <div className="overflow-hidden mb-8">
+              <motion.h1 initial={{ y: 80, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ duration: 0.8, delay: 0.35 }}
+                className="font-display text-4xl sm:text-6xl md:text-8xl font-bold leading-[0.85] tracking-tight">
+                <span className="text-gradient">Airbnb</span>{" "}
+                <span className="text-primary-foreground/60 font-light">pro</span>
+              </motion.h1>
+            </div>
+
+            {/* Description */}
+            <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.5 }}
+              className="text-base md:text-xl text-primary-foreground/70 max-w-xl mb-10 leading-relaxed">
               Service dédié aux conciergeries et particuliers. Nettoyage complet après check-out, désinfection et préparation pour vos voyageurs.
-            </p>
-            <motion.button onClick={openModal} whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
-              className="gradient-go px-8 py-4 rounded-2xl font-display font-semibold text-primary-foreground shadow-go inline-flex items-center gap-2">
-              Réserver maintenant <ArrowRight className="h-5 w-5" />
-            </motion.button>
-          </motion.div>
+            </motion.p>
+
+            {/* CTA + Stats row */}
+            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.65 }}
+              className="flex flex-col sm:flex-row items-start sm:items-center gap-6">
+              <motion.button onClick={openModal} whileHover={{ scale: 1.05, boxShadow: "0 0 40px hsl(142 72% 42% / 0.3)" }}
+                whileTap={{ scale: 0.95 }}
+                className="gradient-go px-8 py-4 rounded-2xl font-display font-semibold text-primary-foreground shadow-go inline-flex items-center gap-3 text-base relative overflow-hidden group">
+                <span className="relative z-10">Réserver maintenant</span>
+                <ArrowRight className="h-5 w-5 relative z-10 group-hover:translate-x-1 transition-transform" />
+                <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 bg-gradient-to-r from-transparent via-white/15 to-transparent" />
+              </motion.button>
+
+              {/* Floating stats */}
+              <div className="flex items-center gap-6">
+                <div className="text-center">
+                  <div className="font-display text-2xl font-bold text-primary-foreground">500+</div>
+                  <div className="text-[11px] text-primary-foreground/50 uppercase tracking-wider">Nettoyages</div>
+                </div>
+                <div className="w-px h-8 bg-primary-foreground/15" />
+                <div className="text-center">
+                  <div className="font-display text-2xl font-bold text-primary-foreground">4.9<span className="text-primary text-lg">★</span></div>
+                  <div className="text-[11px] text-primary-foreground/50 uppercase tracking-wider">Satisfaction</div>
+                </div>
+              </div>
+            </motion.div>
+          </div>
         </div>
+
+        {/* Bottom fade for seamless transition */}
+        <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-background to-transparent" />
       </section>
 
       {/* Services */}
