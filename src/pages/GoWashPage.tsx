@@ -10,6 +10,42 @@ import vehicleSuvMoyen from "@/assets/vehicle-suv-moyen.png";
 import vehicleSuvGrand from "@/assets/vehicle-suv-grand.png";
 import vehicleMoto from "@/assets/vehicle-moto.png";
 
+import brandAudi from "@/assets/brands/audi.png";
+import brandBmw from "@/assets/brands/bmw.png";
+import brandCitroen from "@/assets/brands/citroen.png";
+import brandDacia from "@/assets/brands/dacia.png";
+import brandFiat from "@/assets/brands/fiat.png";
+import brandFord from "@/assets/brands/ford.png";
+import brandHonda from "@/assets/brands/honda.png";
+import brandHyundai from "@/assets/brands/hyundai.png";
+import brandJaguar from "@/assets/brands/jaguar.png";
+import brandJeep from "@/assets/brands/jeep.png";
+import brandKia from "@/assets/brands/kia.png";
+import brandLandRover from "@/assets/brands/land-rover.png";
+import brandLexus from "@/assets/brands/lexus.png";
+import brandMazda from "@/assets/brands/mazda.png";
+import brandMercedes from "@/assets/brands/mercedes-benz.png";
+import brandMini from "@/assets/brands/mini.png";
+import brandMitsubishi from "@/assets/brands/mitsubishi.png";
+import brandNissan from "@/assets/brands/nissan.png";
+import brandOpel from "@/assets/brands/opel.png";
+import brandPeugeot from "@/assets/brands/peugeot.png";
+import brandPorsche from "@/assets/brands/porsche.png";
+import brandRenault from "@/assets/brands/renault.png";
+import brandSeat from "@/assets/brands/seat.png";
+import brandSkoda from "@/assets/brands/skoda.png";
+import brandSuzuki from "@/assets/brands/suzuki.png";
+import brandTesla from "@/assets/brands/tesla.png";
+import brandToyota from "@/assets/brands/toyota.png";
+import brandVolkswagen from "@/assets/brands/volkswagen.png";
+import brandVolvo from "@/assets/brands/volvo.png";
+import brandAlfaRomeo from "@/assets/brands/alfa-romeo.png";
+import brandChevrolet from "@/assets/brands/chevrolet.png";
+import brandMg from "@/assets/brands/mg.png";
+import brandSubaru from "@/assets/brands/subaru.png";
+import brandCupra from "@/assets/brands/cupra.png";
+import brandDs from "@/assets/brands/ds.png";
+
 type VehicleType = "citadine" | "berline" | "suv_moyen" | "suv_grand" | "moto_petite" | "moto_grande";
 
 interface WashPack {
@@ -19,84 +55,77 @@ interface WashPack {
   popular?: boolean;
 }
 
-const vehicleTypes: { id: VehicleType; label: string; img: string }[] = [
-  { id: "citadine", label: "Citadine", img: vehicleCitadine },
-  { id: "berline", label: "Berline", img: vehicleBerline },
-  { id: "suv_moyen", label: "SUV Moyen", img: vehicleSuvMoyen },
-  { id: "suv_grand", label: "Grand SUV", img: vehicleSuvGrand },
-  { id: "moto_petite", label: "Petite Moto", img: vehicleMoto },
-  { id: "moto_grande", label: "Grande Moto", img: vehicleMoto },
+const vehicleTypes = [
+  { id: "citadine" as VehicleType, label: "Citadine", img: vehicleCitadine },
+  { id: "berline" as VehicleType, label: "Berline", img: vehicleBerline },
+  { id: "suv_moyen" as VehicleType, label: "SUV Moyen", img: vehicleSuvMoyen },
+  { id: "suv_grand" as VehicleType, label: "Grand SUV", img: vehicleSuvGrand },
+  { id: "moto_petite" as VehicleType, label: "Moto", img: vehicleMoto },
 ];
 
-const packsByVehicle: Record<VehicleType, WashPack[]> = {
+const packsByVehicle: Record<string, WashPack[]> = {
   citadine: [
-    { name: "Complet", price: 60, services: ["Lavage intérieur & extérieur", "Aspirateur habitacle/coffre", "Nettoyage vitres", "Nettoyage jantes", "Lustrage pneus"] },
-    { name: "Spécial", price: 80, services: ["Décontamination carrosserie", "Aspirateur habitacle/coffre", "Rénovation plastiques", "Nettoyage vitres & jantes", "Lustrage pneus"], popular: true },
-    { name: "Extra", price: 200, services: ["Traitement taches sièges/tapis", "Lavage carrosserie", "Rénovation plastiques", "Nettoyage vitres", "Lustrage pneus"] },
-    { name: "Premium", price: 300, services: ["Traitement sièges/tapis/plafond", "Rénovation plastiques", "Nettoyage vitres", "Récurage jantes", "Lustrage pneus"] },
+    { name: "Essentiel", price: 70, services: ["Lavage extérieur sans eau", "Nettoyage jantes", "Vitres intérieures/extérieures"] },
+    { name: "Extra", price: 130, services: ["Lavage extérieur sans eau", "Aspiration complète", "Nettoyage jantes & pneus", "Vitres", "Plastiques intérieurs", "Parfum"], popular: true },
   ],
   berline: [
-    { name: "Complet", price: 70, services: ["Lavage carrosserie", "Nettoyage intérieur", "Aspirateur", "Nettoyage vitres", "Lustrage pneus"] },
-    { name: "Spécial", price: 90, services: ["Décontamination carrosserie", "Aspirateur", "Rénovation plastiques", "Nettoyage vitres & jantes", "Lustrage pneus"], popular: true },
-    { name: "Extra", price: 200, services: ["Traitement taches sièges/tapis", "Lavage carrosserie", "Rénovation plastiques", "Nettoyage vitres", "Lustrage pneus"] },
-    { name: "Premium", price: 300, services: ["Traitement sièges/tapis/plafond", "Cirage carrosserie", "Rénovation plastiques", "Nettoyage vitres & jantes", "Lustrage pneus"] },
+    { name: "Essentiel", price: 80, services: ["Lavage extérieur sans eau", "Nettoyage jantes", "Vitres intérieures/extérieures"] },
+    { name: "Extra", price: 150, services: ["Lavage extérieur sans eau", "Aspiration complète", "Nettoyage jantes & pneus", "Vitres", "Plastiques intérieurs", "Parfum"], popular: true },
   ],
   suv_moyen: [
-    { name: "Complet", price: 80, services: ["Lavage carrosserie", "Nettoyage intérieur", "Aspirateur", "Nettoyage vitres", "Lustrage pneus"] },
-    { name: "Spécial", price: 100, services: ["Décontamination carrosserie", "Aspirateur", "Rénovation plastiques", "Nettoyage vitres & jantes", "Lustrage pneus"], popular: true },
-    { name: "Extra", price: 250, services: ["Traitement taches sièges/tapis", "Lavage carrosserie", "Rénovation plastiques", "Nettoyage vitres", "Lustrage pneus"] },
-    { name: "Premium", price: 400, services: ["Traitement sièges/tapis/plafond", "Cirage carrosserie", "Rénovation plastiques", "Nettoyage vitres & jantes", "Lustrage pneus"] },
+    { name: "Essentiel", price: 90, services: ["Lavage extérieur sans eau", "Nettoyage jantes", "Vitres intérieures/extérieures"] },
+    { name: "Extra", price: 170, services: ["Lavage extérieur sans eau", "Aspiration complète", "Nettoyage jantes & pneus", "Vitres", "Plastiques intérieurs", "Parfum"], popular: true },
   ],
   suv_grand: [
-    { name: "Complet", price: 100, services: ["Lavage carrosserie", "Nettoyage intérieur", "Aspirateur", "Nettoyage vitres", "Lustrage pneus"] },
-    { name: "Spécial", price: 120, services: ["Décontamination carrosserie", "Aspirateur", "Rénovation plastiques", "Nettoyage vitres & jantes", "Lustrage pneus"], popular: true },
-    { name: "Extra", price: 250, services: ["Traitement taches sièges/tapis", "Lavage carrosserie", "Rénovation plastiques", "Nettoyage vitres", "Lustrage pneus"] },
-    { name: "Premium", price: 400, services: ["Traitement sièges/tapis/plafond", "Cirage carrosserie", "Rénovation plastiques", "Nettoyage vitres & jantes", "Lustrage pneus"] },
+    { name: "Essentiel", price: 100, services: ["Lavage extérieur sans eau", "Nettoyage jantes", "Vitres intérieures/extérieures"] },
+    { name: "Extra", price: 190, services: ["Lavage extérieur sans eau", "Aspiration complète", "Nettoyage jantes & pneus", "Vitres", "Plastiques intérieurs", "Parfum"], popular: true },
   ],
   moto_petite: [
-    { name: "Extérieur", price: 50, services: ["Lavage carrosserie", "Nettoyage intérieur basique", "Nettoyage pare-brise", "Nettoyage roues", "Lustrage pneus"], popular: true },
+    { name: "Essentiel", price: 50, services: ["Lavage complet sans eau", "Nettoyage jantes"] },
+    { name: "Extra", price: 90, services: ["Lavage complet sans eau", "Nettoyage jantes", "Polish carrosserie", "Protection cire"], popular: true },
   ],
   moto_grande: [
-    { name: "Extérieur + Intérieur", price: 80, services: ["Lavage carrosserie", "Nettoyage intérieur", "Nettoyage vitres", "Nettoyage roues", "Lustrage pneus"], popular: true },
+    { name: "Essentiel", price: 60, services: ["Lavage complet sans eau", "Nettoyage jantes"] },
+    { name: "Extra", price: 100, services: ["Lavage complet sans eau", "Nettoyage jantes", "Polish carrosserie", "Protection cire"], popular: true },
   ],
 };
 
 const carBrands: { name: string; logo: string }[] = [
-  { name: "Audi", logo: "https://logo.clearbit.com/audi.com" },
-  { name: "BMW", logo: "https://logo.clearbit.com/bmw.com" },
-  { name: "Citroën", logo: "https://logo.clearbit.com/citroen.com" },
-  { name: "Dacia", logo: "https://logo.clearbit.com/dacia.com" },
-  { name: "Fiat", logo: "https://logo.clearbit.com/fiat.com" },
-  { name: "Ford", logo: "https://logo.clearbit.com/ford.com" },
-  { name: "Honda", logo: "https://logo.clearbit.com/honda.com" },
-  { name: "Hyundai", logo: "https://logo.clearbit.com/hyundai.com" },
-  { name: "Jaguar", logo: "https://logo.clearbit.com/jaguar.com" },
-  { name: "Jeep", logo: "https://logo.clearbit.com/jeep.com" },
-  { name: "Kia", logo: "https://logo.clearbit.com/kia.com" },
-  { name: "Land Rover", logo: "https://logo.clearbit.com/landrover.com" },
-  { name: "Lexus", logo: "https://logo.clearbit.com/lexus.com" },
-  { name: "Mazda", logo: "https://logo.clearbit.com/mazda.com" },
-  { name: "Mercedes", logo: "https://logo.clearbit.com/mercedes-benz.com" },
-  { name: "Mini", logo: "https://logo.clearbit.com/mini.com" },
-  { name: "Mitsubishi", logo: "https://logo.clearbit.com/mitsubishi-motors.com" },
-  { name: "Nissan", logo: "https://logo.clearbit.com/nissan.com" },
-  { name: "Opel", logo: "https://logo.clearbit.com/opel.com" },
-  { name: "Peugeot", logo: "https://logo.clearbit.com/peugeot.com" },
-  { name: "Porsche", logo: "https://logo.clearbit.com/porsche.com" },
-  { name: "Renault", logo: "https://logo.clearbit.com/renault.com" },
-  { name: "Seat", logo: "https://logo.clearbit.com/seat.com" },
-  { name: "Škoda", logo: "https://logo.clearbit.com/skoda.com" },
-  { name: "Suzuki", logo: "https://logo.clearbit.com/suzuki.com" },
-  { name: "Tesla", logo: "https://logo.clearbit.com/tesla.com" },
-  { name: "Toyota", logo: "https://logo.clearbit.com/toyota.com" },
-  { name: "Volkswagen", logo: "https://logo.clearbit.com/volkswagen.com" },
-  { name: "Volvo", logo: "https://logo.clearbit.com/volvocars.com" },
-  { name: "Alfa Romeo", logo: "https://logo.clearbit.com/alfaromeo.com" },
-  { name: "Chevrolet", logo: "https://logo.clearbit.com/chevrolet.com" },
-  { name: "MG", logo: "https://logo.clearbit.com/mgmotor.com" },
-  { name: "Subaru", logo: "https://logo.clearbit.com/subaru.com" },
-  { name: "Cupra", logo: "https://logo.clearbit.com/cupraofficial.com" },
-  { name: "DS", logo: "https://logo.clearbit.com/dsautomobiles.com" },
+  { name: "Audi", logo: brandAudi },
+  { name: "BMW", logo: brandBmw },
+  { name: "Citroën", logo: brandCitroen },
+  { name: "Dacia", logo: brandDacia },
+  { name: "Fiat", logo: brandFiat },
+  { name: "Ford", logo: brandFord },
+  { name: "Honda", logo: brandHonda },
+  { name: "Hyundai", logo: brandHyundai },
+  { name: "Jaguar", logo: brandJaguar },
+  { name: "Jeep", logo: brandJeep },
+  { name: "Kia", logo: brandKia },
+  { name: "Land Rover", logo: brandLandRover },
+  { name: "Lexus", logo: brandLexus },
+  { name: "Mazda", logo: brandMazda },
+  { name: "Mercedes", logo: brandMercedes },
+  { name: "Mini", logo: brandMini },
+  { name: "Mitsubishi", logo: brandMitsubishi },
+  { name: "Nissan", logo: brandNissan },
+  { name: "Opel", logo: brandOpel },
+  { name: "Peugeot", logo: brandPeugeot },
+  { name: "Porsche", logo: brandPorsche },
+  { name: "Renault", logo: brandRenault },
+  { name: "Seat", logo: brandSeat },
+  { name: "Škoda", logo: brandSkoda },
+  { name: "Suzuki", logo: brandSuzuki },
+  { name: "Tesla", logo: brandTesla },
+  { name: "Toyota", logo: brandToyota },
+  { name: "Volkswagen", logo: brandVolkswagen },
+  { name: "Volvo", logo: brandVolvo },
+  { name: "Alfa Romeo", logo: brandAlfaRomeo },
+  { name: "Chevrolet", logo: brandChevrolet },
+  { name: "MG", logo: brandMg },
+  { name: "Subaru", logo: brandSubaru },
+  { name: "Cupra", logo: brandCupra },
+  { name: "DS", logo: brandDs },
 ];
 
 const GoWashPage = () => {
@@ -278,16 +307,7 @@ const GoWashPage = () => {
                               src={b.logo}
                               alt={b.name}
                               className="max-w-full max-h-full object-contain group-hover:scale-110 transition-transform duration-200"
-                              crossOrigin="anonymous"
-                              referrerPolicy="no-referrer"
-                              onError={(e) => {
-                                const target = e.target as HTMLImageElement;
-                                target.style.display = 'none';
-                                const fallback = target.nextElementSibling as HTMLElement;
-                                if (fallback) fallback.style.display = 'flex';
-                              }}
                             />
-                            <div style={{ display: 'none' }} className="w-10 h-10 rounded-full bg-primary/10 items-center justify-center font-display font-bold text-primary text-lg">{b.name.charAt(0)}</div>
                           </div>
                           <span className="text-xs font-medium text-foreground/80 leading-tight text-center truncate w-full">{b.name}</span>
                         </motion.button>
