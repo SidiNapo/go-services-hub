@@ -493,11 +493,6 @@ const GoCleanPage = () => {
                       </div>
                     </div>
                     <div>
-                      <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2 block">Email (optionnel)</label>
-                      <input value={email} onChange={e => setEmail(e.target.value)} placeholder="votre@email.com" type="email"
-                        className="w-full px-4 py-3 rounded-xl border border-input bg-background text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all" />
-                    </div>
-                    <div>
                       <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2 block">Notes (optionnel)</label>
                       <textarea value={notes} onChange={e => setNotes(e.target.value)} placeholder="Instructions spéciales..."
                         rows={2} className="w-full px-4 py-3 rounded-xl border border-input bg-background text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all resize-none" />
