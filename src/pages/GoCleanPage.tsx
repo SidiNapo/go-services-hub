@@ -336,19 +336,17 @@ const GoCleanPage = () => {
       </AnimatedSection>
 
       {/* CTA */}
-      <section className="py-16 md:py-24 relative overflow-hidden">
+      <section className="py-10 md:py-14 relative overflow-hidden">
         <div className="absolute inset-0 gradient-go" />
-        <motion.div className="absolute top-10 right-[10%] w-40 h-40 rounded-full bg-white/10 blur-2xl"
-          animate={{ y: [0, -20, 0] }} transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }} />
-        <div className="container mx-auto px-4 text-center relative z-10">
-          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
-            <h2 className="font-display text-3xl md:text-5xl font-bold text-primary-foreground mb-6">Un logement propre, des voyageurs heureux</h2>
-            <p className="text-primary-foreground/80 text-base md:text-lg max-w-xl mx-auto mb-8">
-              Contactez-nous pour un devis personnalisé. Tarifs dégressifs pour les conciergeries.
-            </p>
+        <div className="container mx-auto px-4 relative z-10">
+          <motion.div initial={{ opacity: 0, y: 15 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
+            className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-8">
+            <h3 className="font-display text-xl md:text-2xl font-bold text-primary-foreground text-center sm:text-left">
+              Un logement propre, des voyageurs heureux
+            </h3>
             <motion.button onClick={openModal} whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
-              className="px-8 py-4 rounded-2xl font-display font-semibold bg-primary-foreground text-primary hover:opacity-90 transition-opacity inline-flex items-center gap-2 shadow-elevated">
-              Réserver maintenant <ArrowRight className="h-5 w-5" />
+              className="px-6 py-3 rounded-xl font-display font-semibold bg-primary-foreground text-primary hover:opacity-90 transition-opacity inline-flex items-center gap-2 text-sm shadow-elevated whitespace-nowrap">
+              Réserver <ArrowRight className="h-4 w-4" />
             </motion.button>
           </motion.div>
         </div>
