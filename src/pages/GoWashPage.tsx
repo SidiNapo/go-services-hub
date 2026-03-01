@@ -767,7 +767,7 @@ const GoWashPage = () => {
             <p className="text-muted-foreground max-w-md mx-auto">Des packs complets pour un véhicule impeccable, intérieur comme extérieur.</p>
           </motion.div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
             {[
               {
                 name: "Lavage Complet",
@@ -807,27 +807,27 @@ const GoWashPage = () => {
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ delay: i * 0.12, type: "spring", damping: 18 }}
-                whileHover={{ y: -10, scale: 1.02 }}
-                className={`relative group rounded-3xl border bg-card overflow-hidden flex flex-col transition-all duration-300 hover:shadow-2xl ${
+                transition={{ delay: i * 0.1, type: "spring", damping: 20 }}
+                whileHover={{ y: -6 }}
+                className={`relative group rounded-3xl border bg-card overflow-hidden flex flex-col transition-all duration-300 ${
                   pack.badge === "Populaire"
-                    ? "border-primary ring-2 ring-primary/20 shadow-go"
+                    ? "border-primary ring-2 ring-primary/20 shadow-go lg:scale-[1.03]"
                     : pack.badge === "Premium"
-                    ? "border-primary/50 shadow-lg"
+                    ? "border-primary/40 shadow-lg"
                     : "border-border hover:border-primary/30"
                 }`}
               >
-                {/* Gradient header strip */}
-                <div className={`h-1.5 w-full bg-gradient-to-r ${pack.accent}`} />
+                {/* Top accent bar */}
+                <div className={`h-1 w-full bg-gradient-to-r ${pack.accent}`} />
 
-                {/* Decorative background glow */}
-                <div className={`absolute -top-12 -right-12 w-32 h-32 rounded-full bg-gradient-to-br ${pack.accent} opacity-[0.07] blur-2xl group-hover:opacity-[0.15] transition-opacity duration-500`} />
+                {/* Glow */}
+                <div className={`absolute -top-10 -right-10 w-28 h-28 rounded-full bg-gradient-to-br ${pack.accent} opacity-[0.06] blur-2xl group-hover:opacity-[0.12] transition-opacity duration-500`} />
 
-                {/* Shine sweep */}
-                <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 bg-gradient-to-r from-transparent via-white/10 to-transparent pointer-events-none" />
+                {/* Shimmer */}
+                <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 bg-gradient-to-r from-transparent via-white/8 to-transparent pointer-events-none" />
 
                 {pack.badge && (
-                  <span className={`absolute top-4 right-4 px-3 py-1 rounded-full text-[10px] font-display font-bold uppercase tracking-wider ${
+                  <span className={`absolute top-4 right-4 px-2.5 py-0.5 rounded-full text-[10px] font-display font-bold uppercase tracking-wider ${
                     pack.badge === "Premium"
                       ? "bg-gradient-to-r from-violet-500 to-purple-600 text-white"
                       : "gradient-go text-primary-foreground"
@@ -836,52 +836,48 @@ const GoWashPage = () => {
                   </span>
                 )}
 
-                <div className="p-6 pb-0">
-                  {/* Icon badge */}
+                <div className="p-5 pb-0 flex items-start gap-4">
                   <motion.div
-                    whileHover={{ rotate: [0, -8, 8, 0], scale: 1.1 }}
-                    transition={{ duration: 0.5 }}
-                    className={`w-14 h-14 rounded-2xl ${pack.accentBg} flex items-center justify-center mb-4 border border-border/50`}
+                    whileHover={{ rotate: [0, -6, 6, 0] }}
+                    className={`w-12 h-12 rounded-xl ${pack.accentBg} flex items-center justify-center flex-shrink-0 border border-border/40`}
                   >
-                    <IconComp className={`h-7 w-7 ${pack.accentText}`} strokeWidth={1.5} />
+                    <IconComp className={`h-6 w-6 ${pack.accentText}`} strokeWidth={1.5} />
                   </motion.div>
-
-                  <h3 className="font-display text-lg font-bold mb-0.5">{pack.name}</h3>
-                  <p className="text-xs text-muted-foreground mb-4">Intérieur + Extérieur</p>
-
-                  {/* Price */}
-                  <div className="flex items-baseline gap-1 mb-5">
-                    <span className={`font-display text-4xl font-extrabold bg-gradient-to-r ${pack.accent} bg-clip-text text-transparent`}>{pack.price}</span>
-                    <span className="text-sm font-medium text-muted-foreground">DH</span>
+                  <div className="flex-1 min-w-0">
+                    <h3 className="font-display text-base font-bold leading-tight">{pack.name}</h3>
+                    <p className="text-[11px] text-muted-foreground">Intérieur + Extérieur</p>
+                  </div>
+                  <div className="text-right flex-shrink-0">
+                    <span className={`font-display text-2xl font-extrabold bg-gradient-to-r ${pack.accent} bg-clip-text text-transparent`}>{pack.price}</span>
+                    <span className="text-xs text-muted-foreground ml-0.5">DH</span>
                   </div>
                 </div>
 
-                {/* Divider */}
-                <div className="mx-6 h-px bg-border/60" />
+                <div className="mx-5 my-3 h-px bg-border/50" />
 
-                <div className="p-6 pt-4 flex-1 flex flex-col">
-                  <ul className="space-y-2.5 flex-1 mb-6">
+                <div className="px-5 pb-5 flex-1 flex flex-col">
+                  <ul className="grid grid-cols-1 gap-1.5 flex-1 mb-4">
                     {pack.services.map((s) => (
-                      <li key={s} className="flex items-start gap-2.5 text-sm text-muted-foreground">
-                        <div className={`w-5 h-5 rounded-full ${pack.accentBg} flex items-center justify-center flex-shrink-0 mt-0.5`}>
-                          <Check className={`h-3 w-3 ${pack.accentText}`} strokeWidth={2.5} />
+                      <li key={s} className="flex items-center gap-2 text-sm text-muted-foreground">
+                        <div className={`w-4 h-4 rounded-full ${pack.accentBg} flex items-center justify-center flex-shrink-0`}>
+                          <Check className={`h-2.5 w-2.5 ${pack.accentText}`} strokeWidth={3} />
                         </div>
-                        <span>{s}</span>
+                        <span className="truncate">{s}</span>
                       </li>
                     ))}
                   </ul>
 
                   <motion.button
-                    whileHover={{ scale: 1.04 }}
-                    whileTap={{ scale: 0.96 }}
+                    whileHover={{ scale: 1.03 }}
+                    whileTap={{ scale: 0.97 }}
                     onClick={() => openPackModal({ name: pack.name, price: pack.price, accent: pack.accent })}
-                    className={`w-full py-3.5 rounded-2xl font-display font-semibold text-sm text-center inline-flex items-center justify-center gap-2 transition-all ${
+                    className={`w-full py-3 rounded-xl font-display font-semibold text-sm text-center inline-flex items-center justify-center gap-2 transition-all ${
                       pack.badge
-                        ? `bg-gradient-to-r ${pack.accent} text-white shadow-lg hover:shadow-xl`
-                        : "bg-primary/10 text-primary hover:bg-primary/20"
+                        ? `bg-gradient-to-r ${pack.accent} text-white shadow-md hover:shadow-lg`
+                        : "bg-primary/10 text-primary hover:bg-primary/15"
                     }`}
                   >
-                    <MessageCircle className="h-4 w-4" /> Réserver maintenant
+                    <MessageCircle className="h-4 w-4" /> Réserver
                   </motion.button>
                 </div>
               </motion.div>
