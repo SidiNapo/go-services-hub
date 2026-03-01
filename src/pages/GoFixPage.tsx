@@ -275,69 +275,120 @@ const GoFixPage = () => {
         }}
       />
       {/* Hero */}
-      <section className="relative min-h-[85vh] md:min-h-[90vh] flex items-center overflow-hidden">
-        <motion.div className="absolute inset-0" initial={{ scale: 1.1 }} animate={{ scale: 1 }} transition={{ duration: 1.5, ease: "easeOut" }}>
+      <section className="relative min-h-[100vh] flex items-center overflow-hidden bg-[hsl(var(--go-dark))]">
+        {/* Background image with parallax feel */}
+        <motion.div className="absolute inset-0" initial={{ scale: 1.15, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ duration: 2, ease: "easeOut" }}>
           <img src={fixHero} alt="GoFix" className="w-full h-full object-cover" loading="eager" />
         </motion.div>
-        <div className="absolute inset-0 bg-gradient-to-b from-[hsl(160_20%_5%/0.6)] via-[hsl(160_20%_8%/0.4)] to-[hsl(160_20%_5%/0.85)]" />
-        <div className="absolute inset-0 bg-gradient-to-r from-[hsl(160_20%_5%/0.5)] via-transparent to-transparent" />
 
-        <div className="absolute top-[15%] right-[10%] w-72 h-72 rounded-full bg-primary/10 blur-[100px] opacity-40" />
-        <div className="absolute bottom-[20%] left-[5%] w-56 h-56 rounded-full bg-primary/8 blur-[80px] opacity-30" />
+        {/* Multi-layer gradient overlays */}
+        <div className="absolute inset-0 bg-gradient-to-b from-[hsl(160_20%_3%/0.85)] via-[hsl(160_20%_5%/0.5)] to-[hsl(160_20%_3%/0.95)]" />
+        <div className="absolute inset-0 bg-gradient-to-r from-[hsl(160_20%_3%/0.7)] via-transparent to-[hsl(142_72%_42%/0.05)]" />
 
-        <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: "radial-gradient(circle, hsl(var(--primary-foreground)) 1px, transparent 1px)", backgroundSize: "40px 40px" }} />
+        {/* Floating accent orbs */}
+        <motion.div
+          className="absolute top-[10%] right-[15%] w-[500px] h-[500px] rounded-full opacity-20"
+          style={{ background: "radial-gradient(circle, hsl(142 72% 42% / 0.3), transparent 70%)" }}
+          animate={{ scale: [1, 1.2, 1], x: [0, 30, 0], y: [0, -20, 0] }}
+          transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+        />
+        <motion.div
+          className="absolute bottom-[15%] left-[5%] w-[300px] h-[300px] rounded-full opacity-15"
+          style={{ background: "radial-gradient(circle, hsl(142 60% 55% / 0.25), transparent 70%)" }}
+          animate={{ scale: [1, 1.15, 1], x: [0, -20, 0], y: [0, 15, 0] }}
+          transition={{ duration: 6, repeat: Infinity, ease: "easeInOut", delay: 2 }}
+        />
 
-        <div className="container mx-auto px-4 relative z-10 pt-24">
-          <div className="max-w-3xl">
-            <motion.div initial={{ opacity: 0, y: 20, scale: 0.9 }} animate={{ opacity: 1, y: 0, scale: 1 }} transition={{ duration: 0.5 }}
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-primary/15 border border-primary/20 text-primary-foreground text-sm font-medium mb-8">
-              <Wrench className="h-4 w-4" />
-              Services techniques à domicile
+        {/* Subtle grid pattern */}
+        <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: "linear-gradient(hsl(var(--primary-foreground)) 1px, transparent 1px), linear-gradient(90deg, hsl(var(--primary-foreground)) 1px, transparent 1px)", backgroundSize: "80px 80px" }} />
+
+        {/* Content */}
+        <div className="container mx-auto px-4 relative z-10 pt-28 pb-20">
+          <div className="max-w-4xl">
+            {/* Badge */}
+            <motion.div initial={{ opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.6 }}
+              className="inline-flex items-center gap-2.5 px-5 py-2.5 rounded-full border border-primary/30 text-sm font-medium mb-10"
+              style={{ background: "linear-gradient(135deg, hsl(142 72% 42% / 0.15), hsl(142 60% 55% / 0.05))" }}>
+              <span className="relative flex h-2.5 w-2.5">
+                <span className="absolute inline-flex h-full w-full rounded-full bg-primary opacity-75 animate-ping" />
+                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-primary" />
+              </span>
+              <span className="text-primary-foreground/90">Intervention sous 24h à Casablanca</span>
             </motion.div>
 
-            <div className="overflow-hidden mb-3">
-              <motion.h1 initial={{ y: 80, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ duration: 0.8, delay: 0.2 }}
-                className="font-display text-4xl sm:text-6xl md:text-8xl font-bold text-primary-foreground leading-[0.85] tracking-tight">
-                Services
-              </motion.h1>
-            </div>
-            <div className="overflow-hidden mb-8">
-              <motion.h1 initial={{ y: 80, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ duration: 0.8, delay: 0.35 }}
-                className="font-display text-4xl sm:text-6xl md:text-8xl font-bold leading-[0.85] tracking-tight">
-                <span className="text-gradient">techniques</span>{" "}
-                <span className="text-primary-foreground/60 font-light">pro</span>
-              </motion.h1>
+            {/* Headline with staggered reveal */}
+            <div className="space-y-1 mb-8">
+              <div className="overflow-hidden">
+                <motion.h1 initial={{ y: 100, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ duration: 0.9, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
+                  className="font-display text-5xl sm:text-7xl md:text-[6rem] lg:text-[7rem] font-bold text-primary-foreground leading-[0.9] tracking-tighter">
+                  On répare
+                </motion.h1>
+              </div>
+              <div className="overflow-hidden">
+                <motion.h1 initial={{ y: 100, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ duration: 0.9, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
+                  className="font-display text-5xl sm:text-7xl md:text-[6rem] lg:text-[7rem] font-bold leading-[0.9] tracking-tighter">
+                  <span className="text-gradient">tout</span>
+                  <span className="text-primary-foreground/30 font-light ml-4">chez vous</span>
+                </motion.h1>
+              </div>
             </div>
 
-            <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.5 }}
-              className="text-base md:text-xl text-primary-foreground/70 max-w-xl mb-10 leading-relaxed">
-              Plomberie, électricité, réparations et maintenance générale. On répare tout ce dont votre maison a besoin.
+            {/* Subtitle */}
+            <motion.p initial={{ opacity: 0, y: 25 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.55 }}
+              className="text-lg md:text-xl text-primary-foreground/60 max-w-xl mb-12 leading-relaxed font-light">
+              Plomberie, électricité, maintenance — des techniciens qualifiés à portée d'un clic. Devis gratuit en 30 minutes.
             </motion.p>
 
-            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.65 }}
+            {/* CTA + Stats row */}
+            <motion.div initial={{ opacity: 0, y: 25 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.7 }}
               className="flex flex-col sm:flex-row items-start sm:items-center gap-6">
-              <motion.button onClick={openModal} whileTap={{ scale: 0.95 }}
-                className="gradient-go px-8 py-4 rounded-2xl font-display font-semibold text-primary-foreground shadow-go inline-flex items-center gap-3 text-base">
-                <span>Demander une intervention</span>
-                <ArrowRight className="h-5 w-5" />
+              
+              <motion.button onClick={openModal} whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}
+                className="group relative px-10 py-5 rounded-2xl font-display font-semibold text-primary-foreground text-base overflow-hidden"
+                style={{ background: "linear-gradient(135deg, hsl(142 72% 42%), hsl(142 60% 50%))" }}>
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
+                <span className="relative inline-flex items-center gap-3">
+                  Demander une intervention
+                  <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
+                </span>
               </motion.button>
 
-              <div className="flex items-center gap-6 px-6 py-4 rounded-2xl bg-black/40 border border-white/20 shadow-lg">
-                <div className="text-center">
-                  <div className="font-display text-2xl font-bold text-white drop-shadow-md">24h</div>
-                  <div className="text-xs text-white/90 uppercase tracking-wider font-medium">Intervention</div>
+              {/* Floating stats capsules */}
+              <div className="flex items-center gap-3">
+                <div className="px-5 py-3 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-sm text-center">
+                  <div className="font-display text-xl font-bold text-primary-foreground">24h</div>
+                  <div className="text-[10px] text-primary-foreground/50 uppercase tracking-wider">Intervention</div>
                 </div>
-                <div className="w-px h-8 bg-white/40" />
-                <div className="text-center">
-                  <div className="font-display text-2xl font-bold text-white drop-shadow-md">30min</div>
-                  <div className="text-xs text-white/90 uppercase tracking-wider font-medium">Devis gratuit</div>
+                <div className="px-5 py-3 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-sm text-center">
+                  <div className="font-display text-xl font-bold text-primary-foreground">30min</div>
+                  <div className="text-[10px] text-primary-foreground/50 uppercase tracking-wider">Devis gratuit</div>
+                </div>
+                <div className="px-5 py-3 rounded-2xl border border-primary/20 bg-primary/10 backdrop-blur-sm text-center">
+                  <div className="font-display text-xl font-bold text-primary">98%</div>
+                  <div className="text-[10px] text-primary/70 uppercase tracking-wider">Satisfaction</div>
                 </div>
               </div>
+            </motion.div>
+
+            {/* Trust badges row */}
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.8, delay: 1 }}
+              className="flex flex-wrap items-center gap-4 mt-12">
+              {[
+                { icon: Shield, text: "Techniciens vérifiés" },
+                { icon: Clock, text: "Disponible 7j/7" },
+                { icon: Phone, text: "Support réactif" },
+              ].map((item) => (
+                <div key={item.text} className="flex items-center gap-2 text-primary-foreground/40 text-sm">
+                  <item.icon className="h-4 w-4 text-primary/60" />
+                  <span>{item.text}</span>
+                </div>
+              ))}
             </motion.div>
           </div>
         </div>
 
-        <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-background to-transparent" />
+        {/* Bottom fade */}
+        <div className="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-background to-transparent" />
       </section>
 
       {/* Services grid */}
