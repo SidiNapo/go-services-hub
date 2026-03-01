@@ -62,25 +62,41 @@ const packsByVehicle: Record<VehicleType, WashPack[]> = {
 };
 
 const carBrands: { name: string; logo: string }[] = [
-  { name: "Audi", logo: "https://cdn.worldvectorlogo.com/logos/audi-13.svg" },
-  { name: "BMW", logo: "https://cdn.worldvectorlogo.com/logos/bmw-2.svg" },
-  { name: "Citroën", logo: "https://cdn.worldvectorlogo.com/logos/citroen-2.svg" },
-  { name: "Dacia", logo: "https://cdn.worldvectorlogo.com/logos/dacia-2.svg" },
-  { name: "Fiat", logo: "https://cdn.worldvectorlogo.com/logos/fiat-4.svg" },
-  { name: "Ford", logo: "https://cdn.worldvectorlogo.com/logos/ford-6.svg" },
-  { name: "Honda", logo: "https://cdn.worldvectorlogo.com/logos/honda-2.svg" },
-  { name: "Hyundai", logo: "https://cdn.worldvectorlogo.com/logos/hyundai-motor-company-2.svg" },
-  { name: "Kia", logo: "https://cdn.worldvectorlogo.com/logos/kia-2021.svg" },
-  { name: "Mercedes", logo: "https://cdn.worldvectorlogo.com/logos/mercedes-benz-6.svg" },
-  { name: "Nissan", logo: "https://cdn.worldvectorlogo.com/logos/nissan-6.svg" },
-  { name: "Opel", logo: "https://cdn.worldvectorlogo.com/logos/opel-2017.svg" },
-  { name: "Peugeot", logo: "https://cdn.worldvectorlogo.com/logos/peugeot-logo-2.svg" },
-  { name: "Renault", logo: "https://cdn.worldvectorlogo.com/logos/renault-2021.svg" },
-  { name: "Seat", logo: "https://cdn.worldvectorlogo.com/logos/seat-logo-2.svg" },
-  { name: "Škoda", logo: "https://cdn.worldvectorlogo.com/logos/skoda-6.svg" },
-  { name: "Toyota", logo: "https://cdn.worldvectorlogo.com/logos/toyota-2.svg" },
-  { name: "Volkswagen", logo: "https://cdn.worldvectorlogo.com/logos/volkswagen-2019.svg" },
-  { name: "Volvo", logo: "https://cdn.worldvectorlogo.com/logos/volvo-16.svg" },
+  { name: "Audi", logo: "https://www.carlogos.org/car-logos/audi-logo.png" },
+  { name: "BMW", logo: "https://www.carlogos.org/car-logos/bmw-logo.png" },
+  { name: "Citroën", logo: "https://www.carlogos.org/car-logos/citroen-logo.png" },
+  { name: "Dacia", logo: "https://www.carlogos.org/car-logos/dacia-logo.png" },
+  { name: "Fiat", logo: "https://www.carlogos.org/car-logos/fiat-logo.png" },
+  { name: "Ford", logo: "https://www.carlogos.org/car-logos/ford-logo.png" },
+  { name: "Honda", logo: "https://www.carlogos.org/car-logos/honda-logo.png" },
+  { name: "Hyundai", logo: "https://www.carlogos.org/car-logos/hyundai-logo.png" },
+  { name: "Jaguar", logo: "https://www.carlogos.org/car-logos/jaguar-logo.png" },
+  { name: "Jeep", logo: "https://www.carlogos.org/car-logos/jeep-logo.png" },
+  { name: "Kia", logo: "https://www.carlogos.org/car-logos/kia-logo.png" },
+  { name: "Land Rover", logo: "https://www.carlogos.org/car-logos/land-rover-logo.png" },
+  { name: "Lexus", logo: "https://www.carlogos.org/car-logos/lexus-logo.png" },
+  { name: "Mazda", logo: "https://www.carlogos.org/car-logos/mazda-logo.png" },
+  { name: "Mercedes", logo: "https://www.carlogos.org/car-logos/mercedes-benz-logo.png" },
+  { name: "Mini", logo: "https://www.carlogos.org/car-logos/mini-logo.png" },
+  { name: "Mitsubishi", logo: "https://www.carlogos.org/car-logos/mitsubishi-logo.png" },
+  { name: "Nissan", logo: "https://www.carlogos.org/car-logos/nissan-logo.png" },
+  { name: "Opel", logo: "https://www.carlogos.org/car-logos/opel-logo.png" },
+  { name: "Peugeot", logo: "https://www.carlogos.org/car-logos/peugeot-logo.png" },
+  { name: "Porsche", logo: "https://www.carlogos.org/car-logos/porsche-logo.png" },
+  { name: "Renault", logo: "https://www.carlogos.org/car-logos/renault-logo.png" },
+  { name: "Seat", logo: "https://www.carlogos.org/car-logos/seat-logo.png" },
+  { name: "Škoda", logo: "https://www.carlogos.org/car-logos/skoda-logo.png" },
+  { name: "Suzuki", logo: "https://www.carlogos.org/car-logos/suzuki-logo.png" },
+  { name: "Tesla", logo: "https://www.carlogos.org/car-logos/tesla-logo.png" },
+  { name: "Toyota", logo: "https://www.carlogos.org/car-logos/toyota-logo.png" },
+  { name: "Volkswagen", logo: "https://www.carlogos.org/car-logos/volkswagen-logo.png" },
+  { name: "Volvo", logo: "https://www.carlogos.org/car-logos/volvo-logo.png" },
+  { name: "Alfa Romeo", logo: "https://www.carlogos.org/car-logos/alfa-romeo-logo.png" },
+  { name: "Chevrolet", logo: "https://www.carlogos.org/car-logos/chevrolet-logo.png" },
+  { name: "Cupra", logo: "https://www.carlogos.org/car-logos/cupra-logo.png" },
+  { name: "DS", logo: "https://www.carlogos.org/car-logos/ds-automobiles-logo.png" },
+  { name: "MG", logo: "https://www.carlogos.org/car-logos/mg-logo.png" },
+  { name: "Subaru", logo: "https://www.carlogos.org/car-logos/subaru-logo.png" },
 ];
 
 const GoWashPage = () => {
@@ -227,33 +243,47 @@ const GoWashPage = () => {
 
                 <div className="max-w-2xl mx-auto">
                   {/* Brand selection with logos */}
-                  <div className="mb-6">
-                    <label className="text-sm font-display font-semibold mb-3 flex items-center gap-2">
-                      <Car className="h-4 w-4 text-primary" /> Marque du véhicule
+                  <div className="mb-8">
+                    <label className="text-sm font-display font-semibold mb-4 flex items-center gap-2">
+                      <Car className="h-4 w-4 text-primary" /> Sélectionnez la marque
                     </label>
-                    <div className="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-6 gap-3">
+                    <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-3">
                       {carBrands.map((b, i) => (
                         <motion.button
                           key={b.name}
-                          initial={{ opacity: 0, scale: 0.8 }}
-                          animate={{ opacity: 1, scale: 1 }}
-                          transition={{ delay: i * 0.02 }}
+                          initial={{ opacity: 0, y: 10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ delay: i * 0.015 }}
                           onClick={() => setBrand(b.name)}
-                          className={`glass-card p-3 rounded-xl flex flex-col items-center gap-2 hover:border-primary/50 hover:shadow-go transition-all group cursor-pointer ${
-                            brand === b.name ? "border-primary ring-2 ring-primary/20 bg-primary/5" : ""
+                          className={`relative p-4 rounded-2xl flex flex-col items-center justify-center gap-2.5 border-2 transition-all duration-200 cursor-pointer group ${
+                            brand === b.name
+                              ? "border-primary bg-primary/5 shadow-go scale-[1.02]"
+                              : "border-border/60 bg-card hover:border-primary/40 hover:bg-accent/30 hover:shadow-md"
                           }`}
                         >
-                          <img
-                            src={b.logo}
-                            alt={b.name}
-                            className="h-8 w-8 object-contain group-hover:scale-110 transition-transform"
-                            onError={(e) => {
-                              (e.target as HTMLImageElement).style.display = 'none';
-                              (e.target as HTMLImageElement).nextElementSibling?.classList.remove('hidden');
-                            }}
-                          />
-                          <span className="hidden font-display font-bold text-primary text-lg">{b.name.charAt(0)}</span>
-                          <span className="text-[10px] font-medium text-muted-foreground leading-tight text-center">{b.name}</span>
+                          {brand === b.name && (
+                            <motion.div
+                              initial={{ scale: 0 }}
+                              animate={{ scale: 1 }}
+                              className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full gradient-go flex items-center justify-center"
+                            >
+                              <Check className="h-3 w-3 text-primary-foreground" />
+                            </motion.div>
+                          )}
+                          <div className="w-12 h-12 flex items-center justify-center">
+                            <img
+                              src={b.logo}
+                              alt={b.name}
+                              className="max-w-full max-h-full object-contain group-hover:scale-110 transition-transform duration-200"
+                              onError={(e) => {
+                                const target = e.target as HTMLImageElement;
+                                target.style.display = 'none';
+                                target.nextElementSibling?.classList.remove('hidden');
+                              }}
+                            />
+                            <span className="hidden w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center font-display font-bold text-primary text-lg">{b.name.charAt(0)}</span>
+                          </div>
+                          <span className="text-xs font-medium text-foreground/80 leading-tight text-center truncate w-full">{b.name}</span>
                         </motion.button>
                       ))}
                     </div>
