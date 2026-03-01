@@ -566,6 +566,116 @@ const GoWashPage = () => {
         </div>
       </AnimatedSection>
 
+      {/* Go 212 Special Packs */}
+      <section className="py-16 md:py-24 bg-muted/30">
+        <div className="container mx-auto px-4 max-w-6xl">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-12"
+          >
+            <span className="inline-block px-4 py-1.5 rounded-full bg-primary/10 text-primary text-sm font-display font-semibold mb-4">Offre Spéciale</span>
+            <h2 className="font-display text-3xl md:text-5xl font-bold mb-3">
+              Go <span className="text-primary">212</span>
+            </h2>
+            <p className="text-muted-foreground max-w-md mx-auto">Des packs complets pour un véhicule impeccable, intérieur comme extérieur.</p>
+          </motion.div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+            {[
+              {
+                name: "Lavage Complet",
+                price: 60,
+                badge: null as string | null,
+                services: ["Lavage carrosserie", "Nettoyage Intérieurs", "Aspiration Habitacle / Coffre", "Nettoyage Vitres", "Nettoyage Jantes", "Cirage Pneus"],
+              },
+              {
+                name: "Lavage Spécial",
+                price: 80,
+                badge: null as string | null,
+                services: ["Lavage / Démoustication Carrosserie"],
+              },
+              {
+                name: "Lavage Extra",
+                price: 200,
+                badge: "Populaire",
+                services: ["Traitement taches Sièges / Tapis", "Lavage Carrosserie", "Aspiration Habitacle / Coffre", "Rénovation Plastique", "Nettoyage Vitres", "Décrassage Jantes", "Cirage Pneus"],
+              },
+              {
+                name: "Lavage Premium",
+                price: 300,
+                badge: "Premium",
+                services: ["Traitement taches Sièges / Tapis", "Traitement taches toit", "Rénovation Plastique", "Nettoyage Vitres", "Décrassage Jantes", "Cirage Pneus"],
+              },
+            ].map((pack, i) => (
+              <motion.div
+                key={pack.name}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.1, type: "spring", damping: 20 }}
+                whileHover={{ y: -8 }}
+                className={`relative group rounded-3xl border bg-card p-6 flex flex-col transition-all duration-300 hover:shadow-xl ${
+                  pack.badge === "Populaire"
+                    ? "border-primary ring-2 ring-primary/20 shadow-go"
+                    : pack.badge === "Premium"
+                    ? "border-primary/50 shadow-lg"
+                    : "border-border hover:border-primary/30"
+                }`}
+              >
+                <div className="absolute inset-0 rounded-3xl -translate-x-full group-hover:translate-x-full transition-transform duration-700 bg-gradient-to-r from-transparent via-primary/5 to-transparent pointer-events-none" />
+
+                {pack.badge && (
+                  <span className={`absolute -top-3 right-4 px-3 py-1 rounded-full text-xs font-display font-semibold ${
+                    pack.badge === "Premium"
+                      ? "bg-foreground text-background"
+                      : "gradient-go text-primary-foreground"
+                  }`}>
+                    {pack.badge}
+                  </span>
+                )}
+
+                <div className="mb-4">
+                  <span className="text-lg mb-1 block">🚗</span>
+                  <h3 className="font-display text-lg font-bold">{pack.name}</h3>
+                  <p className="text-xs text-muted-foreground">Intérieur + Extérieur</p>
+                </div>
+
+                <div className="mb-5">
+                  <span className="font-display text-4xl font-bold text-primary">{pack.price}</span>
+                  <span className="text-sm text-muted-foreground ml-1">DH</span>
+                </div>
+
+                <ul className="space-y-2.5 flex-1 mb-6">
+                  {pack.services.map((s) => (
+                    <li key={s} className="flex items-start gap-2 text-sm text-muted-foreground">
+                      <Check className="h-4 w-4 text-primary flex-shrink-0 mt-0.5" />
+                      <span>{s}</span>
+                    </li>
+                  ))}
+                </ul>
+
+                <motion.a
+                  whileHover={{ scale: 1.03 }}
+                  whileTap={{ scale: 0.97 }}
+                  href={`https://wa.me/212660880110?text=${encodeURIComponent(`Bonjour, je souhaite réserver le pack Go 212 "${pack.name}" à ${pack.price} DH.`)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={`w-full py-3 rounded-2xl font-display font-semibold text-sm text-center inline-flex items-center justify-center gap-2 transition-all ${
+                    pack.badge
+                      ? "gradient-go text-primary-foreground shadow-go hover:shadow-lg"
+                      : "bg-primary/10 text-primary hover:bg-primary/20"
+                  }`}
+                >
+                  <MessageCircle className="h-4 w-4" /> Réserver
+                </motion.a>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* Features */}
       <section className="py-16 md:py-24 relative overflow-hidden">
         <div className="absolute inset-0 gradient-go" />
