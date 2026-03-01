@@ -1,31 +1,58 @@
 
 
-## Fix Car Brand Logos - Use Reliable Logo Source
+# Fix Geolocation for iPhone -- All 4 Services
 
-### Problem
-The current Wikipedia/Wikimedia SVG URLs are blocked by CORS and hotlinking restrictions, causing most logos to fail loading and display only the brand's first initial letter as a fallback.
+## Problem
+On iPhone (iOS Safari), the "Me localiser" button can fail silently because:
+1. No user feedback when geolocation permission is denied or times out
+2. No guidance to enable Location Services in iOS Settings
+3. Error callbacks just silently stop the spinner with no message
+4. GoWash has a slightly different (non-async) implementation pattern vs the other 3 pages
+5. iOS Safari requires HTTPS and explicit permission -- users need clear instructions if blocked
 
-### Solution
-Replace all Wikipedia logo URLs with a reliable, free logo CDN that allows hotlinking. The best option is **logo.clearbit.com** (e.g., `https://logo.clearbit.com/audi.com`) or **cdn.imagin.studio** car brand logos. As a more reliable alternative, I will use **SVG-based logos from a CDN** that consistently works.
+## Solution
+Update all 4 service pages (GoRide, GoWash, GoClean, GoFix) with robust, iPhone-compatible geolocation:
 
-### Implementation
+### Changes per page
 
-**File: `src/pages/GoWashPage.tsx`**
+**1. Add error handling with user-facing toast messages**
+- On `PERMISSION_DENIED`: show a toast explaining how to enable location in iOS Settings (Settings > Safari > Location)
+- On `POSITION_UNAVAILABLE`: show "Location unavailable, please enter manually"
+- On `TIMEOUT`: show "Location timed out, please try again"
+- Use the existing `sonner` toast system already installed
 
-1. Replace all 36 `carBrands` logo URLs with working URLs from `https://www.carlogos.org/car-logos/` or use inline SVG text-based fallbacks that always render
-2. The most reliable approach: use `https://logo.clearbit.com/{brand-domain}` which is a free API that serves real company logos without CORS issues. For example:
-   - Audi: `https://logo.clearbit.com/audi.com`
-   - BMW: `https://logo.clearbit.com/bmw.com`
-   - Mercedes: `https://logo.clearbit.com/mercedes-benz.com`
-   - Tesla: `https://logo.clearbit.com/tesla.com`
-   - etc.
+**2. Standardize all 4 implementations**
+- Make GoWash use the same async/await pattern as the other 3 pages
+- Add `accept-language=fr` to GoWash's Nominatim call (missing vs other pages)
+- Ensure consistent error messages in French across all services
 
-3. Update all 36 brand entries with their correct company domain URLs
+**3. Add iOS-specific geolocation improvements**
+- Increase timeout from 15s to 20s (iOS can be slower on first prompt)
+- Add a fallback: if high-accuracy fails, retry once without `enableHighAccuracy` (Wi-Fi/cell tower positioning as backup)
+- Show a loading state with clear text: "Recherche GPS..." during locate
 
-4. Keep the existing fallback mechanism (initial letter display) but it should rarely trigger with this reliable source
+### Files to modify
+- `src/pages/GoRidePage.tsx` -- update `handleLocateMe` with error toasts + fallback
+- `src/pages/GoWashPage.tsx` -- rewrite `handleLocateMe` to async pattern + error toasts + fallback
+- `src/pages/GoCleanPage.tsx` -- update `handleLocateMe` with error toasts + fallback
+- `src/pages/GoFixPage.tsx` -- update `handleLocateMe` with error toasts + fallback
 
-### Brands and their domains (all 36):
-Audi (audi.com), BMW (bmw.com), Citroen (citroen.com), Dacia (dacia.com), Fiat (fiat.com), Ford (ford.com), Honda (honda.com), Hyundai (hyundai.com), Jaguar (jaguar.com), Jeep (jeep.com), Kia (kia.com), Land Rover (landrover.com), Lexus (lexus.com), Mazda (mazda.com), Mercedes (mercedes-benz.com), Mini (mini.com), Mitsubishi (mitsubishi-motors.com), Nissan (nissan.com), Opel (opel.com), Peugeot (peugeot.com), Porsche (porsche.com), Renault (renault.com), Seat (seat.com), Skoda (skoda.com), Suzuki (suzuki.com), Tesla (tesla.com), Toyota (toyota.com), Volkswagen (volkswagen.com), Volvo (volvocars.com), Alfa Romeo (alfaromeo.com), Chevrolet (chevrolet.com), MG (mgmotor.com), Subaru (subaru.com), Cupra (cupraofficial.com), DS (dsautomobiles.com)
+### Technical Details
 
-### No other files need changes - this is a URL-only fix in one file.
+Each `handleLocateMe` will follow this pattern:
+
+```text
+handleLocateMe()
+  |-- Check navigator.geolocation exists
+  |     (if not: toast "Geolocation non supportée")
+  |-- Try HIGH ACCURACY (enableHighAccuracy: true, timeout: 20s)
+  |     |-- Success: save coords, reverse geocode, done
+  |     |-- Fail: 
+  |           |-- PERMISSION_DENIED: toast with iOS instructions
+  |           |-- TIMEOUT/UNAVAILABLE: retry LOW ACCURACY once
+  |                 |-- Success: save coords, reverse geocode
+  |                 |-- Fail: toast error message
+```
+
+Import `toast` from `sonner` in each page (already available in the project).
 
