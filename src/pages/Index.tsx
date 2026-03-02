@@ -8,7 +8,7 @@ import { Link } from "react-router-dom";
 import cityCasablanca from "@/assets/city-casablanca.jpg";
 import cityRabat from "@/assets/city-rabat.jpg";
 import cityMarrakech from "@/assets/city-marrakech.jpg";
-import motoHero from "@/assets/goswap-station.jpg";
+import motoHero from "@/assets/moto-flow-studio.jpg";
 import washHero from "@/assets/wash-hero.jpg";
 import cleanHero from "@/assets/clean-hero.jpg";
 import fixHero from "@/assets/fix-hero.jpg";
