@@ -8,9 +8,10 @@ interface Props {
   image: string;
   path: string;
   index: number;
+  imageContain?: boolean;
 }
 
-const ServiceCard = ({ title, description, image, path, index }: Props) => (
+const ServiceCard = ({ title, description, image, path, index, imageContain }: Props) => (
   <motion.div
     initial={{ opacity: 0, y: 30 }}
     whileInView={{ opacity: 1, y: 0 }}
@@ -18,7 +19,7 @@ const ServiceCard = ({ title, description, image, path, index }: Props) => (
     transition={{ duration: 0.4, delay: index * 0.08 }}
   >
     <Link to={path} className="group block relative rounded-3xl overflow-hidden aspect-[3/4] md:aspect-[4/5]">
-      <img src={image} alt={title} className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy" />
+      <img src={image} alt={title} className={`absolute inset-0 w-full h-full transition-transform duration-500 group-hover:scale-105 ${imageContain ? 'object-contain bg-go-dark' : 'object-cover'}`} loading="lazy" />
       
       {/* Gradient overlay */}
       <div className="absolute inset-0 bg-gradient-to-t from-go-dark via-go-dark/40 to-transparent opacity-80" />
