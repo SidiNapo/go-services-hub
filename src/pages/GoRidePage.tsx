@@ -96,7 +96,8 @@ const GoRidePage = () => {
 
   const calculatedDays = getCalculatedDays();
   const basePrice = parseInt(selectedPricing.price.replace(/\s/g, ""));
-  const totalPrice = selectedPlan === "day" ? basePrice * calculatedDays : basePrice;
+  const deliveryFee = deliveryMode === "delivery" ? 20 : 0;
+  const totalPrice = (selectedPlan === "day" ? basePrice * calculatedDays : basePrice) + deliveryFee;
   const displayDuration = selectedPlan === "day" && calculatedDays > 1 ? `${calculatedDays} Jours` : selectedPricing.duration;
   const formattedTotalPrice = totalPrice.toLocaleString("fr-FR");
 
@@ -146,7 +147,8 @@ const GoRidePage = () => {
     const dateInfo = selectedPlan === "day"
       ? `📅 Récupération: ${date ? format(date, "dd/MM/yyyy") : ""}\n📅 Retour: ${dropoffDate ? format(dropoffDate, "dd/MM/yyyy") : ""}`
       : `📅 Date: ${date ? format(date, "dd/MM/yyyy") : ""}`;
-    const msg = `Bonjour, je souhaite réserver une moto GoRide Flow :\n\n🏍️ Durée: ${displayDuration}\n💰 Prix total: ${formattedTotalPrice} ${selectedPricing.unit}\n${dateInfo}\n🕐 Heure: ${hour}\n\n${locationInfo}\n\n👤 ${name}\n📞 ${phone}${notes ? `\n📝 Notes: ${notes}` : ""}`;
+    const deliveryFeeInfo = deliveryMode === "delivery" ? `\n🚚 Frais de livraison: 20 DH` : "";
+    const msg = `Bonjour, je souhaite réserver une moto GoRide Flow :\n\n🏍️ Durée: ${displayDuration}\n💰 Prix total: ${formattedTotalPrice} ${selectedPricing.unit}${deliveryFeeInfo}\n${dateInfo}\n🕐 Heure: ${hour}\n\n${locationInfo}\n\n👤 ${name}\n📞 ${phone}${notes ? `\n📝 Notes: ${notes}` : ""}`;
     window.open(`https://wa.me/212660880110?text=${encodeURIComponent(msg)}`, "_blank");
     setOpen(false);
   };
