@@ -68,24 +68,24 @@ const vehicleTypes = [
 
 const packsByVehicle: Record<string, WashPack[]> = {
   citadine: [
-    { name: "Essentiel", price: 60, services: ["Lavage extérieur sans eau", "Nettoyage jantes", "Vitres intérieures/extérieures"] },
-    { name: "Extra", price: 110, services: ["Lavage extérieur sans eau", "Aspiration complète", "Nettoyage jantes & pneus", "Vitres", "Plastiques intérieurs", "Parfum"], popular: true },
-    { name: "Premium", price: 150, services: ["Lavage extérieur sans eau", "Aspiration complète", "Nettoyage jantes & pneus", "Vitres", "Plastiques intérieurs", "Parfum", "Cire de protection", "Nettoyage moteur"] },
+    { name: "Essentiel", price: 60, services: ["Lavage carrosserie", "Nettoyage Intérieurs", "Aspiration Habitacle / Coffre", "Nettoyage Vitres", "Nettoyage Jantes", "Cirage Pneus"] },
+    { name: "Extra", price: 200, services: ["Traitement taches Sièges / Tapis", "Lavage Carrosserie", "Aspiration Habitacle / Coffre", "Rénovation Plastique", "Nettoyage Vitres", "Décrassage Jantes", "Cirage Pneus"], popular: true },
+    { name: "Premium", price: 150, services: ["Traitement taches Sièges / Tapis", "Traitement taches toit", "Rénovation Plastique", "Nettoyage Vitres", "Décrassage Jantes", "Cirage Pneus"] },
   ],
   berline: [
-    { name: "Essentiel", price: 60, services: ["Lavage extérieur sans eau", "Nettoyage jantes", "Vitres intérieures/extérieures"] },
-    { name: "Extra", price: 110, services: ["Lavage extérieur sans eau", "Aspiration complète", "Nettoyage jantes & pneus", "Vitres", "Plastiques intérieurs", "Parfum"], popular: true },
-    { name: "Premium", price: 150, services: ["Lavage extérieur sans eau", "Aspiration complète", "Nettoyage jantes & pneus", "Vitres", "Plastiques intérieurs", "Parfum", "Cire de protection", "Nettoyage moteur"] },
+    { name: "Essentiel", price: 60, services: ["Lavage carrosserie", "Nettoyage Intérieurs", "Aspiration Habitacle / Coffre", "Nettoyage Vitres", "Nettoyage Jantes", "Cirage Pneus"] },
+    { name: "Extra", price: 200, services: ["Traitement taches Sièges / Tapis", "Lavage Carrosserie", "Aspiration Habitacle / Coffre", "Rénovation Plastique", "Nettoyage Vitres", "Décrassage Jantes", "Cirage Pneus"], popular: true },
+    { name: "Premium", price: 150, services: ["Traitement taches Sièges / Tapis", "Traitement taches toit", "Rénovation Plastique", "Nettoyage Vitres", "Décrassage Jantes", "Cirage Pneus"] },
   ],
   suv_moyen: [
-    { name: "Essentiel", price: 70, services: ["Lavage extérieur sans eau", "Nettoyage jantes", "Vitres intérieures/extérieures"] },
-    { name: "Extra", price: 120, services: ["Lavage extérieur sans eau", "Aspiration complète", "Nettoyage jantes & pneus", "Vitres", "Plastiques intérieurs", "Parfum"], popular: true },
-    { name: "Premium", price: 160, services: ["Lavage extérieur sans eau", "Aspiration complète", "Nettoyage jantes & pneus", "Vitres", "Plastiques intérieurs", "Parfum", "Cire de protection", "Nettoyage moteur"] },
+    { name: "Essentiel", price: 70, services: ["Lavage carrosserie", "Nettoyage Intérieurs", "Aspiration Habitacle / Coffre", "Nettoyage Vitres", "Nettoyage Jantes", "Cirage Pneus"] },
+    { name: "Extra", price: 210, services: ["Traitement taches Sièges / Tapis", "Lavage Carrosserie", "Aspiration Habitacle / Coffre", "Rénovation Plastique", "Nettoyage Vitres", "Décrassage Jantes", "Cirage Pneus"], popular: true },
+    { name: "Premium", price: 160, services: ["Traitement taches Sièges / Tapis", "Traitement taches toit", "Rénovation Plastique", "Nettoyage Vitres", "Décrassage Jantes", "Cirage Pneus"] },
   ],
   suv_grand: [
-    { name: "Essentiel", price: 80, services: ["Lavage extérieur sans eau", "Nettoyage jantes", "Vitres intérieures/extérieures"] },
-    { name: "Extra", price: 130, services: ["Lavage extérieur sans eau", "Aspiration complète", "Nettoyage jantes & pneus", "Vitres", "Plastiques intérieurs", "Parfum"], popular: true },
-    { name: "Premium", price: 170, services: ["Lavage extérieur sans eau", "Aspiration complète", "Nettoyage jantes & pneus", "Vitres", "Plastiques intérieurs", "Parfum", "Cire de protection", "Nettoyage moteur"] },
+    { name: "Essentiel", price: 80, services: ["Lavage carrosserie", "Nettoyage Intérieurs", "Aspiration Habitacle / Coffre", "Nettoyage Vitres", "Nettoyage Jantes", "Cirage Pneus"] },
+    { name: "Extra", price: 220, services: ["Traitement taches Sièges / Tapis", "Lavage Carrosserie", "Aspiration Habitacle / Coffre", "Rénovation Plastique", "Nettoyage Vitres", "Décrassage Jantes", "Cirage Pneus"], popular: true },
+    { name: "Premium", price: 170, services: ["Traitement taches Sièges / Tapis", "Traitement taches toit", "Rénovation Plastique", "Nettoyage Vitres", "Décrassage Jantes", "Cirage Pneus"] },
   ],
   moto_petite: [
     { name: "Lavage Complet", price: 35, services: ["Lavage complet sans eau", "Nettoyage jantes", "Polish carrosserie"], popular: true },
