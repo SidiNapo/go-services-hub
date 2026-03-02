@@ -277,7 +277,7 @@ const Index = () => {
                   <motion.img
                     src={s.image}
                     alt={s.title}
-                    className="absolute inset-0 w-full h-full object-cover"
+                    className={`absolute inset-0 w-full h-full ${s.title === 'GoRide' ? 'object-contain bg-muted' : 'object-cover'}`}
                     loading="lazy"
                     whileHover={{ scale: 1.08 }}
                     transition={{ duration: 0.6 }}
