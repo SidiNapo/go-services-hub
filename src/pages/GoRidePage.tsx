@@ -5,7 +5,7 @@ import { locateUser } from "@/lib/geolocation";
 import Layout from "@/components/Layout";
 import { SEO } from "@/components/SEO";
 import AnimatedSection from "@/components/AnimatedSection";
-import motoFlow from "@/assets/moto-flow-studio.jpg";
+import motoFlow from "@/assets/goswap-station.jpg";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Calendar as CalendarUI } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
