@@ -295,11 +295,12 @@ const Index = () => {
                         <p className="text-xs sm:text-sm text-primary-foreground/70 line-clamp-2 max-w-xs leading-relaxed">{s.description}</p>
                       </div>
                       <motion.div
-                        className="flex-shrink-0 p-2.5 md:p-3 rounded-2xl gradient-go text-primary-foreground shadow-go"
-                        whileHover={{ rotate: 45, scale: 1.1 }}
+                        className="flex-shrink-0 px-3 py-2 md:px-4 md:py-2.5 rounded-2xl gradient-go text-primary-foreground shadow-go inline-flex items-center gap-1.5"
+                        whileHover={{ scale: 1.05 }}
                         transition={{ type: "spring", stiffness: 200 }}
                       >
-                        <ArrowUpRight className="h-4 w-4 md:h-5 md:w-5" />
+                        <span className="text-[10px] md:text-xs font-display font-semibold whitespace-nowrap">Réservez maintenant</span>
+                        <ArrowUpRight className="h-3 w-3 md:h-4 md:w-4" />
                       </motion.div>
                     </div>
                   </div>
