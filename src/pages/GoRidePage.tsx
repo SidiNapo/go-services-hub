@@ -459,7 +459,8 @@ const GoRidePage = () => {
                         <Truck className={cn("h-6 w-6 transition-colors", deliveryMode === "delivery" ? "text-primary" : "text-muted-foreground")} />
                       </div>
                       <span className="font-display font-bold text-base mb-1">Livraison</span>
-                      <span className="text-xs text-muted-foreground">On vous livre la moto à l'adresse de votre choix</span>
+                      <span className="text-xs text-muted-foreground">On vous livre la moto à domicile</span>
+                      <span className="text-xs font-semibold text-primary mt-1">+20 DH</span>
                       {deliveryMode === "delivery" && (
                         <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} className="absolute top-3 right-3">
                           <CheckCircle2 className="h-5 w-5 text-primary" />
@@ -612,6 +613,16 @@ const GoRidePage = () => {
                       <div className="space-y-2 text-sm">
                         <div className="flex justify-between">
                           <span className="text-muted-foreground">Moto Flow · {displayDuration}</span>
+                          <span className="font-medium">{(totalPrice - deliveryFee).toLocaleString("fr-FR")} DH</span>
+                        </div>
+                        {deliveryMode === "delivery" && (
+                          <div className="flex justify-between">
+                            <span className="text-muted-foreground">Frais de livraison</span>
+                            <span className="font-medium">+20 DH</span>
+                          </div>
+                        )}
+                        <div className="border-t border-border/50 pt-2 flex justify-between">
+                          <span className="font-semibold">Total</span>
                           <span className="font-bold text-primary">{formattedTotalPrice} DH</span>
                         </div>
                         {selectedPlan === "day" ? (
