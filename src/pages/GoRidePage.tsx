@@ -53,6 +53,7 @@ const GoRidePage = () => {
   const [date, setDate] = useState<Date | undefined>(undefined);
   const [dropoffDate, setDropoffDate] = useState<Date | undefined>(undefined);
   const [hour, setHour] = useState("");
+  const [numberOfHours, setNumberOfHours] = useState(1);
 
   // Step 3: Delivery mode
   const [deliveryMode, setDeliveryMode] = useState<DeliveryMode | "">("");
@@ -86,7 +87,8 @@ const GoRidePage = () => {
 
   const selectedPricing = pricing.find(p => p.id === selectedPlan)!;
 
-  const getCalculatedDays = () => {
+  const getQuantity = () => {
+    if (selectedPlan === "hour") return numberOfHours;
     if (selectedPlan === "day" && date && dropoffDate) {
       const days = differenceInDays(dropoffDate, date);
       return days > 0 ? days : 1;
@@ -94,11 +96,15 @@ const GoRidePage = () => {
     return 1;
   };
 
-  const calculatedDays = getCalculatedDays();
+  const quantity = getQuantity();
   const basePrice = parseInt(selectedPricing.price.replace(/\s/g, ""));
   const deliveryFee = deliveryMode === "delivery" ? 20 : 0;
-  const totalPrice = (selectedPlan === "day" ? basePrice * calculatedDays : basePrice) + deliveryFee;
-  const displayDuration = selectedPlan === "day" && calculatedDays > 1 ? `${calculatedDays} Jours` : selectedPricing.duration;
+  const totalPrice = basePrice * quantity + deliveryFee;
+  const displayDuration = selectedPlan === "hour" && numberOfHours > 1
+    ? `${numberOfHours} Heures`
+    : selectedPlan === "day" && quantity > 1
+    ? `${quantity} Jours`
+    : selectedPricing.duration;
   const formattedTotalPrice = totalPrice.toLocaleString("fr-FR");
 
   const canNext = () => {
@@ -418,6 +424,25 @@ const GoRidePage = () => {
                             className={cn("p-3 pointer-events-auto")} />
                         </PopoverContent>
                       </Popover>
+                    </>
+                  )}
+
+                  {/* Number of hours selector */}
+                  {selectedPlan === "hour" && (
+                    <>
+                      <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2 block">⏱️ Nombre d'heures *</label>
+                      <div className="flex items-center gap-3 mb-5">
+                        <button
+                          onClick={() => setNumberOfHours(Math.max(1, numberOfHours - 1))}
+                          className="w-10 h-10 rounded-xl border border-border hover:border-primary/30 flex items-center justify-center font-bold text-lg transition-all"
+                        >−</button>
+                        <span className="font-display text-2xl font-bold text-primary w-12 text-center">{numberOfHours}</span>
+                        <button
+                          onClick={() => setNumberOfHours(numberOfHours + 1)}
+                          className="w-10 h-10 rounded-xl border border-border hover:border-primary/30 flex items-center justify-center font-bold text-lg transition-all"
+                        >+</button>
+                        <span className="text-sm text-muted-foreground">= {(30 * numberOfHours).toLocaleString("fr-FR")} DH</span>
+                      </div>
                     </>
                   )}
 
