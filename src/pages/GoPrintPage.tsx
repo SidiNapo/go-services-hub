@@ -8,6 +8,7 @@ import {
 import Layout from "@/components/Layout";
 import { SEO } from "@/components/SEO";
 import AnimatedSection from "@/components/AnimatedSection";
+import bacheImage from "@/assets/bache-publicitaire.png";
 import printHero from "@/assets/print-hero.jpg";
 
 /* ── Product catalog ── */
