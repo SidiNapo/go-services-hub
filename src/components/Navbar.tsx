@@ -9,6 +9,7 @@ const services = [
   { name: "GoWash", path: "/gowash", desc: "Lavage auto à domicile" },
   { name: "GoClean", path: "/goclean", desc: "Nettoyage Airbnb professionnel" },
   { name: "GoFix", path: "/gofix", desc: "Services techniques à domicile" },
+  { name: "GoPrint", path: "/goprint", desc: "Impression & personnalisation" },
 ];
 
 const Navbar = () => {

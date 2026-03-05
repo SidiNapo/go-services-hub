@@ -9,6 +9,7 @@ import GoRidePage from "./pages/GoRidePage";
 import GoWashPage from "./pages/GoWashPage";
 import GoCleanPage from "./pages/GoCleanPage";
 import GoFixPage from "./pages/GoFixPage";
+import GoPrintPage from "./pages/GoPrintPage";
 import NotFound from "./pages/NotFound";
 import ScrollToTop from "./components/ScrollToTop";
 
@@ -28,6 +29,7 @@ const App = () => (
             <Route path="/gowash" element={<GoWashPage />} />
             <Route path="/goclean" element={<GoCleanPage />} />
             <Route path="/gofix" element={<GoFixPage />} />
+            <Route path="/goprint" element={<GoPrintPage />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>

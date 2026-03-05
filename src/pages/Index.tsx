@@ -12,12 +12,14 @@ import motoHero from "@/assets/moto-flow-studio.jpg";
 import washHero from "@/assets/wash-hero.jpg";
 import cleanHero from "@/assets/clean-hero.jpg";
 import fixHero from "@/assets/fix-hero.jpg";
+import printHero from "@/assets/print-hero.jpg";
 
 const services = [
   { title: "GoRide", description: "Location de motos électriques à autonomie illimitée.", image: motoHero, path: "/goride", imageContain: true },
   { title: "GoWash", description: "Lavage auto écologique à domicile. Sans eau.", image: washHero, path: "/gowash" },
   { title: "GoClean", description: "Nettoyage professionnel d'appartements Airbnb.", image: cleanHero, path: "/goclean" },
   { title: "GoFix", description: "Plomberie, électricité & maintenance à domicile.", image: fixHero, path: "/gofix" },
+  { title: "GoPrint", description: "Impression & personnalisation professionnelle.", image: printHero, path: "/goprint" },
 ];
 
 const stats = [
@@ -261,10 +263,10 @@ const Index = () => {
           >
             <span className="text-primary font-display font-semibold text-sm uppercase tracking-widest">Nos Services</span>
             <h2 className="font-display text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mt-3 mb-4 tracking-tight">Tout pour votre quotidien</h2>
-            <p className="text-muted-foreground text-base md:text-lg">Quatre services pensés pour simplifier votre vie.</p>
+            <p className="text-muted-foreground text-base md:text-lg">Cinq services pensés pour simplifier votre vie.</p>
           </motion.div>
 
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6">
+          <div className="grid grid-cols-2 lg:grid-cols-5 gap-3 md:gap-6">
             {services.map((s, i) => (
               <motion.div
                 key={s.title}
