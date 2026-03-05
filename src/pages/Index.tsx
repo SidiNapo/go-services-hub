@@ -266,7 +266,7 @@ const Index = () => {
             <p className="text-muted-foreground text-base md:text-lg">Cinq services pensés pour simplifier votre vie.</p>
           </motion.div>
 
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6">
+          <div className="grid grid-cols-2 lg:grid-cols-5 gap-3 md:gap-6">
             {services.map((s, i) => (
               <motion.div
                 key={s.title}
