@@ -86,7 +86,7 @@ const products: Product[] = [
   },
   {
     id: "caps", name: "Casquettes avec logo", category: "textile",
-    image: "https://images.unsplash.com/photo-1588850561407-ed78c334e67a?w=600&q=80",
+    image: "https://images.unsplash.com/photo-1556306535-0f09a537f0a3?w=600&q=80",
     description: "Casquettes brodées ou imprimées avec votre marque.",
     sizes: ["Taille unique ajustable", "S/M", "L/XL"],
     materials: ["Coton", "Polyester", "Coton/Polyester"],
