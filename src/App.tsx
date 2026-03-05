@@ -9,6 +9,7 @@ import GoRidePage from "./pages/GoRidePage";
 import GoWashPage from "./pages/GoWashPage";
 import GoCleanPage from "./pages/GoCleanPage";
 import GoFixPage from "./pages/GoFixPage";
+import GoPrintPage from "./pages/GoPrintPage";
 import NotFound from "./pages/NotFound";
 import ScrollToTop from "./components/ScrollToTop";
 
