@@ -68,7 +68,7 @@ const products: Product[] = [
   },
   {
     id: "banners", name: "Bâches publicitaires", category: "signage",
-    image: "https://images.unsplash.com/photo-1558618666-fcd25c85f82e?w=600&q=80",
+    image: "https://images.unsplash.com/photo-1588412079929-790b9f593d8e?w=600&q=80",
     description: "Bâches grand format pour vos événements et publicités.",
     sizes: ["1m x 2m", "2m x 3m", "3m x 5m", "Sur mesure"],
     materials: ["PVC 440g", "PVC 510g", "Mesh aéré"],
