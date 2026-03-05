@@ -590,7 +590,7 @@ const GoPrintPage = () => {
                 className="group relative gradient-go h-14 px-8 rounded-full font-display font-semibold text-primary-foreground shadow-go inline-flex items-center gap-2.5 overflow-hidden text-sm"
               >
                 <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
-                <Sparkles className="h-4 w-4 relative" />
+                
                 <span className="relative">Commander maintenant</span>
                 <ArrowRight className="h-4 w-4 relative group-hover:translate-x-1 transition-transform" />
               </motion.button>
