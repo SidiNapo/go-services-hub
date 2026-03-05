@@ -29,6 +29,7 @@ const App = () => (
             <Route path="/gowash" element={<GoWashPage />} />
             <Route path="/goclean" element={<GoCleanPage />} />
             <Route path="/gofix" element={<GoFixPage />} />
+            <Route path="/goprint" element={<GoPrintPage />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>

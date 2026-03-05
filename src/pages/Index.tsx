@@ -263,7 +263,7 @@ const Index = () => {
           >
             <span className="text-primary font-display font-semibold text-sm uppercase tracking-widest">Nos Services</span>
             <h2 className="font-display text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mt-3 mb-4 tracking-tight">Tout pour votre quotidien</h2>
-            <p className="text-muted-foreground text-base md:text-lg">Quatre services pensés pour simplifier votre vie.</p>
+            <p className="text-muted-foreground text-base md:text-lg">Cinq services pensés pour simplifier votre vie.</p>
           </motion.div>
 
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6">
