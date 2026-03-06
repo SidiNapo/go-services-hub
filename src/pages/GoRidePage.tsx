@@ -10,7 +10,7 @@ import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Calendar as CalendarUI } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
-import { format, differenceInDays } from "date-fns";
+import { format, differenceInDays, startOfDay } from "date-fns";
 import { fr } from "date-fns/locale";
 
 type DurationType = "hour" | "day" | "week" | "month";
@@ -87,6 +87,7 @@ const GoRidePage = () => {
     }
   };
 
+  const today = startOfDay(new Date());
   const selectedPricing = pricing.find(p => p.id === selectedPlan)!;
 
   const getQuantity = () => {
@@ -383,7 +384,7 @@ const GoRidePage = () => {
                         </PopoverTrigger>
                         <PopoverContent className="w-auto p-0" align="start">
                           <CalendarUI mode="single" selected={date} onSelect={(d) => { setDate(d); if (dropoffDate && d && dropoffDate <= d) setDropoffDate(undefined); }}
-                            disabled={(d) => d < new Date()}
+                            disabled={(d) => d < today}
                             className={cn("p-3 pointer-events-auto")} />
                         </PopoverContent>
                       </Popover>
@@ -402,7 +403,7 @@ const GoRidePage = () => {
                         </PopoverTrigger>
                         <PopoverContent className="w-auto p-0" align="start">
                           <CalendarUI mode="single" selected={dropoffDate} onSelect={setDropoffDate}
-                            disabled={(d) => d < new Date() || (date ? d <= date : false)}
+                            disabled={(d) => d < today || (date ? d <= date : false)}
                             className={cn("p-3 pointer-events-auto")} />
                         </PopoverContent>
                       </Popover>
@@ -422,7 +423,7 @@ const GoRidePage = () => {
                         </PopoverTrigger>
                         <PopoverContent className="w-auto p-0" align="start">
                           <CalendarUI mode="single" selected={date} onSelect={setDate}
-                            disabled={(d) => d < new Date()}
+                            disabled={(d) => d < today}
                             className={cn("p-3 pointer-events-auto")} />
                         </PopoverContent>
                       </Popover>
