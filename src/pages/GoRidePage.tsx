@@ -384,7 +384,7 @@ const GoRidePage = () => {
                         </PopoverTrigger>
                         <PopoverContent className="w-auto p-0" align="start">
                           <CalendarUI mode="single" selected={date} onSelect={(d) => { setDate(d); if (dropoffDate && d && dropoffDate <= d) setDropoffDate(undefined); }}
-                            disabled={(d) => d < new Date()}
+                            disabled={(d) => d < today}
                             className={cn("p-3 pointer-events-auto")} />
                         </PopoverContent>
                       </Popover>
@@ -403,7 +403,7 @@ const GoRidePage = () => {
                         </PopoverTrigger>
                         <PopoverContent className="w-auto p-0" align="start">
                           <CalendarUI mode="single" selected={dropoffDate} onSelect={setDropoffDate}
-                            disabled={(d) => d < new Date() || (date ? d <= date : false)}
+                            disabled={(d) => d < today || (date ? d <= date : false)}
                             className={cn("p-3 pointer-events-auto")} />
                         </PopoverContent>
                       </Popover>
@@ -423,7 +423,7 @@ const GoRidePage = () => {
                         </PopoverTrigger>
                         <PopoverContent className="w-auto p-0" align="start">
                           <CalendarUI mode="single" selected={date} onSelect={setDate}
-                            disabled={(d) => d < new Date()}
+                            disabled={(d) => d < today}
                             className={cn("p-3 pointer-events-auto")} />
                         </PopoverContent>
                       </Popover>
