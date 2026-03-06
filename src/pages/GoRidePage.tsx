@@ -87,6 +87,7 @@ const GoRidePage = () => {
     }
   };
 
+  const today = startOfDay(new Date());
   const selectedPricing = pricing.find(p => p.id === selectedPlan)!;
 
   const getQuantity = () => {
